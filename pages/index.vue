@@ -1,7 +1,13 @@
 <template>
-  <h2>Erik</h2>
+  <h2>{{name}}</h2>
 </template>
 
 <script>
-
+  export default {
+    data() {
+      return {
+        name: "Erik"
+      }
+    }
+  }
 </script>
