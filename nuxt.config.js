@@ -16,6 +16,7 @@ module.exports = {
       { rel: 'stylesheet', type: 'text/css', href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css'}
     ]
   },
+  mode: 'spa',
   // include your own css
   css: [
     '~/assets/main.css'

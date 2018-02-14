@@ -1,5 +1,27 @@
 <template>
   <div>
+    <div id="SearchTable">
+      <b-table :data="testData"
+        default-sort="name"
+        :checked-rows.sync="searchCheckedRows"
+        checkable>
+        <template slot-scope="testData">
+          <b-table-column class="action" label="test" width="100">
+            Search:
+          </b-table-column>
+          <b-table-column v-for="key in columns" v-bind:data="key"
+             v-bind:key="key.text" :label="key" width="150" class="searchfield">
+            <b-field>
+                <b-input @input="onSearch" type="search"
+                   icon="magnify"
+                   v-model="searches[key]"
+                   :placeholder="key">
+               </b-input>
+            </b-field>
+          </b-table-column>
+        </template>
+      </b-table>
+    </div>
     <b-table
       :data="isEmpty ? [] : data"
       :loading="loading"
@@ -46,7 +68,7 @@
                 size="is-large">
               </b-icon>
             </p>
-            <p>Nothing here.</p>
+            <p>{{ loadMessage }}</p>
           </div>
         </section>
       </template>
@@ -60,24 +82,27 @@
     template: '#grid-template',
     props: {
       columns: Array,
-      filterKey: Object,
       query: Object,
       queryOptions: Object
     },
     data: function () {
       return {
         data: [],
+        searches: {},
         isPaginated: true,
         isPaginationSimple: false,
         defaultSortDirection: 'asc',
         currentPage: 1,
         perPage: 5,
         checkedRows: [],
+        searchCheckedRows: [], // only here to align search with grid accordingly
         isEmpty: false,
         total: 0,
-        loading: false,
+        loading: true,
         sortField: 'code',
-        sortOrder: 'asc'
+        sortOrder: 'asc',
+        testData: [ { name: 'test' } ],
+        loadMessage: 'Wachten op data om te laden'
       }
     },
     async mounted () {
@@ -85,10 +110,32 @@
     },
     methods: {
       editProduct: function (row) {
-        console.log(row)
+        this.$router.push(this.$router.currentRoute.path + '/' + row['code'])
+        // console.log(this.$router.currentRoute.path)
       },
       deleteProduct: function (row) {
-        console.log(row)
+        this.$dialog.confirm({
+          title: 'Verwijder product',
+          message: 'Weet u zeker dat u het product wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
+          confirmText: 'Verwijder Product',
+          cancelText: 'Annuleren',
+          type: 'is-danger',
+          hasIcon: true,
+          onConfirm: () => this.doDelete() // this.$toast.open('Account deleted!')
+        })
+        // console.log(row['code'])
+      },
+      doDelete: function () {
+        try {
+          if (!(this.$store.state.authUser instanceof Object)) {
+            this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
+          }
+          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
+          this.$toast.open('Deleted product')
+        } catch (e) {
+          console.log(e)
+          this.$toast.open('Could not delete product')
+        }
       },
       /*
        * Load Data Async
@@ -96,27 +143,38 @@
       async loadAsyncData () {
         try {
           if (this.params !== '') {
+            this.loading = true
             if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            console.log('store credentials:')
-            console.log(this.$store.state.authUser)
-            let executedQuery = this.queryOptions // {'options': {'fullCount': true}, 'query': 'FOR c in k2p_product LIMIT 10 return c', 'count': true}
-            executedQuery['query'] = this.query.firstPart + ' LIMIT ' + (this.currentPage - 1) + ', ' + this.perPage + ' ' + this.query.lastPart
-            // query.query
+
+            let searchFilter = ''
+            for (let search in this.searches) {
+              if (searchFilter !== '') { searchFilter += ' && ' }
+              searchFilter += 'p.basic.' + search + ' LIKE \'' + this.searches[search] + '%\''
+            }
+            if (searchFilter !== '') { searchFilter = ' FILTER ' + searchFilter }
+
+            let executedQuery = this.queryOptions
+            executedQuery['query'] = this.query.firstPart + searchFilter + ' SORT ' + 'p.basic.' + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.currentPage - 1) + ', ' + this.perPage + ' ' + this.query.lastPart
             console.log(executedQuery)
-            // const { data } = await this.$axios.post('http://localhost:8529/_db/key2publish/_api/cursor', { query })
             let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', executedQuery)
             console.log(data)
             if (data['result'] instanceof Array) {
               this.data = data['result']
               this.total = data['extra']['stats']['fullCount']
+              this.loading = false
             } else {
               this.data = []
+              this.loadMessage = 'Kon geen data vinden'
+              this.loading = false
             }
           }
         } catch (e) {
+          this.data = []
+          this.loading = false
+          this.loadMessage = 'Kon geen data laden'
           console.log(e)
         }
       },
@@ -134,27 +192,11 @@
         this.sortField = field
         this.sortOrder = order
         await this.loadAsyncData()
-      }
-    },
-    computed: {
-      filteredData: function () {
-        // var sortKey = this.sortKey
-        console.log(this.filterKey)
-        var filterKeys = this.filterKey
+      },
 
-        // var order = this.sortOrders[sortKey] || 1
-        var data = this.data
-        for (var filterKey in filterKeys) {
-          console.log(filterKey)
-          if (filterKeys[filterKey] !== '') {
-            data = data.filter(function (row) {
-              return Object.keys(row).some(function (key) {
-                return String(row[key]).toLowerCase().indexOf(filterKeys[filterKey]) > -1
-              })
-            })
-          }
-        }
-        return data
+      async onSearch () {
+        // console.log('jomhier')
+        await this.loadAsyncData()
       }
     },
     filters: {
