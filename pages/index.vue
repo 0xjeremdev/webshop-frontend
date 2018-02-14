@@ -1,12 +1,12 @@
 <template>
-  <h2>{{name}}</h2>
+  <p>Webshop komt hier</p>
 </template>
 
 <script>
   export default {
-    data() {
+    data () {
       return {
-        name: "Erik"
+
       }
     }
   }

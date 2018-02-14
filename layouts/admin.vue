@@ -3,7 +3,7 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <nuxt-link class="navbar-item" to="/">
-          <img src="http://www.itk.nl/images/I/itklogo-03.fw.png" alt="ITK Diagnostics B.V." width="auto" height="28px">
+          <img src="http://www.itk.nl/images/I/itklogo-03.fw.png" alt="ITK Diagnostics B.V. - Admin Page" width="auto" height="28px">
         </nuxt-link>
         <button v-on:click="collapse" class="button navbar-burger">
           <span></span>
@@ -70,7 +70,7 @@
     <footer class="footer">
       <div class="container">
         <div class="content has-text-centered">
-          <p>Footer</p>
+          <p>Key2Publish Webshop made for ITK Diagnostics B.V. </p>
         </div>
       </div>
     </footer>
@@ -78,7 +78,10 @@
 </template>
 
 <script>
+  // import Cookies from 'js-cookie'
+
   export default {
+    middleware: 'auth',
     data () {
       return {
         showNav: false

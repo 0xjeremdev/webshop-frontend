@@ -20,9 +20,22 @@ module.exports = {
   css: [
     '~/assets/main.css'
   ],
+  modules: [
+    '@nuxtjs/axios',
+  ],
+
+  axios: {
+    // proxyHeaders: false
+  },
+
+  /* router: {
+    middleware: ['auth', 'user-agent']
+  }, */
   // include buefy js on startup
   plugins: [
     '~plugins/buefy',
+    { src: '~plugins/persistedstate.js', ssr: false }
+    //'~plugins/bootstrap.js'
     //{ src: '~/plugins/vue-notifications.js', ssr: false }
   ],
   /*

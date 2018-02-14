@@ -1,0 +1,24 @@
+.page-enter-active, .page-leave-active {
+  transition: opacity .1s;
+}
+.page-enter, .page-leave-to {
+  opacity: 0;
+}
+
+#SearchTable thead {
+  display: none;
+}
+
+#SearchTable td.checkbox-cell {
+  width: 40px;
+  visibility: hidden;
+}
+
+#SearchTable td.action {
+  width: 100px;
+  visibility: hidden;
+}
+
+#SearchTable td.searchfield {
+  width: 150px;
+}
