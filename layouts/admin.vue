@@ -13,7 +13,7 @@
       </div>
 
       <div id="navBarAdmin" class="navbar-menu" :class="{ 'is-active': showNav }">
-        <div class="navbar-start">
+        <div class="navbar-start" v-if="getAuth">
         <nuxt-link class="navbar-item" to="/admin/dashboard">
           Home
         </nuxt-link>
@@ -49,7 +49,7 @@
         </div>
       </div>
 
-      <div class="navbar-end">
+      <div class="navbar-end" v-if="getAuth">
         <div class="navbar-item">
           <div class="field is-grouped">
             <b-dropdown hoverable>
@@ -81,7 +81,7 @@
   // import Cookies from 'js-cookie'
 
   export default {
-    middleware: 'auth',
+    middleware: [ 'reloadCookie', 'auth' ],
     data () {
       return {
         showNav: false
@@ -98,6 +98,16 @@
         } catch (e) {
           this.formError = e.message
         }
+      },
+      async checkJWT () {
+        await this.$store.dispatch('checkJWT', {
+          token: this.$store.state.authUser.jwt
+        })
+      }
+    },
+    computed: {
+      getAuth: function () {
+        return this.$store.state.authUser
       }
     }
   }

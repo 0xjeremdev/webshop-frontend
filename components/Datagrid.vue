@@ -7,7 +7,9 @@
         checkable>
         <template slot-scope="testData">
           <b-table-column class="action" label="test" width="100">
-            Search:
+            <b-field>
+              <button class="button is-primary">Nieuw</button>
+            </b-field>
           </b-table-column>
           <b-table-column v-for="key in columns" v-bind:data="key"
              v-bind:key="key.text" :label="key" width="150" class="searchfield">
@@ -15,7 +17,7 @@
                 <b-input @input="onSearch" type="search"
                    icon="magnify"
                    v-model="searches[key]"
-                   :placeholder="key">
+                   :placeholder="key" rounded>
                </b-input>
             </b-field>
           </b-table-column>
@@ -48,9 +50,15 @@
             {{ data.row.basic[key] }}
         </b-table-column>
       </template>
+      <template slot="footer">
+        <b-select class="" placeholder="Select an Action" @input="onActionChange" rounded>
+          <option value="deleteSelected">Selectie Verwijderen</option>
+          <option value="addNew">Add New</option>
+        </b-select>
+      </template>
       <template slot="bottom-left">
         <div align="center" valign="middle">
-          <b-select class="" v-model="perPage" :disabled="!isPaginated" @input="onPageChange">
+          <b-select class="" v-model="perPage" :disabled="!isPaginated" @input="onPageChange" rounded>
             <option value="5">5 per page</option>
             <option value="10">10 per page</option>
             <option value="25">25 per page</option>
@@ -121,16 +129,17 @@
           cancelText: 'Annuleren',
           type: 'is-danger',
           hasIcon: true,
-          onConfirm: () => this.doDelete() // this.$toast.open('Account deleted!')
+          onConfirm: () => this.doDelete(false) // this.$toast.open('Account deleted!')
         })
         // console.log(row['code'])
       },
-      doDelete: function () {
+      doDelete: function (withCheckbox) {
         try {
           if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
           }
           this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
+
           this.$toast.open('Deleted product')
         } catch (e) {
           console.log(e)
@@ -197,6 +206,24 @@
       async onSearch () {
         // console.log('jomhier')
         await this.loadAsyncData()
+      },
+      onActionChange: function (action) {
+        switch (action) {
+          case 'deleteSelected':
+            this.$dialog.confirm({
+              title: 'Verwijder producten',
+              message: 'Weet u zeker dat u de producten wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
+              confirmText: 'Verwijder Producten',
+              cancelText: 'Annuleren',
+              type: 'is-danger',
+              hasIcon: true,
+              onConfirm: () => this.doDelete(true) // this.$toast.open('Account deleted!')
+            })
+            break
+          case 'addNew':
+            this.$router.push(this.$router.currentRoute.path + '/new')
+            break
+        }
       }
     },
     filters: {

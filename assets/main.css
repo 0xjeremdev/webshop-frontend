@@ -14,9 +14,13 @@
   visibility: hidden;
 }
 
+#SearchTable .table-wrapper:not(:last-child) {
+  margin: 0px
+}
+
 #SearchTable td.action {
   width: 100px;
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 #SearchTable td.searchfield {

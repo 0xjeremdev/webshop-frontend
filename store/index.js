@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import jwt from 'jsonwebtoken'
+
 Vue.use(Vuex)
 
 // Polyfill for `window.fetch()`
@@ -33,6 +35,23 @@ const store = () => new Vuex.Store({
         }
         throw error
       }
+    },
+
+    checkJWT (token) {
+      jwt.verify(token, function (err, decoded) {
+        if (err) {
+          console.log(err)
+          /*
+            err = {
+              name: 'TokenExpiredError',
+              message: 'jwt expired',
+              expiredAt: 1408621000
+            }
+          */
+        }
+        console.log(decoded)
+        return decoded
+      })
     },
 
     async logout ({ commit }) {
