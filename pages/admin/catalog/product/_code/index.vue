@@ -1,101 +1,51 @@
 <template>
   <div>
     <br />
-    <b-tabs position="is-centered" class="block" type="is-toggle-rounded">
-      <b-tab-item label="General" icon="file-document">
+    <b-tabs position="is-centered" class="block" inputType="is-toggle-rounded">
+      <b-tab-item v-for="(value, tabKey) in fields" :key="tabKey" :label="tabKey" :icon="fields[tabKey].icon">
         <div v-if="!isLoading">
-          <b-field horizontal v-for="value in generalAttributes" v-bind:data="value"
-            v-bind:key="value.text" :label="translateAttributes[value]">
-            <b-input v-if="value !== 'price' && value !== 'picture'" :value="testData[0].basic[value]"></b-input>
-            <imageControl image="/images/Accus-Siezenis.png" v-else></imageControl>
-          </b-field>
           <b-field horizontal><!-- Label left empty for spacing -->
             <p class="control">
-              <button class="button is-primary">
+              <button class="button is-primary" @click="saveData">
                 <b-icon icon="content-save"></b-icon>
                 <span> Bewaren</span>
               </button>
-            </p>
-          </b-field>
-        </div>
-      </b-tab-item>
-      <b-tab-item label="Attributes" icon="file-document-box">
-        <div v-if="!isLoading">
-          <b-field v-if="!checkFields(value, generalAttributes)" horizontal v-for="value in generalAttributes" v-bind:data="value"
-            v-bind:key="value.text" :label="value">
-            <b-input :value="testData[0].basic[value]"></b-input>
-          </b-field>
-          <b-field horizontal><!-- Label left empty for spacing -->
-            <p class="control">
-              <button class="button is-primary">
-                <b-icon icon="content-save"></b-icon>
-                <span> Bewaren</span>
+              <button class="button is-outlined" @click="goBack">
+                <b-icon icon="arrow-left"></b-icon>
+                <span> Terug</span>
               </button>
             </p>
           </b-field>
-        </div>
-      </b-tab-item>
-      <b-tab-item label="PDF Datasheet" icon="file-pdf">
-        <section class="uploadSection">
-          <b-field>
-            <b-upload v-model="dropFiles"
-              multiple
-              drag-drop>
-              <section class="section">
-                <div class="content has-text-centered">
-                  <p>
-                    <b-icon
-                      icon="upload"
-                      size="is-large">
-                    </b-icon>
-                  </p>
-                  <p>Drop your files here or click to upload</p>
-                </div>
-              </section>
-            </b-upload>
+          <hr>
+          <br />
+          <b-field v-for="(val, fieldKey) in value"
+            v-if="fieldKey !== 'icon'"
+            horizontal
+            :data="val"
+            :key="fieldKey"
+            :label="getLabel(val, fieldKey)">
+            <b-input v-if="val.inputType === 'input'" :value="getValue(val, fieldKey, tabKey)" :placeholder="getLabel(val, fieldKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
+            <imageControl v-else-if="val.inputType === 'imageUpload'" image="/images/Accus-Siezenis.png"></imageControl>
+            <b-taginput v-else-if="val.inputType === 'tagInput'"
+              :placeholder="getLabel(val, fieldKey)"
+              maxtags="5"
+              :value="[]">
+            </b-taginput>
+            <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
+            <b-input v-else value="Could not load this type"></b-input>
           </b-field>
+          <br />
+          <hr>
+          <b-field horizontal><!-- Label left empty for spacing -->
+            <p class="control">
+              <button class="button is-primary" @click="saveData">
+                <b-icon icon="content-save"></b-icon>
+                <span> Bewaren</span>
+              </button>
 
-          <div class="tags">
-            <span v-for="(file, index) in dropFiles"
-              :key="index"
-              class="tag is-primary" >
-              {{file.name}}
-              <button class="delete is-small"
-                type="button"
-                @click="deleteDropFile(index)">
-              </button>
-            </span>
-          </div>
-        </section>
-      </b-tab-item>
-      <b-tab-item label="SEO" icon="search-web">
-        <div v-if="!isLoading">
-          <b-field horizontal label="URL Slug">
-            <b-input placeholder="URL Slug" value=""></b-input>
-          </b-field>
-          <b-field horizontal label="Product Tags">
-            <b-taginput placeholder="Product Tags"
-                maxtags="5"
-                :value="[]">
-            </b-taginput>
-          </b-field>
-          <b-field horizontal label="Meta Description">
-            <b-input type="textarea" placeholder="Type your Product Description as displayed on Search Engines"></b-input>
-          </b-field>
-          <b-field horizontal label="Meta Keywords">
-            <b-taginput placeholder="Meta Keywords"
-                maxtags="5"
-                :value="[]">
-            </b-taginput>
-          </b-field>
-          <b-field horizontal label="Meta Author">
-            <b-input placeholder="Meta Author" value=""></b-input>
-          </b-field>
-          <b-field horizontal><!-- Label left empty for spacing -->
-            <p class="control">
-              <button class="button is-primary">
-                <b-icon icon="content-save"></b-icon>
-                <span> Bewaren</span>
+              <button class="button is-outlined" @click="goBack">
+                <b-icon icon="arrow-left"></b-icon>
+                <span> Terug</span>
               </button>
             </p>
           </b-field>
@@ -117,21 +67,272 @@
     data () {
       return {
         isLoading: true,
-        testData: {},
+        isNew: true,
+        productData: {},
         dropFiles: [],
-        generalAttributes: [ 'code', 'name', 'description', 'picture', 'price', 'vat' ],
-        translateAttributes: { 'code': 'ITK artikelnummer', 'name': 'Product Description', 'description': 'Alternative names', 'picture': 'Image 1', 'price': 'Image 2', 'vat': 'LabNed artikel nummer' },
-        attributes: [''],
-        // seoAttributes: { 'url_slug': 'URL Slug', 'search_tags': 'Search Tags', 'meta_keywords': 'Meta Keywords', 'meta_description': 'Meta Description', 'meta_author': 'Meta Author' },
-        textAreaFields: [ 'Product Description ITK',
-          'Extra information',
-          'Additional disclaimer',
-          'Physical form description',
-          'Reconstitution Instructions',
-          'Solubility/Reconstitution Instructions',
-          'references',
-          'review' ],
-        toggleFields: [ 'Active Yes/No', 'MSDS Available?' ]
+        fields: {
+          'Product Information': {
+            'code': {
+              'inputType': 'input',
+              'label': 'ITK artikelnummer',
+              'disabled': true
+            },
+            'name': {
+              'inputType': 'input',
+              'label': 'Product Description'
+            },
+            'description': {
+              'inputType': 'input',
+              'label': 'Alternative names'
+            },
+            'picture': {
+              'inputType': 'imageUpload',
+              'label': 'Image 1'
+            },
+            'price': {
+              'inputType': 'imageUpload',
+              'label': 'Image 2'
+            },
+            'vat': {
+              'inputType': 'input',
+              'label': 'LabNed artikel nummer'
+            },
+            'Size': {
+              'inputType': 'input'
+            },
+            'Product Type': {
+              'inputType': 'input'
+            },
+            'Target': {
+              'inputType': 'input'
+            },
+            'Reactivity': {
+              'inputType': 'input'
+            },
+            'Cross-reactivity': {
+              'inputType': 'input'
+            },
+            'Host': {
+              'inputType': 'input'
+            },
+            'Source': {
+              'inputType': 'input'
+            },
+            'Conjugate': {
+              'inputType': 'input'
+            },
+            'Clone': {
+              'inputType': 'input'
+            },
+            'Isotype': {
+              'inputType': 'input'
+            },
+            'Peptide sequence': {
+              'inputType': 'input'
+            },
+            'Immunogen': {
+              'inputType': 'input'
+            },
+            'Concentration': {
+              'inputType': 'input'
+            },
+            'Purification': {
+              'inputType': 'input'
+            },
+            'icon': 'file-document'
+          },
+          'Properties': {
+            'Purification': {
+              'inputType': 'input'
+            },
+            'Biological activity': {
+              'inputType': 'input'
+            },
+            'Buffer': {
+              'inputType': 'input'
+            },
+            'Purity': {
+              'inputType': 'input'
+            },
+            'Molecular Weight': {
+              'inputType': 'input'
+            },
+            'Physical State': {
+              'inputType': 'input'
+            },
+            'Appearance': {
+              'inputType': 'input'
+            },
+            'Physical form description': {
+              'inputType': 'input'
+            },
+            'Structure Available': {
+              'inputType': 'input'
+            },
+            'Salt Form': {
+              'inputType': 'input'
+            },
+            'Molecular Form': {
+              'inputType': 'input'
+            },
+            'Formulation': {
+              'inputType': 'input'
+            },
+            'Endotoxin Level': {
+              'inputType': 'input'
+            },
+            'Binding Capacity': {
+              'inputType': 'input'
+            },
+            'icon': ''
+          },
+          'Usage': {
+            'Application & Usage': {
+              'inputType': 'input'
+            },
+            'Recommened Dilution': {
+              'inputType': 'input'
+            },
+            'Solubility/Reconstitution Instructions': {
+              'inputType': 'input'
+            },
+            'Reconstitution Instructions': {
+              'inputType': 'input'
+            },
+            'Handling': {
+              'inputType': 'input'
+            },
+            'Sample inputType': {
+              'inputType': 'input'
+            },
+            'Tags': {
+              'inputType': 'input'
+            },
+            'Unit Definition': {
+              'inputType': 'input'
+            },
+            'Packaging': {
+              'inputType': 'input'
+            },
+            'Kit components': {
+              'inputType': 'input'
+            },
+            'not supplied reagents & equipment': {
+              'inputType': 'input'
+            },
+            'Storage Conditions': {
+              'inputType': 'input'
+            },
+            'Shipping Conditions': {
+              'inputType': 'input'
+            },
+            'Shelf life': {
+              'inputType': 'input'
+            },
+            'icon': ''
+          },
+          'Background': {
+            'BackGround': {
+              'inputType': 'input'
+            },
+            'Extra information': {
+              'inputType': 'text'
+            },
+            'Related Products': {
+              'inputType': 'input'
+            },
+            'User note': {
+              'inputType': 'input'
+            },
+            'References': {
+              'inputType': 'text'
+            },
+            'icon': ''
+          },
+          'Additional Information': {
+            'Protein GI #': {
+              'inputType': 'input'
+            },
+            'Accession #': {
+              'inputType': 'input'
+            },
+            'NCBI GENE ID #': {
+              'inputType': 'input'
+            },
+            'NCBI OFFICIAL SYMBOL': {
+              'inputType': 'input'
+            },
+            'NCBI OFFICIAL FULL NAME': {
+              'inputType': 'input'
+            },
+            'NCBI ORGANISM': {
+              'inputType': 'input'
+            },
+            'SWISSPROT #': {
+              'inputType': 'input'
+            },
+            'GeneIDURL': {
+              'inputType': 'input'
+            },
+            'ProteinID': {
+              'inputType': 'input'
+            },
+            'ProteinIDURL': {
+              'inputType': 'input'
+            },
+            'MDL Number': {
+              'inputType': 'input'
+            },
+            'PubChem CID': {
+              'inputType': 'input'
+            },
+            'SMILES': {
+              'inputType': 'input'
+            },
+            'InChi': {
+              'inputType': 'input'
+            },
+            'Cas number': {
+              'inputType': 'input'
+            },
+            'EG number': {
+              'inputType': 'input'
+            },
+            'REACH number': {
+              'inputType': 'input'
+            },
+            'UNSPSC number': {
+              'inputType': 'input'
+            },
+            'Review': {
+              'inputType': 'input'
+            },
+            'icon': ''
+          },
+          'SEO': {
+            'url_slug': {
+              'inputType': 'input',
+              'label': 'URL Slug'
+            },
+            'product_tags': {
+              'inputType': 'tagInput',
+              'label': 'Product Tags'
+            },
+            'meta_description': {
+              'inputType': 'text',
+              'label': 'Meta Description'
+            },
+            'meta_keywords': {
+              'inputType': 'tagInput',
+              'label': 'Meta Keywords'
+            },
+            'meta_author': {
+              'inputType': 'input',
+              'label': 'Meta Author'
+            },
+            'icon': 'search-web'
+          }
+        }
       }
     },
     async created () {
@@ -142,29 +343,73 @@
       return params
     },
     methods: {
+      setModel (val, fieldKey, tabKey) {
+        if (tabKey === 'SEO') {
+          this.productData.seo[fieldKey] = val
+        } else {
+          this.productData.basic[fieldKey] = val
+        }
+      },
+      getLabel (val, fieldKey) {
+        if (val.label) {
+          return val.label
+        }
+        return fieldKey
+      },
+      getValue (val, fieldKey, tabKey) {
+        if (this.productData instanceof Object) {
+          if (tabKey === 'SEO') {
+            return this.productData['seo'][fieldKey]
+          }
+          return this.productData['basic'][fieldKey]
+        }
+        return ''
+      },
       async getData () {
+        this.isLoading = true
+        let routeParams = this.$route.params
+        console.log(routeParams)
+        if (routeParams instanceof Object && routeParams !== 'newProduct') {
+          if (!(this.$store.state.authUser instanceof Object)) {
+            this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
+          }
+          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
+          let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == @code RETURN p', bindVars: { 'code': routeParams.code } }
+          let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
+          console.log(data)
+          this.productData = data['result'][0]
+          this.isNew = false
+          this.isLoading = false
+        } else {
+          this.isNew = true
+          this.productData = {}
+          this.isLoading = false
+        }
+      },
+      async saveData () {
         this.isLoading = true
         if (!(this.$store.state.authUser instanceof Object)) {
           this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
         }
         this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-        let query = {'options': {'fullCount': true}, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == \'' + this.$route.params.code + '\' RETURN p'}
+        // let query = {'options': {'fullCount': true}, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == \'' + this.$route.params.code + '\' RETURN p'}
+        // console.log(this.productData)
+        // TODO: CHECK IF this.productData complies with fields before inserting (this is necessary when isNew is True)
+        let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { basic: @basic, seo: @seo } IN k2p_product', 'bindVars': { 'basic': this.productData.basic, 'seo': this.productData.seo } }
+        // console.log(query)
         let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
         console.log(data)
-        this.testData = data['result']
+        // this.testData = data['result']
         this.isLoading = false
-      },
-      async saveData () {
-        if (!(this.$store.state.authUser instanceof Object)) {
-          this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
-        }
-        this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
       },
       deleteDropFile (index) {
         this.dropFiles.splice(index, 1)
       },
       checkFields (col, arr) {
         return contains(col, arr)
+      },
+      goBack () {
+        this.$router.push('/admin/catalog/product')
       }
     }
   }

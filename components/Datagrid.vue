@@ -8,7 +8,7 @@
         <template slot-scope="testData">
           <b-table-column class="action" label="test" width="100">
             <b-field>
-              <button class="button is-primary">Nieuw</button>
+              <button class="button is-primary" @click="newProduct">Nieuw</button>
             </b-field>
           </b-table-column>
           <b-table-column v-for="key in columns" v-bind:data="key"
@@ -117,6 +117,9 @@
       await this.loadAsyncData()
     },
     methods: {
+      newProduct: function () {
+        this.$router.push(this.$router.currentRoute.path + '/newproduct')
+      },
       editProduct: function (row) {
         this.$router.push(this.$router.currentRoute.path + '/' + row['code'])
         // console.log(this.$router.currentRoute.path)
