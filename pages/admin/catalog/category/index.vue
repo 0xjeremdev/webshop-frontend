@@ -1,45 +1,41 @@
 <template>
   <div>
-      <SimpleTable :columns="gridColumns"
-        :data="gridData"
-        :filterKey="searches"
-        :config="config">
-      </SimpleTable>
-  </div>
+    <h1>Categorien</h1>
+    <datagrid :data="gridData" :columns="gridColumns" :query="query" :queryOptions="queryOptions"></datagrid>
+</div>
 </template>
 
 <script>
-  import SimpleTable from '~/components/tables/Simpletable'
+  import Datagrid from '~/components/Datagrid'
+  // import axios from 'axios'
+
   export default {
     layout: 'admin',
     head () {
       return {
-        title: 'ITK Diagnostics - Categories',
+        title: 'ITK Diagnostics - Products',
         meta: [
           { hid: 'error description', name: 'error description', content: 'My custom error description' }
         ]
       }
     },
-    components: {
-      SimpleTable
-    },
+    components: { Datagrid },
     data () {
       return {
-        searches: {},
-        gridColumns: ['name', 'power'],
-        gridData: [
-          { name: 'Chuck Norris', power: Infinity },
-          { name: 'Bruce Lee', power: 9000 },
-          { name: 'Jackie Chan', power: 7000 },
-          { name: 'Jet Li', power: 8000 }
-        ],
-        config: {
-          hasHead: true,
-          hasFoot: false
-        }
+        gridColumns: ['code', 'name'],
+        gridData: [],
+        query: { 'firstPart': 'FOR c in k2p_category', 'lastPart': 'RETURN c' }, // quey FIRST PART and LAST PART not necessarily
+        queryOptions: {'options': {'fullCount': true}, 'count': true} // these are the extra options you can give
       }
     },
-    methods: {
+    computed: {
+      searchQuery: function () {
+        return this.searches
+      }
     }
   }
 </script>
+
+<style>
+
+</style>

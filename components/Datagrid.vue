@@ -118,7 +118,7 @@
     },
     methods: {
       newProduct: function () {
-        this.$router.push(this.$router.currentRoute.path + '/newproduct')
+        this.$router.push(this.$router.currentRoute.path + '/new')
       },
       editProduct: function (row) {
         this.$router.push(this.$router.currentRoute.path + '/' + row['code'])
@@ -132,17 +132,34 @@
           cancelText: 'Annuleren',
           type: 'is-danger',
           hasIcon: true,
-          onConfirm: () => this.doDelete(false) // this.$toast.open('Account deleted!')
+          onConfirm: () => this.doDelete(false, row)
         })
-        // console.log(row['code'])
       },
-      doDelete: function (withCheckbox) {
+      async doDelete (withCheckbox, row) {
         try {
           if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
           }
           this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-
+          let codes = '['
+          let count = 0
+          if (withCheckbox) {
+            for (var prod in this.checkedRows) {
+              if (count !== 0) { codes += ', ' }
+              codes += '\'' + this.checkedRows[prod].code + '\''
+              count++
+            }
+            codes += ']'
+          }
+          let query
+          if (withCheckbox) {
+            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code IN ' + codes + ' REMOVE { _key: p._key } IN k2p_product' }
+          } else {
+            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == @code REMOVE { _key: p._key } IN k2p_product OPTIONS { waitForSync: true }', bindVars: { 'code': row.basic.code } }
+          }
+          console.log(query)
+          await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
+          await this.loadAsyncData()
           this.$toast.open('Deleted product')
         } catch (e) {
           console.log(e)
@@ -213,18 +230,22 @@
       onActionChange: function (action) {
         switch (action) {
           case 'deleteSelected':
-            this.$dialog.confirm({
-              title: 'Verwijder producten',
-              message: 'Weet u zeker dat u de producten wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
-              confirmText: 'Verwijder Producten',
-              cancelText: 'Annuleren',
-              type: 'is-danger',
-              hasIcon: true,
-              onConfirm: () => this.doDelete(true) // this.$toast.open('Account deleted!')
-            })
+            if (this.checkedRows.length > 1) {
+              this.$dialog.confirm({
+                title: 'Verwijder producten',
+                message: 'Weet u zeker dat u de producten wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
+                confirmText: 'Verwijder Producten',
+                cancelText: 'Annuleren',
+                type: 'is-danger',
+                hasIcon: true,
+                onConfirm: () => this.doDelete(true)
+              })
+            } else {
+              this.$toast.open('No Data Selected')
+            }
             break
           case 'addNew':
-            this.$router.push(this.$router.currentRoute.path + '/new')
+            this.newProduct()
             break
         }
       }
