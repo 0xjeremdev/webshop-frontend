@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>Products</h1>
-    <datagrid :data="gridData" :columns="gridColumns" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type"></datagrid>
+    <h1>Blog</h1>
+    <datagrid :data="gridData" :columns="gridColumns" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type" :customSortField="customSortField"></datagrid>
 </div>
 </template>
 
@@ -13,7 +13,7 @@
     layout: 'admin',
     head () {
       return {
-        title: 'ITK Diagnostics - Products',
+        title: 'ITK Diagnostics - Categories',
         meta: [
           { hid: 'error description', name: 'error description', content: 'My custom error description' }
         ]
@@ -22,12 +22,13 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['code', 'name'],
+        gridColumns: ['title', 'article'],
         gridData: [],
         queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
-        postUrl: this.$store.state.productUrl,
-        tableName: 'k2p_product',
-        type: 'product'
+        postUrl: this.$store.state.shopUrl,
+        tableName: 'Blog',
+        type: 'blog',
+        customSortField: 'title'
       }
     },
     computed: {

@@ -8,7 +8,9 @@
         <template slot-scope="testData">
           <b-table-column class="action" label="test" width="100">
             <b-field>
-              <button class="button is-primary" @click="newProduct">Nieuw</button>
+              <b-tooltip :label="'Add new ' + type" type="is-dark" animated>
+                <button class="button is-primary" @click="newProduct">New</button>
+              </b-tooltip>
             </b-field>
           </b-table-column>
           <b-table-column v-for="key in columns" v-bind:data="key"
@@ -42,17 +44,22 @@
       hoverable>
       <template slot-scope="data">
         <b-table-column label="Action" align="center" valign="middle" width="100">
-          <a class="button is-success" @click="editProduct(data.row)"><b-icon icon="pencil" /></a>
-          <a class="button is-danger" @click="deleteProduct(data.row)"><b-icon icon="delete" /></a>
+          <b-tooltip :label="'Edit ' + type" type="is-dark" animated>
+            <a class="button is-success" @click="editProduct(data.row)"><b-icon icon="pencil" /></a>
+          </b-tooltip>
+          <b-tooltip :label="'Delete ' + type" type="is-dark" animated>
+            <a class="button is-danger" @click="deleteProduct(data.row)"><b-icon icon="delete" /></a>
+          </b-tooltip>
         </b-table-column>
         <b-table-column v-for="key in columns"  v-bind:data="key"
            v-bind:key="key.text" :field="key" :label="key|capitalize" sortable width="150">
-            {{ data.row.basic[key] }}
+            <span v-if="data.row.hasOwnProperty(key)">{{ data.row[key] }}</span>
+            <span v-else-if="data.row.hasOwnProperty('basic')">{{ data.row.basic[key] }}</span>
         </b-table-column>
       </template>
       <template slot="footer">
         <b-select class="" placeholder="Select an Action" @input="onActionChange" rounded>
-          <option value="deleteSelected">Selectie Verwijderen</option>
+          <option value="deleteSelected">Delete Selected</option>
           <option value="addNew">Add New</option>
         </b-select>
       </template>
@@ -90,8 +97,11 @@
     template: '#grid-template',
     props: {
       columns: Array,
-      query: Object,
-      queryOptions: Object
+      queryOptions: Object,
+      postUrl: String,
+      tableName: String,
+      type: String,
+      customSortField: String
     },
     data: function () {
       return {
@@ -110,7 +120,8 @@
         sortField: 'code',
         sortOrder: 'asc',
         testData: [ { name: 'test' } ],
-        loadMessage: 'Wachten op data om te laden'
+        loadMessage: 'Waiting for data to load',
+        startValue: 'basic'
       }
     },
     async mounted () {
@@ -153,12 +164,12 @@
           }
           let query
           if (withCheckbox) {
-            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code IN ' + codes + ' REMOVE { _key: p._key } IN k2p_product' }
+            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p.code IN ' + codes + ' REMOVE { _key: p._key } IN ' + this.tableName }
           } else {
-            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == @code REMOVE { _key: p._key } IN k2p_product OPTIONS { waitForSync: true }', bindVars: { 'code': row.basic.code } }
+            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p.code == @code REMOVE { _key: p._key } IN ' + this.tableName + ' OPTIONS { waitForSync: true }', bindVars: { 'code': row.basic.code } }
           }
           console.log(query)
-          await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
+          await this.$axios.$post(this.postUrl + '/_api/cursor', query)
           await this.loadAsyncData()
           this.$toast.open('Deleted product')
         } catch (e) {
@@ -173,6 +184,10 @@
         try {
           if (this.params !== '') {
             this.loading = true
+            if (this.customSortField !== '') {
+              this.sortField = this.customSortField
+              this.startValue = ''
+            }
             if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
@@ -186,24 +201,26 @@
             if (searchFilter !== '') { searchFilter = ' FILTER ' + searchFilter }
 
             let executedQuery = this.queryOptions
-            executedQuery['query'] = this.query.firstPart + searchFilter + ' SORT ' + 'p.basic.' + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.currentPage - 1) + ', ' + this.perPage + ' ' + this.query.lastPart
+            let dbIdentifier = 'p.'
+            if (this.type === 'product' || this.type === 'category') { dbIdentifier = 'p.basic.' }
+            executedQuery['query'] = 'FOR p IN ' + this.tableName + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.currentPage - 1) + ', ' + this.perPage + ' RETURN p'
             console.log(executedQuery)
-            let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', executedQuery)
+            let data = await this.$axios.$post(this.postUrl + '/_api/cursor', executedQuery)
             console.log(data)
-            if (data['result'] instanceof Array) {
+            if (data['result'][0] instanceof Object) {
               this.data = data['result']
               this.total = data['extra']['stats']['fullCount']
               this.loading = false
             } else {
               this.data = []
-              this.loadMessage = 'Kon geen data vinden'
+              this.loadMessage = 'No Search results found'
               this.loading = false
             }
           }
         } catch (e) {
           this.data = []
           this.loading = false
-          this.loadMessage = 'Kon geen data laden'
+          this.loadMessage = 'Could not load any data, make sure there is any data'
           console.log(e)
         }
       },

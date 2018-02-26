@@ -14,36 +14,45 @@
 
       <div id="navBarAdmin" class="navbar-menu" :class="{ 'is-active': showNav }">
         <div class="navbar-start" v-if="getAuth">
-        <nuxt-link class="navbar-item" to="/admin/dashboard">
-          Home
-        </nuxt-link>
-        <div class="navbar-item has-dropdown is-hoverable">
-          <!--<nuxt-link class="navbar-link" to="/admin/catalog">-->
+          <nuxt-link class="navbar-item" to="/admin/dashboard">
+            Home
+          </nuxt-link>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <!--<nuxt-link class="navbar-link" to="/admin/catalog">-->
             <p class="navbar-link">Catalog</p>
-          <!--</nuxt-link>-->
-          <div class="navbar-dropdown is-boxed">
-            <nuxt-link class="navbar-item" to="/admin/catalog/product">
-              Products
-            </nuxt-link>
-            <nuxt-link class="navbar-item" to="/admin/catalog/category">
-              Categories
-            </nuxt-link>
-            <nuxt-link class="navbar-item" to="https://bulma.io/documentation/columns/basics/">
-              Columns
-            </nuxt-link>
-            <nuxt-link class="navbar-item" to="https://bulma.io/documentation/layout/container/">
-              Layout
-            </nuxt-link>
-            <nuxt-link class="navbar-item" to="https://bulma.io/documentation/form/general/">
-              Form
-            </nuxt-link>
-            <hr class="navbar-divider">
-            <nuxt-link class="navbar-item" to="https://bulma.io/documentation/elements/box/">
-              Elements
-            </nuxt-link>
-            <nuxt-link class="navbar-item is-active" to="https://bulma.io/documentation/components/breadcrumb/">
-              Components
-            </nuxt-link>
+            <!--</nuxt-link>-->
+            <div class="navbar-dropdown is-boxed">
+              <nuxt-link class="navbar-item" to="/admin/catalog/product">
+                Products
+              </nuxt-link>
+              <nuxt-link class="navbar-item" to="/admin/catalog/category">
+                Categories
+              </nuxt-link>
+            </div>
+          </div>
+          <nuxt-link class="navbar-item" to="/admin/order">
+            Orders
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/admin/quotes">
+            Quotes
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/admin/customer">
+            Customers
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/admin/blog">
+            Blog
+          </nuxt-link>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <!--<nuxt-link class="navbar-link" to="/admin/catalog">-->
+            <p class="navbar-link">Settings</p>
+            <!--</nuxt-link>-->
+            <div class="navbar-dropdown is-boxed">
+              <nuxt-link class="navbar-item" to="/admin/catalog/settings/user">
+                Users
+              </nuxt-link>
+              <nuxt-link class="navbar-item" to="/admin/catalog/settings/config">
+                Configuration
+              </nuxt-link>
             </div>
           </div>
         </div>

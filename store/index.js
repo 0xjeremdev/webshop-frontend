@@ -10,7 +10,9 @@ require('whatwg-fetch')
 
 const store = () => new Vuex.Store({
   state: {
-    authUser: null
+    authUser: null,
+    productUrl: 'http://localhost:8529/_db/key2publish/',
+    shopUrl: 'http://localhost:8529/_db/k2p_webshop/'
   },
   mutations: {
     SET_USER: function (state, user) {
