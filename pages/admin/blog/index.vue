@@ -22,7 +22,7 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['title', 'article'],
+        gridColumns: ['title', 'author'],
         gridData: [],
         queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
         postUrl: this.$store.state.shopUrl,

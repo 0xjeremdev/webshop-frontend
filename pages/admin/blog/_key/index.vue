@@ -31,7 +31,9 @@
               maxtags="5"
               :value="[]">
             </b-taginput>
+            <quill v-else-if="val.inputType === 'texteditor'" :options="options" :ref="qc"></quill>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
+            <!-- <froala v-else-if="val.inputType === 'text'" :tag="'textarea'" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)" :config="config">Init text</froala> -->
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
           <br />
@@ -60,28 +62,43 @@
   import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
+  import Quill from 'vue-bulma-quill'
 
   export default {
     layout: 'admin',
-    components: { imageControl },
+    components: { imageControl, Quill },
     data () {
       return {
+        options: {
+          theme: 'snow',
+          modules: {
+            toolbar: [
+              ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+              ['blockquote', 'code-block'],
+              [{ 'header': 1 }, { 'header': 2 }], // custom button values
+              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+              [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
+              [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
+              [{ 'direction': 'rtl' }], // text direction
+              [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
+              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+              [{ 'color': [] }, { 'background': [] }], // dropdown with defaults from theme
+              [{ 'font': [] }],
+              [{ 'align': [] }],
+              ['clean'] // remove formatting button
+            ]
+          }
+        },
         isLoading: true,
         isNew: true,
         productData: {},
         fields: {
           'Category': {
-            'code': {
+            'title': {
               'inputType': 'input'
             },
-            'name': {
-              'inputType': 'input'
-            },
-            'description': {
-              'inputType': 'text'
-            },
-            'picture': {
-              'inputType': 'imageUpload'
+            'article': {
+              'inputType': 'texteditor'
             },
             icon: 'file-document'
           },
@@ -123,7 +140,7 @@
         if (tabKey === 'SEO') {
           this.productData.seo[fieldKey] = val
         } else {
-          this.productData.basic[fieldKey] = val
+          this.productData[fieldKey] = val
         }
       },
       getLabel (val, fieldKey) {
@@ -137,7 +154,7 @@
           if (tabKey === 'SEO') {
             return this.productData['seo'][fieldKey]
           }
-          return this.productData['basic'][fieldKey]
+          return this.productData[fieldKey]
         }
         return ''
       },
@@ -146,13 +163,14 @@
           this.isLoading = true
           let routeParams = this.$route.params
           // console.log(routeParams)
-          if (routeParams instanceof Object && routeParams.code !== 'newproduct') {
+          if (routeParams instanceof Object && routeParams.key !== 'newproduct') {
             if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == @code RETURN p', bindVars: { 'code': routeParams.code } }
-            let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
+            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Blog FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
+            console.log(query)
+            let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
             console.log(data)
             this.productData = data['result'][0]
             this.isNew = false
@@ -191,9 +209,9 @@
           // let query = {'options': {'fullCount': true}, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == \'' + this.$route.params.code + '\' RETURN p'}
           // console.log(this.productData)
           // TODO: CHECK IF this.productData complies with fields before saving (this is necessary when isNew is True)
-          let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { basic: @basic, seo: @seo } IN k2p_product', 'bindVars': { 'basic': this.productData.basic, 'seo': this.productData.seo } }
+          let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { title: @title, article: @article, seo: @seo } IN Blog', 'bindVars': { 'title': this.productData.title, 'article': this.productData.article, 'seo': this.productData.seo } }
           // console.log(query)
-          let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
+          let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
           console.log(data)
           // this.testData = data['result']
           this.isLoading = false
@@ -205,8 +223,12 @@
         return contains(col, arr)
       },
       goBack () {
-        this.$router.push('/admin/catalog/product')
+        this.$router.push('/admin/blog')
       }
     }
   }
 </script>
+
+<style lang="stylus">
+   @import "~quill/assets/snow"
+</style>

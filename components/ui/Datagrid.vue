@@ -132,14 +132,14 @@
         this.$router.push(this.$router.currentRoute.path + '/new')
       },
       editProduct: function (row) {
-        this.$router.push(this.$router.currentRoute.path + '/' + row['code'])
+        this.$router.push(this.$router.currentRoute.path + '/' + row['_key'])
         // console.log(this.$router.currentRoute.path)
       },
       deleteProduct: function (row) {
         this.$dialog.confirm({
-          title: 'Verwijder product',
+          title: 'Verwijder ' + this.type,
           message: 'Weet u zeker dat u het product wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
-          confirmText: 'Verwijder Product',
+          confirmText: 'Verwijder ' + this.type,
           cancelText: 'Annuleren',
           type: 'is-danger',
           hasIcon: true,
@@ -157,16 +157,16 @@
           if (withCheckbox) {
             for (var prod in this.checkedRows) {
               if (count !== 0) { codes += ', ' }
-              codes += '\'' + this.checkedRows[prod].code + '\''
+              codes += '\'' + this.checkedRows[prod]._key + '\''
               count++
             }
             codes += ']'
           }
           let query
           if (withCheckbox) {
-            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p.code IN ' + codes + ' REMOVE { _key: p._key } IN ' + this.tableName }
+            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p._key IN ' + codes + ' REMOVE { _key: p._key } IN ' + this.tableName }
           } else {
-            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p.code == @code REMOVE { _key: p._key } IN ' + this.tableName + ' OPTIONS { waitForSync: true }', bindVars: { 'code': row.basic.code } }
+            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p._key == @code REMOVE { _key: p._key } IN ' + this.tableName + ' OPTIONS { waitForSync: true }', bindVars: { 'code': row.basic.code } }
           }
           console.log(query)
           await this.$axios.$post(this.postUrl + '/_api/cursor', query)

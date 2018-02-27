@@ -369,13 +369,13 @@
           this.isLoading = true
           let routeParams = this.$route.params
           // console.log(routeParams)
-          if (routeParams instanceof Object && routeParams.code !== 'newproduct') {
+          if (routeParams instanceof Object && routeParams.key !== 'newproduct') {
             if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == @code RETURN p', bindVars: { 'code': routeParams.code } }
-            let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
+            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
+            let data = await this.$axios.$post(this.$store.state.productUrl + '/_api/cursor', query)
             console.log(data)
             this.productData = data['result'][0]
             this.isNew = false
@@ -416,7 +416,7 @@
           // TODO: CHECK IF this.productData complies with fields before saving (this is necessary when isNew is True)
           let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { basic: @basic, seo: @seo } IN k2p_product', 'bindVars': { 'basic': this.productData.basic, 'seo': this.productData.seo } }
           // console.log(query)
-          let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
+          let data = await this.$axios.$post(this.$store.state.productUrl + '/_api/cursor', query)
           console.log(data)
           // this.testData = data['result']
           this.isLoading = false
