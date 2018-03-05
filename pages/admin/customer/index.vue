@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>Orders</h1>
-    <datagrid :data="gridData" :columns="gridColumns" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type"></datagrid>
+    <h1>Customers</h1>
+    <datagrid :data="gridData" :columns="gridColumns" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type" :customSortField="customSortField"></datagrid>
 </div>
 </template>
 
@@ -13,7 +13,7 @@
     layout: 'admin',
     head () {
       return {
-        title: 'ITK Diagnostics - Orders',
+        title: 'ITK Diagnostics - Customers',
         meta: [
           { hid: 'error description', name: 'error description', content: 'My custom error description' }
         ]
@@ -22,13 +22,13 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['order_no', 'fromQuote', 'quoteDate', 'customerid'],
+        gridColumns: ['lastname', 'firstname', 'company', 'phone', 'mobile', 'email'],
         gridData: [],
         queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
         postUrl: this.$store.state.shopUrl,
-        tableName: 'Order',
-        type: 'order',
-        customSortField: 'order_no'
+        tableName: 'Customer',
+        type: 'customer',
+        customSortField: 'lastname'
       }
     }
   }

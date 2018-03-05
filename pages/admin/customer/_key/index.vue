@@ -31,14 +31,24 @@
               maxtags="5"
               :value="[]">
             </b-taginput>
-            <quill-editor v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
-                :value="getValue(val, fieldKey, tabKey)"
-                @input="setModel($event, fieldKey, tabKey)"
-                :config="editorConfig"></quill-editor>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
             <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon></b-checkbox-button>
-            <!-- <froala v-else-if="val.inputType === 'text'" :tag="'textarea'" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)" :config="config">Init text</froala> -->
+            <div v-else-if="val.inputType === 'radio'">
+              <b-radio v-for="ro in val.options"
+                :key="ro"
+                :native-value="ro"
+                :value="getValue(val, fieldKey, tabKey)"
+                @input="setModel($event, fieldKey, tabKey)">
+                {{ ro }}
+              </b-radio>
+            </div>
+            <b-datepicker v-else-if="val.inputType === 'date'"
+                placeholder="Type or select a date..."
+                icon="calendar-today"
+                v-model="productData[fieldKey]"
+                :readonly="false">
+            </b-datepicker>
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
           <br />
@@ -67,69 +77,63 @@
   import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
-  import { quillEditor } from 'vue-quill-editor'
 
   export default {
     layout: 'admin',
-    components: { imageControl, quillEditor },
+    components: { imageControl },
     data () {
       return {
-        editorConfig: {},
-        options: {
-          theme: 'snow',
-          modules: {
-            toolbar: [
-              ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-              ['blockquote', 'code-block'],
-              [{ 'header': 1 }, { 'header': 2 }], // custom button values
-              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-              [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
-              [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
-              [{ 'direction': 'rtl' }], // text direction
-              [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
-              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-              [{ 'color': [] }, { 'background': [] }], // dropdown with defaults from theme
-              [{ 'font': [] }],
-              [{ 'align': [] }],
-              ['clean'] // remove formatting button
-            ]
-          }
-        },
         isLoading: true,
         isNew: true,
         productData: {},
         fields: {
-          'Blog': {
-            'title': {
+          'Customer': {
+            'lastname': {
               'inputType': 'input'
             },
-            'article': {
-              'inputType': 'texteditor'
+            'firstname': {
+              'inputType': 'input'
             },
-            icon: 'file-document'
-          },
-          'SEO': {
-            'url_slug': {
-              'inputType': 'input',
-              'label': 'URL Slug'
+            'gender': {
+              'inputType': 'radio',
+              'label': 'Gender',
+              'options': ['M', 'F']
             },
-            'product_tags': {
-              'inputType': 'tagInput',
-              'label': 'Product Tags'
+            'birthdate': {
+              'inputType': 'date'
             },
-            'meta_description': {
-              'inputType': 'text',
-              'label': 'Meta Description'
+            'company': {
+              'inputType': 'input'
             },
-            'meta_keywords': {
-              'inputType': 'tagInput',
-              'label': 'Meta Keywords'
+            'VAT_No': {
+              'inputType': 'input'
             },
-            'meta_author': {
-              'inputType': 'input',
-              'label': 'Meta Author'
+            'email': {
+              'inputType': 'input'
             },
-            'icon': 'search-web'
+            'phone': {
+              'inputType': 'input'
+            },
+            'mobile': {
+              'inputType': 'input'
+            },
+            'newsletter': {
+              'inputType': 'checkbox',
+              'label': 'Newsletter Subscription'
+            },
+            'password': {
+              'inputType': 'password',
+              'label': 'User password'
+            },
+            'repeat_password': {
+              'inputType': 'password',
+              'label': 'Repeat password'
+            },
+            'your_password': {
+              'inputType': 'password',
+              'label': 'Your password'
+            },
+            icon: 'account'
           }
         }
       }
@@ -142,12 +146,12 @@
       return params
     },
     methods: {
-      setModel (val, fieldKey, tabKey) {
-        if (tabKey === 'SEO') {
-          this.productData.seo[fieldKey] = val
-        } else {
-          this.productData[fieldKey] = val
+      setModel (val, fieldKey, tabKey, inputType) {
+        console.log(val)
+        if (inputType === 'date') {
+          val = ''
         }
+        this.productData[fieldKey] = val
       },
       getLabel (val, fieldKey) {
         if (val.label) {
@@ -155,10 +159,14 @@
         }
         return fieldKey
       },
-      getValue (val, fieldKey, tabKey) {
+      getValue (val, fieldKey, tabKey, inputType) {
         if (this.productData instanceof Object) {
-          if (tabKey === 'SEO') {
-            return this.productData['seo'][fieldKey]
+          if (inputType === 'checkbox') {
+            if (this.productData[fieldKey] === 'true') { console.log('true') }
+            return !this.productData[fieldKey]
+          } else if (inputType === 'date') {
+            let d = new Date(this.productData[fieldKey])
+            return d
           }
           return this.productData[fieldKey]
         }
@@ -166,6 +174,16 @@
       },
       setCheckbox (val, fieldKey, tabKey) {
         this.productData[fieldKey] = !val
+      },
+      setDate (val, fieldKey, tabKey) {
+        try {
+          let d = new Date(val)
+          console.log(d)
+          // let date = d.getFullYear() + '-' + (d.getMonth() - 1) + '-' + d.getDate()
+          this.productData[fieldKey] = d
+        } catch (e) {
+          console.log(e)
+        }
       },
       async getData () {
         try {
@@ -177,25 +195,20 @@
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Blog FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
-            console.log(query)
+            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Customer FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
             let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
             console.log(data)
             this.productData = data['result'][0]
+            this.productData.birthdate = new Date(this.productData.birthdate)
             this.isNew = false
             this.isLoading = false
           } else {
             this.isNew = true
             this.productData = {}
-            this.productData.seo = {}
             if (this.productData instanceof Object) {
               for (var tabKey in this.fields) {
                 for (var fieldKey in this.fields[tabKey]) {
-                  if (tabKey === 'SEO') {
-                    this.productData['seo'][fieldKey] = ''
-                  } else {
-                    this.productData[fieldKey] = ''
-                  }
+                  this.productData[fieldKey] = ''
                 }
               }
             }
@@ -217,31 +230,46 @@
           // let query = {'options': {'fullCount': true}, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == \'' + this.$route.params.code + '\' RETURN p'}
           // console.log(this.productData)
           // TODO: CHECK IF this.productData complies with fields before saving (this is necessary when isNew is True)
+          console.log(this.productData)
           let query = {
             'options': {
               'fullCount': true
             },
             'count': true,
-            'query': 'INSERT { title: @title, article: @article, seo: @seo } INTO Blog',
+            'query': 'INSERT { lastname: @lastname, firstname: @firstname, company: @company, VAT_No: @VAT_No, gender: @gender, birthdate: @birthdate, email: @email, phone: @phone, mobile: @mobile, password: @password, newsletter: @newsletter } INTO Customer',
             'bindVars': {
-              'title': this.productData.title,
-              'article': this.productData.article,
-              'seo': this.productData.seo
+              'lastname': this.productData.lastname,
+              'firstname': this.productData.firstname,
+              'company': this.productData.company,
+              'gender': this.productData.gender,
+              'birthdate': this.productData.birthdate,
+              'email': this.productData.email,
+              'phone': this.productData.phone,
+              'VAT_No': this.productData['VAT_No'],
+              'mobile': this.productData.mobile,
+              'password': this.productData.password,
+              'newsletter': this.productData.newsletter
             }
           }
           if (!this.isNew) {
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH {  } IN Blog', 'bindVars': { 'title': this.productData.title, 'article': this.productData.article, 'seo': this.productData.seo } }
-
             query = {
               'options': {
                 'fullCount': true
               },
               'count': true,
-              'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { title: @title, article: @article, seo: @seo } IN Blog',
+              'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { lastname: @lastname, firstname: @firstname, company: @company, VAT_No: @VAT_No, gender: @gender, birthdate: @birthdate, email: @email, phone: @phone, mobile: @mobile, password: @password, newsletter: @newsletter } IN Customer',
               'bindVars': {
-                'title': this.productData.title,
-                'article': this.productData.article,
-                'seo': this.productData.seo
+                'lastname': this.productData.lastname,
+                'firstname': this.productData.firstname,
+                'company': this.productData.company,
+                'gender': this.productData.gender,
+                'birthdate': this.productData.birthdate,
+                'email': this.productData.email,
+                'phone': this.productData.phone,
+                'VAT_No': this.productData['VAT_No'],
+                'mobile': this.productData.mobile,
+                'password': this.productData.password,
+                'newsletter': this.productData.newsletter
               }
             }
             console.log(query)
@@ -250,7 +278,7 @@
           console.log(data)
           this.isLoading = false
           this.$toast.open('Saved')
-          this.$router.push('/admin/blog')
+          this.$router.push('/admin/customer')
         } catch (e) {
           console.log(e)
           this.$toast.open('Could not save data, please try again')
@@ -261,12 +289,8 @@
         return contains(col, arr)
       },
       goBack () {
-        this.$router.push('/admin/blog')
+        this.$router.push('/admin/customer')
       }
     }
   }
 </script>
-
-<style lang="stylus">
-   @import "~quill/assets/snow"
-</style>

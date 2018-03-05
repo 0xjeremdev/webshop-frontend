@@ -31,14 +31,9 @@
               maxtags="5"
               :value="[]">
             </b-taginput>
-            <quill-editor v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
-                :value="getValue(val, fieldKey, tabKey)"
-                @input="setModel($event, fieldKey, tabKey)"
-                :config="editorConfig"></quill-editor>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
             <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon></b-checkbox-button>
-            <!-- <froala v-else-if="val.inputType === 'text'" :tag="'textarea'" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)" :config="config">Init text</froala> -->
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
           <br />
@@ -67,69 +62,70 @@
   import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
-  import { quillEditor } from 'vue-quill-editor'
 
   export default {
     layout: 'admin',
-    components: { imageControl, quillEditor },
+    components: { imageControl },
     data () {
       return {
-        editorConfig: {},
-        options: {
-          theme: 'snow',
-          modules: {
-            toolbar: [
-              ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-              ['blockquote', 'code-block'],
-              [{ 'header': 1 }, { 'header': 2 }], // custom button values
-              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-              [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
-              [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
-              [{ 'direction': 'rtl' }], // text direction
-              [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
-              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-              [{ 'color': [] }, { 'background': [] }], // dropdown with defaults from theme
-              [{ 'font': [] }],
-              [{ 'align': [] }],
-              ['clean'] // remove formatting button
-            ]
-          }
-        },
         isLoading: true,
         isNew: true,
         productData: {},
         fields: {
-          'Blog': {
-            'title': {
+          'User': {
+            'lastname': {
               'inputType': 'input'
             },
-            'article': {
-              'inputType': 'texteditor'
+            'firstname': {
+              'inputType': 'input'
             },
-            icon: 'file-document'
-          },
-          'SEO': {
-            'url_slug': {
+            'company': {
+              'inputType': 'input'
+            },
+            'street': {
+              'inputType': 'input'
+            },
+            'housenr': {
+              'inputType': 'input'
+            },
+            'postcode': {
+              'inputType': 'input'
+            },
+            'city': {
+              'inputType': 'input'
+            },
+            'country': {
+              'inputType': 'input'
+            },
+            'email': {
+              'inputType': 'input'
+            },
+            'phone': {
+              'inputType': 'input'
+            },
+            'mobile': {
+              'inputType': 'input'
+            },
+            'active': {
+              'inputType': 'checkbox'
+            },
+            'username': {
               'inputType': 'input',
-              'label': 'URL Slug'
+              'label': 'Username'
             },
-            'product_tags': {
-              'inputType': 'tagInput',
-              'label': 'Product Tags'
+            'password': {
+              'inputType': 'password',
+              'label': 'User password'
             },
-            'meta_description': {
-              'inputType': 'text',
-              'label': 'Meta Description'
+            'repeat_password': {
+              'inputType': 'password',
+              'label': 'Repeat password'
             },
-            'meta_keywords': {
-              'inputType': 'tagInput',
-              'label': 'Meta Keywords'
+            'your_password': {
+              'inputType': 'password',
+              'label': 'Your password'
             },
-            'meta_author': {
-              'inputType': 'input',
-              'label': 'Meta Author'
-            },
-            'icon': 'search-web'
+            icon: 'account'
           }
         }
       }
@@ -143,11 +139,7 @@
     },
     methods: {
       setModel (val, fieldKey, tabKey) {
-        if (tabKey === 'SEO') {
-          this.productData.seo[fieldKey] = val
-        } else {
-          this.productData[fieldKey] = val
-        }
+        this.productData[fieldKey] = val
       },
       getLabel (val, fieldKey) {
         if (val.label) {
@@ -155,10 +147,12 @@
         }
         return fieldKey
       },
-      getValue (val, fieldKey, tabKey) {
+      getValue (val, fieldKey, tabKey, inputType) {
         if (this.productData instanceof Object) {
-          if (tabKey === 'SEO') {
-            return this.productData['seo'][fieldKey]
+          if (inputType === 'checkbox') {
+            console.log(fieldKey + ': ' + this.productData[fieldKey])
+            if (this.productData[fieldKey] === 'true') { console.log('true') }
+            return !this.productData[fieldKey]
           }
           return this.productData[fieldKey]
         }
@@ -177,8 +171,7 @@
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Blog FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
-            console.log(query)
+            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in User FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
             let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
             console.log(data)
             this.productData = data['result'][0]
@@ -187,15 +180,10 @@
           } else {
             this.isNew = true
             this.productData = {}
-            this.productData.seo = {}
             if (this.productData instanceof Object) {
               for (var tabKey in this.fields) {
                 for (var fieldKey in this.fields[tabKey]) {
-                  if (tabKey === 'SEO') {
-                    this.productData['seo'][fieldKey] = ''
-                  } else {
-                    this.productData[fieldKey] = ''
-                  }
+                  this.productData[fieldKey] = ''
                 }
               }
             }
@@ -217,31 +205,52 @@
           // let query = {'options': {'fullCount': true}, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == \'' + this.$route.params.code + '\' RETURN p'}
           // console.log(this.productData)
           // TODO: CHECK IF this.productData complies with fields before saving (this is necessary when isNew is True)
+          console.log(this.productData)
           let query = {
             'options': {
               'fullCount': true
             },
             'count': true,
-            'query': 'INSERT { title: @title, article: @article, seo: @seo } INTO Blog',
+            'query': 'INSERT {  lastname: @lastname, firstname: @firstname, company: @company, street: @street, housenr: @housenr, postcode: @postcode, city: @city, country: @country, email: @email, phone: @phone, mobile: @mobile, active: @active, username: @username, password: @password } INTO User',
             'bindVars': {
-              'title': this.productData.title,
-              'article': this.productData.article,
-              'seo': this.productData.seo
+              'lastname': this.productData.lastname,
+              'firstname': this.productData.firstname,
+              'company': this.productData.company,
+              'street': this.productData.street,
+              'housenr': this.productData.housenr,
+              'postcode': this.productData.postcode,
+              'city': this.productData.city,
+              'country': this.productData.country,
+              'email': this.productData.email,
+              'phone': this.productData.phone,
+              'mobile': this.productData.mobile,
+              'active': this.productData.active,
+              'username': this.productData.username,
+              'password': this.productData.password
             }
           }
           if (!this.isNew) {
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH {  } IN Blog', 'bindVars': { 'title': this.productData.title, 'article': this.productData.article, 'seo': this.productData.seo } }
-
             query = {
               'options': {
                 'fullCount': true
               },
               'count': true,
-              'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { title: @title, article: @article, seo: @seo } IN Blog',
+              'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { lastname: @lastname, firstname: @firstname, company: @company, street: @street, housenr: @housenr, postcode: @postcode, city: @city, country: @country, email: @email, phone: @phone, mobile: @mobile, active: @active, username: @username, password: @password } IN User',
               'bindVars': {
-                'title': this.productData.title,
-                'article': this.productData.article,
-                'seo': this.productData.seo
+                'lastname': this.productData.lastname,
+                'firstname': this.productData.firstname,
+                'company': this.productData.company,
+                'street': this.productData.street,
+                'housenr': this.productData.housenr,
+                'postcode': this.productData.postcode,
+                'city': this.productData.city,
+                'country': this.productData.country,
+                'email': this.productData.email,
+                'phone': this.productData.phone,
+                'mobile': this.productData.mobile,
+                'active': this.productData.active,
+                'username': this.productData.username,
+                'password': this.productData.password
               }
             }
             console.log(query)
@@ -250,7 +259,7 @@
           console.log(data)
           this.isLoading = false
           this.$toast.open('Saved')
-          this.$router.push('/admin/blog')
+          this.$router.push('/admin/settings/user')
         } catch (e) {
           console.log(e)
           this.$toast.open('Could not save data, please try again')
@@ -261,12 +270,8 @@
         return contains(col, arr)
       },
       goBack () {
-        this.$router.push('/admin/blog')
+        this.$router.push('/admin/settings/user')
       }
     }
   }
 </script>
-
-<style lang="stylus">
-   @import "~quill/assets/snow"
-</style>

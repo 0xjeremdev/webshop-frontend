@@ -166,15 +166,15 @@
           if (withCheckbox) {
             query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p._key IN ' + codes + ' REMOVE { _key: p._key } IN ' + this.tableName }
           } else {
-            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p._key == @code REMOVE { _key: p._key } IN ' + this.tableName + ' OPTIONS { waitForSync: true }', bindVars: { 'code': row.basic.code } }
+            query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p._key == @key REMOVE { _key: p._key } IN ' + this.tableName + ' OPTIONS { waitForSync: true }', bindVars: { 'key': row._key } }
           }
           console.log(query)
           await this.$axios.$post(this.postUrl + '/_api/cursor', query)
           await this.loadAsyncData()
-          this.$toast.open('Deleted product')
+          this.$toast.open('Deleted ' + this.type)
         } catch (e) {
           console.log(e)
-          this.$toast.open('Could not delete product')
+          this.$toast.open('Could not delete ' + this.type)
         }
       },
       /*
@@ -203,7 +203,7 @@
             let executedQuery = this.queryOptions
             let dbIdentifier = 'p.'
             if (this.type === 'product' || this.type === 'category') { dbIdentifier = 'p.basic.' }
-            executedQuery['query'] = 'FOR p IN ' + this.tableName + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.currentPage - 1) + ', ' + this.perPage + ' RETURN p'
+            executedQuery['query'] = 'FOR p IN ' + this.tableName + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.perPage * (this.currentPage - 1)) + ', ' + this.perPage + ' RETURN p'
             console.log(executedQuery)
             let data = await this.$axios.$post(this.postUrl + '/_api/cursor', executedQuery)
             console.log(data)
@@ -223,6 +223,12 @@
           this.loadMessage = 'Could not load any data, make sure there is any data'
           console.log(e)
         }
+      },
+      /*
+       * Handle page-change event
+       */
+      async onPageActionChange (page) {
+        await this.loadAsyncData()
       },
       /*
        * Handle page-change event
@@ -249,9 +255,9 @@
           case 'deleteSelected':
             if (this.checkedRows.length > 1) {
               this.$dialog.confirm({
-                title: 'Verwijder producten',
-                message: 'Weet u zeker dat u de producten wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
-                confirmText: 'Verwijder Producten',
+                title: 'Verwijder ' + this.type,
+                message: 'Weet u zeker dat u de ' + this.type + ' wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
+                confirmText: 'Verwijder ' + this.type,
                 cancelText: 'Annuleren',
                 type: 'is-danger',
                 hasIcon: true,

@@ -47,10 +47,10 @@
             <p class="navbar-link">Settings</p>
             <!--</nuxt-link>-->
             <div class="navbar-dropdown is-boxed">
-              <nuxt-link class="navbar-item" to="/admin/catalog/settings/user">
+              <nuxt-link class="navbar-item" to="/admin/settings/user">
                 Users
               </nuxt-link>
-              <nuxt-link class="navbar-item" to="/admin/catalog/settings/config">
+              <nuxt-link class="navbar-item" to="/admin/settings/config">
                 Configuration
               </nuxt-link>
             </div>

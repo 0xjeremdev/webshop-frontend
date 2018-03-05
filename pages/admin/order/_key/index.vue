@@ -31,7 +31,6 @@
               maxtags="5"
               :value="[]">
             </b-taginput>
-            <quill v-else-if="val.inputType === 'texteditor'" :options="options" :ref="qc"></quill>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <!-- <froala v-else-if="val.inputType === 'text'" :tag="'textarea'" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)" :config="config">Init text</froala> -->
             <b-input v-else value="Could not load this type"></b-input>
@@ -62,11 +61,10 @@
   import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
-  import Quill from 'vue-bulma-quill'
 
   export default {
     layout: 'admin',
-    components: { imageControl, Quill },
+    components: { imageControl },
     data () {
       return {
         options: {
@@ -208,7 +206,3 @@
     }
   }
 </script>
-
-<style lang="stylus">
-   @import "~quill/assets/snow"
-</style>

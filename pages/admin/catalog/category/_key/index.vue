@@ -146,12 +146,12 @@
           this.isLoading = true
           let routeParams = this.$route.params
           // console.log(routeParams)
-          if (routeParams instanceof Object && routeParams.key !== 'newproduct') {
+          if (routeParams instanceof Object && routeParams.key !== 'new') {
             if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
+            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_category FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
             let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
             console.log(data)
             this.productData = data['result'][0]
@@ -191,12 +191,37 @@
           // let query = {'options': {'fullCount': true}, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == \'' + this.$route.params.code + '\' RETURN p'}
           // console.log(this.productData)
           // TODO: CHECK IF this.productData complies with fields before saving (this is necessary when isNew is True)
-          let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { basic: @basic, seo: @seo } IN k2p_product', 'bindVars': { 'basic': this.productData.basic, 'seo': this.productData.seo } }
-          // console.log(query)
-          let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
+          // console.log(routeParams)
+          let query = {
+            'options': {
+              'fullCount': true
+            },
+            'count': true,
+            'query': 'INSERT { basic: @basic, seo: @seo } INTO k2p_category',
+            'bindVars': {
+              'basic': this.productData.basic,
+              'seo': this.productData.seo
+            }
+          }
+          if (!this.isNew) {
+            query = {
+              'options': {
+                'fullCount': true
+              },
+              'count': true,
+              'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { basic: @basic, seo: @seo } IN k2p_category',
+              'bindVars': {
+                'basic': this.productData.basic,
+                'seo': this.productData.seo
+              }
+            }
+            // console.log(query)
+          }
+          let data = await this.$axios.$post(this.$store.state.productUrl + '/_api/cursor', query)
           console.log(data)
-          // this.testData = data['result']
           this.isLoading = false
+          this.$toast.open('Saved')
+          this.$router.push('/admin/catalog/category')
         } catch (e) {
           this.$toast.open('Could not save data, please try again')
         }
