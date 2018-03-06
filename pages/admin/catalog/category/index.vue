@@ -1,7 +1,8 @@
 <template>
   <div>
-    <h1>Categorien</h1>
-    <datagrid :data="gridData" :columns="gridColumns" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type"></datagrid>
+    <br />
+    <h1 class="title">Categories</h1>
+    <datagrid :data="gridData" :columns="gridColumns" :types="gridTypes" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type"></datagrid>
 </div>
 </template>
 
@@ -23,6 +24,7 @@
     data () {
       return {
         gridColumns: ['code', 'name'],
+        gridTypes: { 'code': 'string', 'name': 'string' },
         gridData: [],
         queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
         postUrl: this.$store.state.productUrl,

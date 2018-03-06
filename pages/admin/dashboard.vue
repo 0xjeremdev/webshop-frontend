@@ -1,9 +1,7 @@
 <template>
   <section id="dashboard" class="section">
-    <div class="container">
-      <h1 class="title">Dashboard</h1>
-      <br />
-    </div>
+    <h1 class="title">Dashboard</h1>
+    <br />
 
     <div class="tile is-ancestor">
       <div class="tile is-parent ">
@@ -25,7 +23,7 @@
       </div>
       <div class="tile is-parent">
         <article class="tile is-child notification is-light">
-          
+
         </article>
       </div>
     </div>

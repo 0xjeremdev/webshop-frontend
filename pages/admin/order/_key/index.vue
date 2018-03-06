@@ -32,7 +32,26 @@
               :value="[]">
             </b-taginput>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
-            <!-- <froala v-else-if="val.inputType === 'text'" :tag="'textarea'" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)" :config="config">Init text</froala> -->
+            <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
+            <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon></b-checkbox-button>
+            <div v-else-if="val.inputType === 'radio'">
+              <b-radio v-for="ro in val.options"
+                :key="ro"
+                :native-value="ro"
+                :value="getValue(val, fieldKey, tabKey)"
+                @input="setModel($event, fieldKey, tabKey)">
+                {{ ro }}
+              </b-radio>
+            </div>
+            <b-datepicker v-else-if="val.inputType === 'date'"
+                placeholder="Type or select a date..."
+                icon="calendar-today"
+                :date-formatter="(date => formatDate(date, fieldKey))"
+                :date-parser="(date => parseDate(date, fieldKey))"
+                v-model="productData[fieldKey]"
+                :readonly="false">
+            </b-datepicker>
+            <span v-else-if="val.inputType === 'readonly'">{{ productData[fieldKey] }}</span>
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
           <br />
@@ -93,17 +112,30 @@
         fields: {
           'Orders': {
             'order_no': {
-              'inputType': 'input'
+              'inputType': 'input',
+              'label': 'Order No'
             },
-            'items': {
-              'productid': {
-                'inputType': 'texteditor'
-              }
-
+            'order_date': {
+              'inputType': 'date',
+              'label': 'Order Date'
+            },
+            'from_quote': {
+              'inputType': 'checkbox',
+              'label': 'From Quote'
+            },
+            'quote_date': {
+              'inputType': 'date',
+              'label': 'Quote Date'
             },
             icon: 'file-document'
+          },
+          'Items': {
+            'items': {
+              inputType: 'table'
+            }
           }
-        }
+        },
+        selectedDate: ''
       }
     },
     async created () {
@@ -114,12 +146,57 @@
       return params
     },
     methods: {
-      setModel (val, fieldKey, tabKey) {
-        if (tabKey === 'SEO') {
-          this.productData.seo[fieldKey] = val
-        } else {
-          this.productData[fieldKey] = val
+      formatDate (val, fieldKey) {
+        let newDate = new Date()
+        let newHour = newDate.getHours()
+        let newMinutes = newDate.getMinutes()
+        let newSeconds = newDate.getSeconds()
+
+        let year = val.getFullYear()
+        let month = val.getMonth(-1)
+        let day = val.getDate()
+        let hour = val.getHours()
+        let minutes = val.getMinutes()
+        let seconds = val.getSeconds()
+
+        if ((hour === 0) && (minutes === 0) && (seconds === 0)) {
+          hour = newHour
+          minutes = newMinutes
+          seconds = newSeconds
         }
+
+        return day + '-' + month + '-' + year + ' ' + hour + ':' + minutes + ':' + seconds
+      },
+      parseDate (val, fieldKey) {
+        val = new Date(val)
+        let newDate = new Date()
+        let newHour = newDate.getHours()
+        let newMinutes = newDate.getMinutes()
+        let newSeconds = newDate.getSeconds()
+
+        let year = val.getFullYear()
+        let month = val.getMonth(-1)
+        let day = val.getDate()
+        let hour = val.getHours()
+        let minutes = val.getMinutes()
+        let seconds = val.getSeconds()
+
+        if ((hour === 0) && (minutes === 0) && (seconds === 0)) {
+          hour = newHour
+          minutes = newMinutes
+          seconds = newSeconds
+        }
+
+        let myDate = new Date(year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds)
+        this.productData[fieldKey] = myDate
+        return myDate
+      },
+      setModel (val, fieldKey, tabKey, inputType) {
+        console.log(val)
+        if (inputType === 'date') {
+          val = ''
+        }
+        this.productData[fieldKey] = val
       },
       getLabel (val, fieldKey) {
         if (val.label) {
@@ -127,14 +204,21 @@
         }
         return fieldKey
       },
-      getValue (val, fieldKey, tabKey) {
+      getValue (val, fieldKey, tabKey, inputType) {
         if (this.productData instanceof Object) {
-          if (tabKey === 'SEO') {
-            return this.productData['seo'][fieldKey]
+          if (inputType === 'checkbox') {
+            if (this.productData[fieldKey] === 'true') { console.log('true') }
+            return !this.productData[fieldKey]
+          } else if (inputType === 'date') {
+            let d = new Date(this.productData[fieldKey])
+            return d
           }
           return this.productData[fieldKey]
         }
         return ''
+      },
+      setCheckbox (val, fieldKey, tabKey) {
+        this.productData[fieldKey] = !val
       },
       async getData () {
         try {
@@ -151,21 +235,17 @@
             let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
             console.log(data)
             this.productData = data['result'][0]
+            this.productData.order_date = new Date(this.productData.order_date)
+            this.productData.quote_date = new Date(this.productData.quote_date)
             this.isNew = false
             this.isLoading = false
           } else {
             this.isNew = true
             this.productData = {}
-            this.productData.seo = {}
-            this.productData.basic = {}
             if (this.productData instanceof Object) {
               for (var tabKey in this.fields) {
                 for (var fieldKey in this.fields[tabKey]) {
-                  if (tabKey === 'SEO') {
-                    this.productData['seo'][fieldKey] = ''
-                  } else {
-                    this.productData['basic'][fieldKey] = ''
-                  }
+                  this.productData[fieldKey] = ''
                 }
               }
             }

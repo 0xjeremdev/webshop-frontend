@@ -1,7 +1,7 @@
 <template>
   <div>
     <br />
-    <h1 class="title">Orders</h1>
+    <h1 class="title">Quotes</h1>
     <DatagridForOrder :data="gridData"
       :columns="gridColumns"
       :types="gridTypes"
@@ -32,16 +32,17 @@
     components: { DatagridForOrder },
     data () {
       return {
-        gridColumns: ['order_no', 'from_quote', 'order_date', 'fullName'],
-        gridTypes: { 'order_no': 'string', 'from_quote': 'boolean', 'order_date': 'date', 'fullName': 'combined' },
+        gridColumns: ['order_no', 'is_quote', 'quote_date', 'fullName'],
+        gridTypes: { 'order_no': 'string', 'is_quote': 'boolean', 'quote_date': 'date', 'fullName': 'combined' },
+        // gridCombined: { 'fullName': 'CONCAT()' }
         gridData: [],
         queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
         postUrl: this.$store.state.shopUrl,
         tableName: 'Order',
         type: 'order',
         customSortField: 'order_no',
-        customFilter: 'p.is_quote == false AND p.order_date != \'\'',
-        customReturn: ' RETURN { \'order_no\': p.order_no, \'from_quote\': p.from_quote, \'order_date\': p.order_date, \'fullName\': CONCAT(p.customer.firstname, " ", p.customer.lastname) }'
+        customFilter: 'p.is_quote == true AND p.quote_date != \'\' AND p.order_date == \'\'',
+        customReturn: ' RETURN { \'order_no\': p.order_no, \'is_quote\': p.is_quote, \'quote_date\': p.quote_date, \'fullName\': CONCAT(p.customer.firstname, " ", p.customer.lastname) }'
       }
     }
   }

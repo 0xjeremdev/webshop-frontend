@@ -1,7 +1,8 @@
 <template>
   <div>
-    <h1>Customers</h1>
-    <datagrid :data="gridData" :columns="gridColumns" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type" :customSortField="customSortField"></datagrid>
+    <br />
+    <h1 class="title">Customers</h1>
+    <datagrid :data="gridData" :columns="gridColumns" :types="gridTypes" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type" :customSortField="customSortField"></datagrid>
 </div>
 </template>
 
@@ -23,6 +24,7 @@
     data () {
       return {
         gridColumns: ['lastname', 'firstname', 'company', 'phone', 'mobile', 'email'],
+        gridTypes: { 'lastname': 'string', 'firstname': 'string', 'company': 'string', 'phone': 'string', 'mobile': 'string', 'email': 'string' },
         gridData: [],
         queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
         postUrl: this.$store.state.shopUrl,

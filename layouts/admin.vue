@@ -33,7 +33,7 @@
           <nuxt-link class="navbar-item" to="/admin/order">
             Orders
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/admin/quotes">
+          <nuxt-link class="navbar-item" to="/admin/quote">
             Quotes
           </nuxt-link>
           <nuxt-link class="navbar-item" to="/admin/customer">

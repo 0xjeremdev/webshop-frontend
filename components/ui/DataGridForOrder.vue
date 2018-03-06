@@ -54,6 +54,7 @@
         <b-table-column v-for="key in columns"  v-bind:data="key"
            v-bind:key="key.text" :field="key" :label="key|capitalize" sortable width="150">
             <span v-if="((data.row.hasOwnProperty(key)) && (types[key] === 'string'))">{{ data.row[key] }}</span>
+            <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'combined'))">{{ data.row[key] }}</span>            
             <span v-else-if="data.row.hasOwnProperty('basic')">{{ data.row.basic[key] }}</span>
             <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'date'))" class="tag is-success">{{ new Date(data.row[key]).toLocaleDateString('nl-NL', options ) }}</span>
             <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'boolean'))"><b-icon :icon="getIcon(data.row[key])"></b-icon></span>
@@ -105,7 +106,9 @@
       tableName: String,
       type: String,
       customSortField: String,
-      customFilter: String
+      customFilter: String,
+      customLookup: String,
+      customReturn: String
     },
     data: function () {
       return {
@@ -211,8 +214,9 @@
             for (let search in this.searches) {
               console.log(search)
               if (searchFilter !== '') { searchFilter += ' && ' }
-              if (this.types[search] !== 'date') { searchFilter += 'LOWER(' + dbIdentifier + search + ')' + ' LIKE \'' + this.searches[search].toLowerCase() + '%\'' }
+              if (this.types[search] === 'string') { searchFilter += 'LOWER(' + dbIdentifier + search + ')' + ' LIKE \'' + this.searches[search].toLowerCase() + '%\'' }
               if (this.types[search] === 'date') { searchFilter += 'DATE_FORMAT(' + dbIdentifier + search + ',"%d-%m%-%yyyy") LIKE \'' + this.searches[search] + '%\'' }
+              if (this.types[search] === 'combined') { searchFilter += 'LOWER(CONCAT(p.customer.firstname,\' \',p.customer.lastname)) LIKE \'' + this.searches[search].toLowerCase() + '%\'' }
             }
             if (this.customFilter !== undefined) {
               searchFilter += ' '
@@ -224,8 +228,11 @@
             if (searchFilter !== '') { searchFilter = ' FILTER ' + searchFilter }
 
             let executedQuery = this.queryOptions
-
-            executedQuery['query'] = 'FOR p IN ' + this.tableName + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.perPage * (this.currentPage - 1)) + ', ' + this.perPage + ' RETURN p'
+            let returnStatement = ' RETURN p'
+            if (this.customReturn !== undefined) { returnStatement = this.customReturn }
+            let customLookup = this.customLookup
+            if (this.customLookup === undefined) { customLookup = '' }
+            executedQuery['query'] = 'FOR p IN ' + this.tableName + customLookup + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.perPage * (this.currentPage - 1)) + ', ' + this.perPage + returnStatement
             console.log(executedQuery)
             let data = await this.$axios.$post(this.postUrl + '/_api/cursor', executedQuery)
             console.log(data)
