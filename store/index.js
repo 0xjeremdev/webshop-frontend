@@ -12,11 +12,28 @@ const store = () => new Vuex.Store({
   state: {
     authUser: null,
     productUrl: 'http://localhost:8529/_db/key2publish/',
-    shopUrl: 'http://localhost:8529/_db/k2p_webshop/'
+    shopUrl: 'http://localhost:8529/_db/k2p_webshop/',
+    cartContents: []
   },
   mutations: {
     SET_USER: function (state, user) {
       state.authUser = user
+    },
+    SET_CART: function (state, cart) {
+      // used to restore the cart from cookie
+      state.cartContents = cart
+    }
+    ADD_TO_CART: function (state, cart) {
+      // simpler function to add to the cart
+      let mycart = state.cartContents
+      mycart.push(cart)
+      state.cartContents = mycart
+    }
+    REMOVE_FROM_CART: function (state, index) {
+      // simpler function to remove from the cart
+      let mycart = state.cartContents
+      mycart.splice(index)
+      state.cartContents = mycart
     }
   },
   actions: {

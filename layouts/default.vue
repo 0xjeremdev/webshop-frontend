@@ -3,7 +3,7 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <nuxt-link class="navbar-item" to="/">
-          <img src="http://www.itk.nl/images/I/itklogo-03.fw.png" alt="ITK Diagnostics B.V." width="auto" height="28px">
+          <img src="http://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="ITK Diagnostics B.V." width="auto" height="28px">
         </nuxt-link>
         <button v-on:click="collapse" class="button navbar-burger">
           <span></span>
@@ -14,36 +14,39 @@
 
       <div id="navBarAdmin" class="navbar-menu" :class="{ 'is-active': showNav }">
         <div class="navbar-start">
-        <nuxt-link class="navbar-item" to="/admin/dashboard">
-          Home
-        </nuxt-link>
-        <div class="navbar-item has-dropdown is-hoverable">
+          <nuxt-link class="navbar-item" to="/admin/dashboard">
+            Home
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/product">
+            Products
+          </nuxt-link>
+          <div class="navbar-item has-dropdown is-hoverable">
           <!--<nuxt-link class="navbar-link" to="/admin/catalog">-->
-            <p class="navbar-link">Catalog</p>
+            <p class="navbar-link">Products</p>
           <!--</nuxt-link>-->
-          <div class="navbar-dropdown is-boxed">
-            <nuxt-link class="navbar-item" to="/admin/catalog/product">
-              Products
-            </nuxt-link>
-            <nuxt-link class="navbar-item" to="/admin/catalog/category">
-              Categories
-            </nuxt-link>
-            <nuxt-link class="navbar-item" to="https://bulma.io/documentation/columns/basics/">
-              Columns
-            </nuxt-link>
-            <nuxt-link class="navbar-item" to="https://bulma.io/documentation/layout/container/">
-              Layout
-            </nuxt-link>
-            <nuxt-link class="navbar-item" to="https://bulma.io/documentation/form/general/">
-              Form
-            </nuxt-link>
-            <hr class="navbar-divider">
-            <nuxt-link class="navbar-item" to="https://bulma.io/documentation/elements/box/">
-              Elements
-            </nuxt-link>
-            <nuxt-link class="navbar-item is-active" to="https://bulma.io/documentation/components/breadcrumb/">
-              Components
-            </nuxt-link>
+            <div class="navbar-dropdown is-boxed">
+              <nuxt-link class="navbar-item" to="/admin/catalog/product">
+                Products
+              </nuxt-link>
+              <nuxt-link class="navbar-item" to="/admin/catalog/category">
+                Categories
+              </nuxt-link>
+              <nuxt-link class="navbar-item" to="https://bulma.io/documentation/columns/basics/">
+                Columns
+              </nuxt-link>
+              <nuxt-link class="navbar-item" to="https://bulma.io/documentation/layout/container/">
+                Layout
+              </nuxt-link>
+              <nuxt-link class="navbar-item" to="https://bulma.io/documentation/form/general/">
+                Form
+              </nuxt-link>
+              <hr class="navbar-divider">
+              <nuxt-link class="navbar-item" to="https://bulma.io/documentation/elements/box/">
+                Elements
+              </nuxt-link>
+              <nuxt-link class="navbar-item is-active" to="https://bulma.io/documentation/components/breadcrumb/">
+                Components
+              </nuxt-link>
             </div>
           </div>
         </div>
@@ -52,6 +55,7 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="field is-grouped">
+            <cartWidgets></cartWidgets>
             <b-dropdown hoverable>
               <button class="button is-info" slot="trigger">
                 <b-icon icon="account-circle"></b-icon>
@@ -78,7 +82,9 @@
 </template>
 
 <script>
+  import cartWidgets from '~/components/widgets/cart.vue'
   export default {
+    components: { cartWidgets },
     data () {
       return {
         showNav: false
