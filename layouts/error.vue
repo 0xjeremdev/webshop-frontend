@@ -23,6 +23,6 @@
       }
     },
     props: ['error'],
-    layout: 'temperror'
+    layout: 'default'
   }
 </script>

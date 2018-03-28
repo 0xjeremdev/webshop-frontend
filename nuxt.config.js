@@ -34,7 +34,7 @@ module.exports = {
   }, */
   // include buefy js on startup
   plugins: [
-    '~plugins/buefy',
+    { src: '~plugins/buefy', ssr: false },
     { src: '~plugins/persistedstate.js', ssr: false }
     //'~plugins/bootstrap.js'
     //{ src: '~/plugins/vue-notifications.js', ssr: false }

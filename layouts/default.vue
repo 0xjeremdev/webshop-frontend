@@ -20,35 +20,21 @@
           <nuxt-link class="navbar-item" to="/product">
             Products
           </nuxt-link>
-          <div class="navbar-item has-dropdown is-hoverable">
-          <!--<nuxt-link class="navbar-link" to="/admin/catalog">-->
-            <p class="navbar-link">Products</p>
-          <!--</nuxt-link>-->
-            <div class="navbar-dropdown is-boxed">
-              <nuxt-link class="navbar-item" to="/admin/catalog/product">
-                Products
-              </nuxt-link>
-              <nuxt-link class="navbar-item" to="/admin/catalog/category">
-                Categories
-              </nuxt-link>
-              <nuxt-link class="navbar-item" to="https://bulma.io/documentation/columns/basics/">
-                Columns
-              </nuxt-link>
-              <nuxt-link class="navbar-item" to="https://bulma.io/documentation/layout/container/">
-                Layout
-              </nuxt-link>
-              <nuxt-link class="navbar-item" to="https://bulma.io/documentation/form/general/">
-                Form
-              </nuxt-link>
-              <hr class="navbar-divider">
-              <nuxt-link class="navbar-item" to="https://bulma.io/documentation/elements/box/">
-                Elements
-              </nuxt-link>
-              <nuxt-link class="navbar-item is-active" to="https://bulma.io/documentation/components/breadcrumb/">
-                Components
-              </nuxt-link>
-            </div>
-          </div>
+          <nuxt-link class="navbar-item" to="/product">
+            Protocols
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/product">
+            About Us
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/product">
+            Downloads
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/product">
+            Distributors
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/product">
+            Contact Us
+          </nuxt-link>
         </div>
       </div>
 
@@ -69,6 +55,9 @@
       </div>
     </nav>
     <main role="main">
+      <hr class="navbar-divider my_div">
+      <breadCrumb></breadCrumb>
+      <hr class="navbar-divider my_div">
       <nuxt/>
     </main>
     <footer class="footer">
@@ -83,8 +72,13 @@
 
 <script>
   import cartWidgets from '~/components/widgets/cart.vue'
+  import breadCrumb from '~/components/widgets/breadcrumb.vue'
+  import search from '~/components/widgets/search.vue'
   export default {
-    components: { cartWidgets },
+    created () {
+      this.$store.dispatch('connectDB')
+    },
+    components: { cartWidgets, breadCrumb, search },
     data () {
       return {
         showNav: false
@@ -107,5 +101,7 @@
 </script>
 
 <style>
-
+  .my_div{
+      margin-bottom: 5px;
+  }
 </style>
