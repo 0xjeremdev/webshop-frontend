@@ -9,7 +9,8 @@
         field="name"
         :loading="isFetching"
         @input="getProducts()"
-        @select="option => selectProduct(option)">
+        @select="option => selectProduct(option)"
+        v-on:keyup.13.native="doSubmit()">
         <template slot="empty">No results found</template>
       </b-autocomplete>
     </b-field>
@@ -29,28 +30,53 @@
         selected: ''
       }
     },
+    created () {
+      if (!(this.$store.state.product.searchVal instanceof Object)) {
+        this.$store.commit('product/SET_SEARCHVAL', Cookies.getJSON('key2publish').product.searchVal)
+      }
+    },
+    mounted () {
+      let route = this.$route.path
+      this.productName = ''
+
+      if (route === '/product') {
+        let searchVal = this.$store.state.product.searchVal
+        this.productName = searchVal.name
+        if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
+          this.productName = searchVal.name + ' a.k.a. ' + searchVal.description
+        }
+      } else {
+        this.$store.commit('product/SET_SEARCHVAL', '')
+      }
+    },
     methods: {
+      doSubmit () {
+        this.$router.replace({ path: '/product' })
+      },
       async getProducts () {
         try {
           this.isFetching = true
           if (!(this.$store.state.authUser instanceof Object)) {
-            this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
+            this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
           }
-          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-          let query = {
-            'options': {
-              'fullCount': true
-            },
-            'count': true,
-            'query': 'FOR p in k2p_product FILTER LOWER(p.basic.name) LIKE @search OR LOWER(p.basic.description) LIKE @search RETURN { _key: p._key, _id: p._id, name: p.basic.name, description: p.basic.description }',
-            'bindVars': {
-              'search': this.productName.toLowerCase() + '%'
-            }
+
+          let page = 1
+          let option = { name: this.productName, description: this.productName }
+          this.$store.commit('product/SET_SEARCHVAL', option)
+          let params = { search: '' }
+          if (this.$route.path === '/product') {
+            params = this.$route.query
           }
-          // console.log(query)
-          let mydata = await this.$axios.$post(this.$store.state.productUrl + '/_api/cursor', query)
+          await this.$store.dispatch('product/getProducts', {
+            page: page,
+            params: params
+          },
+          {
+            root: true
+          })
+
           // console.log(mydata)
-          this.productData = mydata.result
+          this.productData = this.$store.state.product.data
           this.isFetching = false
         } catch (e) {
           console.log(e)
@@ -59,7 +85,8 @@
         }
       },
       selectProduct (option) {
-        console.log(option)
+        this.$store.commit('product/SET_SEARCHVAL', option)
+        this.$router.replace({ path: '/product' })
       }
     }
   }

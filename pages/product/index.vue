@@ -23,7 +23,7 @@
           <FilterSearch></FilterSearch>
         </div>
         <div class="column">
-          <section class="section" v-for="(val, key) in productData">
+          <section v-if="getProductData.length > 0" class="section" v-for="(val, key) in getProductData">
             <div class="columns my-margin">
               <div class="column">
                 <h2 class="subtitle">{{ val.name }} - {{ val.artno }}</h2>
@@ -92,13 +92,20 @@
               </div>
             </div>
           </section>
+          <section v-if="getProductData.length <= 0" class="section">
+            <div class="columns my-margin">
+              <div class="column">
+                <p>No results found!</p>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
       <div class="columns">
         <div class="column is-one-quarter">
 
         </div>
-        <div class="column">
+        <div class="column" v-if="getProductData.length > 0">
           <hr>
           <b-pagination
               :total="total"
@@ -116,7 +123,6 @@
 <script>
   import search from '~/components/widgets/search.vue'
   import FilterSearch from '~/components/widgets/filter.vue'
-  import Cookies from 'js-cookie'
 
   export default {
     components: { search, FilterSearch },
@@ -142,33 +148,26 @@
       // can be validated
       return query
     },
+    computed: {
+      getProductData () {
+        return this.$store.state.product.data
+      }
+    },
     methods: {
       async getProducts () {
         try {
           this.isFetching = true
-          if (!(this.$store.state.authUser instanceof Object)) {
-            this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
-          }
-          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-          let params = this.$route.query
-          console.log(params.search)
-          let search = (params.search !== '' && params.search !== undefined) ? params.search : ''
           let page = this.current
-          let query = {
-            'options': {
-              'fullCount': true
-            },
-            'count': true,
-            'query': 'FOR p in k2p_product FILTER LOWER(p.basic.name) LIKE @search OR LOWER(p.basic.description) LIKE @search LIMIT ' + ((page - 1) * 10) + ', 10 RETURN { _key: p._key, _id: p._id, artno: p.basic.vat, name: p.basic.name, description: p.basic.description, clone: p.basic.clone, size: p.basic.size, price: p.basic[\'Price LabNed\'], reactivity: p.basic.Reactivity, host: p.basic.Host, applications: p.basic.Applications, conjugate: p.basic.Conjugate, images: { image1: p.basic.picture, image2: p.basic.price } }',
-            'bindVars': {
-              'search': search.toLowerCase() + '%'
-            }
-          }
-          let mydata = await this.$axios.$post(this.$store.state.productUrl + '/_api/cursor', query)
-          console.log(query)
-          console.log(mydata)
-          this.productData = mydata.result
-          this.total = mydata.extra.stats.fullCount
+          let params = this.$route.query
+          await this.$store.dispatch('product/getProducts', {
+            page: page,
+            params: params
+          },
+          {
+            root: true
+          })
+          this.productData = this.$store.state.product.data
+          this.total = this.$store.state.product.total
           this.isFetching = false
         } catch (e) {
           console.log(e)
