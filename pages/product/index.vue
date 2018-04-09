@@ -1,5 +1,8 @@
 <template>
   <section class="section">
+    <hr class="navbar-divider my_div">
+    <breadCrumb></breadCrumb>
+    <hr class="navbar-divider my_div">
     <div class="container">
       <h1 class="title">Products</h1>
       <search></search>
@@ -87,7 +90,7 @@
               <div class="column is-one-third">
                 <p class="title"> € {{ Number(val.price).toFixed(2) }}</p>
                 <p class="control">
-                  <button class="button is-orange" @click="addToCart()"><b-icon icon="cart-outline"></b-icon><span>Buy</span></button>
+                  <button class="button is-orange" @click="addToCart(val.artno, val.price)"><b-icon icon="cart-outline"></b-icon><span>Buy</span></button>
                 </p>
               </div>
             </div>
@@ -108,7 +111,7 @@
         <div class="column" v-if="getProductData.length > 0">
           <hr>
           <b-pagination
-              :total="total"
+              :total="getTotalData"
               :current.sync="current"
               rounded
               :per-page="perPage"
@@ -117,22 +120,22 @@
         </div>
       </div>
     </div>
+    <b-loading :is-full-page="true" :active.sync="isFetching" :canCancel="false"></b-loading>
   </section>
 </template>
 
 <script>
   import search from '~/components/widgets/search.vue'
   import FilterSearch from '~/components/widgets/filter.vue'
+  import breadCrumb from '~/components/widgets/breadcrumb.vue'
 
   export default {
-    components: { search, FilterSearch },
+    components: { search, FilterSearch, breadCrumb },
     data () {
       return {
         isFetching: false,
-        total: 0,
         current: 1,
         perPage: 10,
-        productData: [],
         productName: ''
       }
     },
@@ -151,6 +154,9 @@
     computed: {
       getProductData () {
         return this.$store.state.product.data
+      },
+      getTotalData () {
+        return this.$store.state.product.total
       }
     },
     methods: {
@@ -166,8 +172,6 @@
           {
             root: true
           })
-          this.productData = this.$store.state.product.data
-          this.total = this.$store.state.product.total
           this.isFetching = false
         } catch (e) {
           console.log(e)
@@ -188,6 +192,14 @@
         this.$router.replace(newRoute)
         // this.$route.query.page = number
         this.getProducts()
+      },
+      addToCart (id, price) {
+        let contents = {'amount': 1, 'id': id, 'price': price}
+        this.$store.commit('ADD_TO_CART', contents)
+        this.$toast.open({
+          message: 'Product added to <a href="/cart">cart</a>',
+          type: 'is-success'
+        })
       }
     }
   }

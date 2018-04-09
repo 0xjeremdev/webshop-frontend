@@ -4,8 +4,8 @@
       <b-icon icon="cart-outline"></b-icon>
       <span>Cart</span>
     </button>
-    <b-dropdown-item><h1 class="subtitle">Cart</h1></b-dropdown-item>
-    <b-dropdown-item v-if="cartContents">
+    <b-dropdown-item v-if="getCartContents[0]"><h1 class="subtitle">Cart</h1></b-dropdown-item>
+    <b-dropdown-item v-if="getCartContents[0]">
       <table class="table">
         <thead>
           <tr>
@@ -16,11 +16,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="val in cartContents">
+          <tr v-for="(val, key) in getCartContents">
             <td>{{ val.id }}</td>
             <td class="has-text-right">{{ val.amount }}</td>
-            <td class="has-text-right">€ {{ parseFloat(val.total).toFixed(2) }}</td>
-            <td></td>
+            <td class="has-text-right">€ {{ (parseFloat(val.price) * Number(val.amount)).toFixed(2) }}</td>
+            <td><button class="button is-danger" @click="doDeleteCart(key)"><b-icon icon="delete-forever"></b-icon></button></td>
           </tr>
         </tbody>
         <tfoot>
@@ -35,7 +35,7 @@
     <b-dropdown-item v-else>
       Cart is empty
     </b-dropdown-item>
-    <b-dropdown-item v-on:click="goToCart()"><button class="button is-danger">Go To Cart</button></b-dropdown-item>
+    <b-dropdown-item v-if="getCartContents[0]" v-on:click="goToCart()"><button class="button is-danger">Go To Cart</button></b-dropdown-item>
   </b-dropdown>
 </template>
 
@@ -43,16 +43,25 @@
   export default {
     data () {
       return {
-        cartContents: [ { amount: 5, id: 'CD3', total: 55.00 }, { amount: 2, id: 'RD3', total: 20.00 }, { amount: 104, id: 'BD3', total: 104.24 } ]
+        cartContents: [ { amount: 5, id: 'CD3', price: 55.00 }, { amount: 2, id: 'RD3', price: 20.00 }, { amount: 104, id: 'BD3', price: 104.24 } ]
       }
     },
     computed: {
+      getCartContents: function () {
+        return this.$store.state.cartContents
+      },
       calcTotal: function () {
-        let total = 5
-        for (let key in this.cartContents) {
-          total += this.cartContents[key].total
+        let total = 0
+        for (let key in this.getCartContents) {
+          // console.log(key)
+          total += parseFloat(this.getCartContents[key].price) * Number(this.getCartContents[key].amount)
         }
         return total
+      }
+    },
+    methods: {
+      doDeleteCart: function (index) {
+        this.$store.commit('REMOVE_FROM_CART', index)
       }
     }
   }

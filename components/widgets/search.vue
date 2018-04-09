@@ -10,7 +10,8 @@
         :loading="isFetching"
         @input="getProducts()"
         @select="option => selectProduct(option)"
-        v-on:keyup.13.native="doSubmit()">
+        v-on:keyup.13.native="doSubmit()"
+        >
         <template slot="empty">No results found</template>
       </b-autocomplete>
     </b-field>
@@ -30,20 +31,19 @@
         selected: ''
       }
     },
-    created () {
-      if (!(this.$store.state.product.searchVal instanceof Object)) {
-        this.$store.commit('product/SET_SEARCHVAL', Cookies.getJSON('key2publish').product.searchVal)
-      }
-    },
     mounted () {
       let route = this.$route.path
       this.productName = ''
 
       if (route === '/product') {
+        if (!(this.$store.state.product.searchVal instanceof Object)) {
+          this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
+        }
+
         let searchVal = this.$store.state.product.searchVal
         this.productName = searchVal.name
         if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
-          this.productName = searchVal.name + ' a.k.a. ' + searchVal.description
+          this.productName = searchVal.name
         }
       } else {
         this.$store.commit('product/SET_SEARCHVAL', '')
@@ -85,8 +85,9 @@
         }
       },
       selectProduct (option) {
+        console.log(option)
         this.$store.commit('product/SET_SEARCHVAL', option)
-        this.$router.replace({ path: '/product' })
+        this.$router.push('/product')
       }
     }
   }

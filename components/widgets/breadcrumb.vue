@@ -3,15 +3,43 @@
     <div class="container">
       <nav class="breadcrumb" aria-label="breadcrumbs">
         <ul>
-          <li><a href="#">Bulma</a></li>
-          <li><a href="#">Documentation</a></li>
-          <li><a href="#">Components</a></li>
-          <li class="is-active"><a href="#" aria-current="page">Breadcrumb</a></li>
+          <li v-for="(val, key) in breadcrumb" :class="(key+1 === breadcrumb.length) ? 'is-active' : ''" :aria-current="(key+1 === breadcrumb.length) ? 'page' : ''">
+            <nuxt-link :to="breadcrumbLinks[key]" :key="key">
+              {{ val.charAt(0).toUpperCase() }}{{ val.slice(1) }}
+            </nuxt-link>
+          </li>
         </ul>
       </nav>
     </div>
   </section>
 </template>
+
+<script>
+  export default {
+    data () {
+      return {
+        breadcrumb: ['Home'],
+        breadcrumbLinks: ['/']
+      }
+    },
+    mounted () {
+      this.getBreadCrumb()
+    },
+    methods: {
+      getBreadCrumb () {
+        let myPath = this.$route.path.split('/') // '/product/test/4/aog/55'.split('/')
+        let before = []
+        myPath.forEach(x => {
+          if (x !== '') this.breadcrumb.push(x)
+          if (x !== '') {
+            this.breadcrumbLinks.push(before.join('/') + '/' + x)
+            before.push(x)
+          }
+        })
+      }
+    }
+  }
+</script>
 
 <style>
   .my_section {

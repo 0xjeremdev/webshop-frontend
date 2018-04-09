@@ -10,9 +10,9 @@ require('whatwg-fetch')
 
 export const state = () => ({
   authUser: null,
-  dbUrl: 'http://localhost:8531',
-  productUrl: 'http://localhost:8531/_db/key2publish/',
-  shopUrl: 'http://localhost:8531/_db/k2p_webshop/',
+  dbUrl: 'http://localhost:8529',
+  productUrl: 'http://localhost:8529/_db/key2publish/',
+  shopUrl: 'http://localhost:8529/_db/k2p_webshop/',
   cartContents: []
 })
 
@@ -27,13 +27,24 @@ export const mutations = {
   ADD_TO_CART: function (state, cart) {
     // simpler function to add to the cart
     let mycart = state.cartContents
-    mycart.push(cart)
-    state.cartContents = mycart
+    let found = false
+    for (let key in state.cartContents) {
+      if (state.cartContents[key]['id'] === cart['id']) {
+        cart.amount++
+        state.cartContents[key] = cart
+        found = true
+      }
+    }
+    if (!found) {
+      mycart.push(cart)
+      state.cartContents = mycart
+    }
   },
   REMOVE_FROM_CART: function (state, index) {
     // simpler function to remove from the cart
+    console.log('index:' + index)
     let mycart = state.cartContents
-    mycart.splice(index)
+    mycart.splice(index, 1)
     state.cartContents = mycart
   }
 }
@@ -61,7 +72,7 @@ export const actions = {
   async login ({ commit, state }, { username, password }) {
     try {
       console.log(state)
-      const { data } = await axios.post('http://localhost:8531/_open/auth', { username, password })
+      const { data } = await axios.post('http://localhost:8529/_open/auth', { username, password })
       commit('SET_USER', data)
     } catch (error) {
       if (error.response && error.response.status === 401) {

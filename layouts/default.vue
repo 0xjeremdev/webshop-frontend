@@ -55,9 +55,6 @@
       </div>
     </nav>
     <main role="main">
-      <hr class="navbar-divider my_div">
-      <breadCrumb></breadCrumb>
-      <hr class="navbar-divider my_div">
       <nuxt/>
     </main>
     <footer class="footer">
@@ -99,9 +96,3 @@
     }
   }
 </script>
-
-<style>
-  .my_div{
-      margin-bottom: 5px;
-  }
-</style>
