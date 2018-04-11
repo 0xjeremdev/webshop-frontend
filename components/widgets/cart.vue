@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown hoverable>
+  <b-dropdown hoverable position="is-bottom-left">
     <button class="button is-danger" slot="trigger">
       <b-icon icon="cart-outline"></b-icon>
       <span>Cart</span>

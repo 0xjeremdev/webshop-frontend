@@ -14,25 +14,25 @@
 
       <div id="navBarAdmin" class="navbar-menu" :class="{ 'is-active': showNav }">
         <div class="navbar-start">
-          <nuxt-link class="navbar-item" to="/admin/dashboard">
+          <nuxt-link class="navbar-item" to="/">
             Home
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/product">
+          <nuxt-link class="navbar-item" to="/search">
             Products
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/product">
+          <nuxt-link class="navbar-item" to="/protocols">
             Protocols
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/product">
+          <nuxt-link class="navbar-item" to="/aboutus">
             About Us
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/product">
+          <nuxt-link class="navbar-item" to="/downloads">
             Downloads
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/product">
+          <nuxt-link class="navbar-item" to="/distributors">
             Distributors
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/product">
+          <nuxt-link class="navbar-item" to="/contact">
             Contact Us
           </nuxt-link>
         </div>
@@ -42,7 +42,7 @@
         <div class="navbar-item">
           <div class="field is-grouped">
             <cartWidgets></cartWidgets>
-            <b-dropdown hoverable>
+            <b-dropdown hoverable position="is-bottom-left">
               <button class="button is-info" slot="trigger">
                 <b-icon icon="account-circle"></b-icon>
                 <span>Account</span>

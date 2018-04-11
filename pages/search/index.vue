@@ -29,7 +29,7 @@
           <section v-if="getProductData.length > 0" class="section" v-for="(val, key) in getProductData">
             <div class="columns my-margin">
               <div class="column">
-                <h2 class="subtitle">{{ val.name }} - {{ val.artno }}</h2>
+                <h2 class="subtitle"><nuxt-link :to="'/' + slugify(val.name + '-' + val.artno)">{{ val.name }} - {{ val.artno }}</nuxt-link></h2>
                 <div class="art-line">
                   <div class="art-label">
                     Description
@@ -90,7 +90,7 @@
               <div class="column is-one-third">
                 <p class="title"> € {{ Number(val.price).toFixed(2) }}</p>
                 <p class="control">
-                  <button class="button is-orange" @click="addToCart(val.artno, val.price)"><b-icon icon="cart-outline"></b-icon><span>Buy</span></button>
+                  <button class="button is-orange" @click="addToCart(val.artno, val.price)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
                 </p>
               </div>
             </div>
@@ -160,6 +160,14 @@
       }
     },
     methods: {
+      slugify (text) {
+        return text.toString().toLowerCase()
+          .replace(/\s+/g, '-') // Replace spaces with -
+          .replace(/[^\w-]+/g, '') // Remove all non-word chars
+          .replace(/--+/g, '-') // Replace multiple - with single -
+          .replace(/^-+/, '') // Trim - from start of text
+          .replace(/-+$/, '') // Trim - from end of text
+      },
       async getProducts () {
         try {
           this.isFetching = true
