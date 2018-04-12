@@ -13,8 +13,12 @@ export const state = () => ({
   dbUrl: 'http://localhost:8529',
   productUrl: 'http://localhost:8529/_db/key2publish/',
   shopUrl: 'http://localhost:8529/_db/k2p_webshop/',
-  cartContents: []
+  cartContents: ''
 })
+
+export const getters = {
+  getCartContents: state => state.cartContents
+}
 
 export const mutations = {
   SET_USER: function (state, user) {
@@ -22,6 +26,7 @@ export const mutations = {
   },
   SET_CART: function (state, cart) {
     // used to restore the cart from cookie
+    console.log(cart)
     state.cartContents = cart
   },
   ADD_TO_CART: function (state, cart) {
@@ -39,6 +44,8 @@ export const mutations = {
       mycart.push(cart)
       state.cartContents = mycart
     }
+
+    console.log(cart)
   },
   REMOVE_FROM_CART: function (state, index) {
     // simpler function to remove from the cart
@@ -53,7 +60,7 @@ export const actions = {
   nuxtServerInit ({ commit }, { req }) {
     if (req.session && req.session.authUser) {
       // console.log(req.session)
-      commit('SET_USER', req.session.authUser)
+      // commit('SET_USER', req.session.authUser)
     }
   },
   async connectDB ({ commit, state }) {

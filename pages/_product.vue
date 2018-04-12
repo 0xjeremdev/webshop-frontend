@@ -1,7 +1,10 @@
 <template>
   <section class="section">
-    <div class="container">
-      <div class="columns" v-if="product[0]">
+    <hr class="navbar-divider my_div">
+    <breadCrumb></breadCrumb>
+    <hr class="navbar-divider my_div">
+    <div class="container" v-if="product[0]">
+      <div class="columns">
         <div class="column is-one-fifth">
           <p class="title"> € {{ Number(product[0].basic['Price LabNed']).toFixed(2) }}</p>
           <p class="control">
@@ -10,7 +13,7 @@
         </div>
         <div class="column">
           <h2 class="subtitle">{{ product[0].basic.name }} - {{ product[0].basic.vat }}</h2>
-          <b-collapse class="card" v-for="(value, tabKey) in fields" :open="(tabKey === 'Product Information')">
+          <b-collapse class="card" v-for="(value, tabKey) in fields" :key="tabKey" :open="(tabKey === 'Product Information')">
             <div slot="trigger" slot-scope="props" class="card-header">
                 <p class="card-header-title">
                     {{ tabKey }}
@@ -25,7 +28,7 @@
                 <div class="content">
                   <table class="table">
                     <tbody>
-                      <tr v-if="(product[0].basic[fieldKey] !== '') && (fieldKey !== 'icon')" v-for="(val, fieldKey) in value">
+                      <tr v-if="(product[0].basic[fieldKey] !== '') && (fieldKey !== 'icon')" v-for="(val, fieldKey) in value" :key="fieldKey">
                         <td><p>{{ (typeof val.label !== 'undefined') ? val.label : fieldKey }}</p></td>
                         <td><p>{{ product[0].basic[fieldKey] }}</p></td>
                       </tr>
@@ -42,16 +45,22 @@
         </div>
       </div>
     </div>
+    <div class="container" v-else>
+      Product not found
+    </div>
   </section>
 </template>
 
 <script>
   import Cookies from 'js-cookie'
+  import breadCrumb from '~/components/widgets/breadcrumb.vue'
 
   export default {
+    components: { breadCrumb },
     head () {
       return {
-        title: 'LabNed.com - Exploring Possibilities'
+        title: 'LabNed.com - Exploring Possibilities',
+        titleTemplate: `${this.$route.params.product.toUpperCase().replace(/-+/g, ' ')} | %s`
       }
     },
     data () {
@@ -328,10 +337,10 @@
           let product = await this.$axios.post(this.$store.state.productUrl + '/_api/cursor', query)
           this.product = product.data.result
           console.log(this.product)
+          console.log(this.product.length)
           // return product
         } catch (e) {
           console.log(e)
-          // error({ message: 'Product not found', statusCode: 404 })
         }
         console.log(this.$route.params)
       },

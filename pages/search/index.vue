@@ -131,6 +131,11 @@
 
   export default {
     components: { search, FilterSearch, breadCrumb },
+    head () {
+      return {
+        title: 'Search Products | LabNed.com - Exploring Possibilities'
+      }
+    },
     data () {
       return {
         isFetching: false,
@@ -205,7 +210,7 @@
         let contents = {'amount': 1, 'id': id, 'price': price}
         this.$store.commit('ADD_TO_CART', contents)
         this.$toast.open({
-          message: 'Product added to <a href="/cart">cart</a>',
+          message: 'Product added to <nuxt-link to="/cart">Cart</nuxt-link>',
           type: 'is-success'
         })
       }

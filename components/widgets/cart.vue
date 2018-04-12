@@ -4,8 +4,8 @@
       <b-icon icon="cart-outline"></b-icon>
       <span>Cart</span>
     </button>
-    <b-dropdown-item v-if="getCartContents[0]"><h1 class="subtitle">Cart</h1></b-dropdown-item>
     <b-dropdown-item v-if="getCartContents[0]">
+      <h1 class="subtitle">Cart</h1>
       <table class="table">
         <thead>
           <tr>
@@ -25,17 +25,17 @@
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="2" class="has-text-right"><b>Totaal:</b></td>
+            <td colspan="2" class="has-text-right"><b>Total:</b></td>
             <td class="has-text-right">€ {{ parseFloat(calcTotal).toFixed(2) }}</td>
             <td></td>
           </tr>
         </tfoot>
       </table>
+      <nuxt-link to="/cart"><button class="button is-danger">Go To Cart</button></nuxt-link>
     </b-dropdown-item>
     <b-dropdown-item v-else>
       Cart is empty
     </b-dropdown-item>
-    <b-dropdown-item v-if="getCartContents[0]" v-on:click="goToCart()"><button class="button is-danger">Go To Cart</button></b-dropdown-item>
   </b-dropdown>
 </template>
 

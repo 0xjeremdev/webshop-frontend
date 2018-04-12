@@ -5,7 +5,8 @@
         <ul>
           <li v-for="(val, key) in breadcrumb" :class="(key+1 === breadcrumb.length) ? 'is-active' : ''" :aria-current="(key+1 === breadcrumb.length) ? 'page' : ''">
             <nuxt-link :to="breadcrumbLinks[key]" :key="key">
-              {{ val.charAt(0).toUpperCase() }}{{ val.slice(1) }}
+              <!-- {{ val.charAt(0).toUpperCase() }}{{ val.slice(1) }} -->
+              {{ val.toUpperCase().replace(/-+/g,' ') }}
             </nuxt-link>
           </li>
         </ul>
@@ -45,5 +46,7 @@
   .my_section {
     padding-bottom: 0px;
     padding-top: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
   }
 </style>
