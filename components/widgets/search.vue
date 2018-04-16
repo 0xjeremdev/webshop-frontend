@@ -35,7 +35,7 @@
       let route = this.$route.path
       this.productName = ''
 
-      if (route === '/product') {
+      if (route === '/search') {
         if (!(this.$store.state.product.searchVal instanceof Object)) {
           this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
         }
@@ -51,7 +51,7 @@
     },
     methods: {
       doSubmit () {
-        this.$router.replace({ path: '/product' })
+        this.$router.replace({ path: '/search' })
       },
       async getProducts () {
         try {
@@ -64,7 +64,7 @@
           let option = { name: this.productName, description: this.productName }
           this.$store.commit('product/SET_SEARCHVAL', option)
           let params = { search: '' }
-          if (this.$route.path === '/product') {
+          if (this.$route.path === '/search') {
             params = this.$route.query
           }
           await this.$store.dispatch('product/getProducts', {
@@ -87,7 +87,7 @@
       selectProduct (option) {
         console.log(option)
         this.$store.commit('product/SET_SEARCHVAL', option)
-        this.$router.push('/product')
+        this.$router.push('/search')
       }
     }
   }

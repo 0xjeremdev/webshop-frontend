@@ -18,9 +18,9 @@
             {{ props.row.name }}
           </b-table-column>
 
-          <b-table-column field="amount" width="60" label="Amount" numeric>
+          <b-table-column field="amount" width="100" label="Amount" numeric>
             <b-field>
-              <b-input class="has-text-right" type="number" placeholder="0" :value="props.row.amount" @input="setAmount($event, props)"></b-input>
+              <b-input class="has-text-right" type="number" placeholder="0" :value="getCartContents[props.index].amount" @input="setAmount($event, props)"></b-input>
             </b-field>
           </b-table-column>
 
@@ -34,14 +34,14 @@
         </template>
 
         <template slot="footer" v-if="getCartContents[0]">
-          <th></th>
+          <th>{{ test }}</th>
           <th></th>
           <th></th>
           <th>
             <div class="th-wrap is-numeric">Total:</div>
           </th>
           <th>
-            <div class="th-wrap is-numeric">€ {{ parseFloat(calcTotal).toFixed(2) }}</div>
+            <div class="th-wrap is-numeric">€ {{ parseFloat(calcTotal()).toFixed(2) }}</div>
           </th>
           <th></th>
         </template>
@@ -74,7 +74,8 @@
     components: { search, breadCrumb },
     data () {
       return {
-        checkedRows: []
+        checkedRows: [],
+        test: ''
       }
     },
     created () {
@@ -83,39 +84,46 @@
       if (!(this.$store.state.authUser instanceof Object)) {
         this.$store.commit('SET_USER', cookie.authUser)
       }
-      if (!(this.$store.state.cartContents instanceof Array)) {
+      if (!(this.$store.state.cartContents[0] instanceof Object)) {
         this.$store.commit('SET_CART', cookie.cartContents)
       }
     },
     computed: {
-      ...mapGetters({
-        getCartContents: ''
-      }),
-      /* getCartContents: function () {
-        return this.$store.state.cartContents
-      }, */
+      ...mapGetters([
+        'getCartContents'
+      ])
+    },
+    methods: {
       calcTotal: function () {
         let total = 0
         for (let key in this.getCartContents) {
-          // console.log(key)
           total += parseFloat(this.getCartContents[key].price) * Number(this.getCartContents[key].amount)
         }
         return total
-      }
-    },
-    methods: {
+      },
       doDeleteCart: function (index) {
         this.$store.commit('REMOVE_FROM_CART', index)
+        this.$toast.open('Product removed from cart!')
       },
       addToCart (amount, row) {
-        let contents = {'amount': amount - 1, 'id': row.id, 'price': row.price}
+        let contents = {'amount': amount, 'id': row.id, 'price': row.price}
+        console.log(contents)
         this.$store.commit('ADD_TO_CART', contents)
       },
+      doReset (value, row) {
+        this.addToCart(1, row)
+      },
       setAmount: function (value, row) {
-        console.log(row)
-        console.log(value)
         if (value <= 0) {
-          this.doDeleteCart(row.index)
+          this.$dialog.confirm({
+            title: 'Remove product ' + row.row.id + ' from cart',
+            message: 'Are you sure you want to <b>remove</b> this product? This action cannot be undone.',
+            confirmText: 'Remove product',
+            type: 'is-danger',
+            hasIcon: true,
+            onConfirm: () => this.doDeleteCart(row.index),
+            onCancel: () => this.doReset(value, row.row)
+          })
         } else {
           this.addToCart(value, row.row)
         }

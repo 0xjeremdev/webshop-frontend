@@ -13,7 +13,7 @@ export const state = () => ({
   dbUrl: 'http://localhost:8529',
   productUrl: 'http://localhost:8529/_db/key2publish/',
   shopUrl: 'http://localhost:8529/_db/k2p_webshop/',
-  cartContents: ''
+  cartContents: []
 })
 
 export const getters = {
@@ -26,26 +26,27 @@ export const mutations = {
   },
   SET_CART: function (state, cart) {
     // used to restore the cart from cookie
+    console.log('test')
     console.log(cart)
     state.cartContents = cart
   },
   ADD_TO_CART: function (state, cart) {
     // simpler function to add to the cart
     let mycart = state.cartContents
+    console.log(typeof mycart)
     let found = false
-    for (let key in state.cartContents) {
-      if (state.cartContents[key]['id'] === cart['id']) {
-        cart.amount++
-        state.cartContents[key] = cart
+    for (let key in mycart) {
+      if (mycart[key]['id'] === cart['id']) {
+        // cart.amount++
+        mycart[key] = cart
         found = true
       }
     }
     if (!found) {
       mycart.push(cart)
-      state.cartContents = mycart
     }
-
-    console.log(cart)
+    state.cartContents = []
+    state.cartContents = mycart
   },
   REMOVE_FROM_CART: function (state, index) {
     // simpler function to remove from the cart
@@ -65,6 +66,7 @@ export const actions = {
   },
   async connectDB ({ commit, state }) {
     try {
+      console.log('connectDB')
       let username = 'root'
       let password = 'key2publish'
       const { data } = await axios.post((state.dbUrl + '/_open/auth'), { username, password })

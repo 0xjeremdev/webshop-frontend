@@ -6,8 +6,9 @@ export default ({store, isHMR}) => {
   // gets replaced with original state received from server. So, we've to skip HMR.
   // Also nuxtReady event fires for HMR as well, which results multiple registration of
   // vuex-persistedstate plugin
+  console.log(isHMR)
   if (isHMR) return
-
+  console.log('get')
   window.onNuxtReady((nuxt) => {
     createPersistedState({
       key: 'key2publish',
