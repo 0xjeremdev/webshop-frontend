@@ -8,7 +8,7 @@
         <div class="column is-one-fifth">
           <p class="title"> € {{ Number(product[0].basic['Price LabNed']).toFixed(2) }}</p>
           <p class="control">
-            <button class="button is-orange" @click="addToCart(product[0].basic.vat, product[0].basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+            <button class="button is-orange" @click="addToCart(product[0].basic.vat, product[0].basic['name'], product[0].basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
           </p>
         </div>
         <div class="column">
@@ -344,11 +344,11 @@
         }
         console.log(this.$route.params)
       },
-      addToCart (id, price) {
-        let contents = {'amount': 1, 'id': id, 'price': price}
+      addToCart (id, name, price) {
+        let contents = {'amount': 1, 'id': id, 'name': name, 'price': price}
         this.$store.commit('ADD_TO_CART', contents)
         this.$toast.open({
-          message: 'Product added to <a href="/cart">cart</a>',
+          message: 'Product added to <nuxt-link to="/cart">Cart</nuxt-link>',
           type: 'is-success'
         })
       }

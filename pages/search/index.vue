@@ -90,7 +90,7 @@
               <div class="column is-one-third">
                 <p class="title"> € {{ Number(val.price).toFixed(2) }}</p>
                 <p class="control">
-                  <button class="button is-orange" @click="addToCart(val.artno, val.price)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+                  <button class="button is-orange" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
                 </p>
               </div>
             </div>
@@ -206,8 +206,8 @@
         // this.$route.query.page = number
         this.getProducts()
       },
-      addToCart (id, price) {
-        let contents = {'amount': 1, 'id': id, 'price': price}
+      addToCart (id, name, price) {
+        let contents = {'amount': 1, 'id': id, 'name': name, 'price': price}
         this.$store.commit('ADD_TO_CART', contents)
         this.$toast.open({
           message: 'Product added to <nuxt-link to="/cart">Cart</nuxt-link>',

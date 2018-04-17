@@ -13,7 +13,8 @@ export const state = () => ({
   dbUrl: 'http://localhost:8529',
   productUrl: 'http://localhost:8529/_db/key2publish/',
   shopUrl: 'http://localhost:8529/_db/k2p_webshop/',
-  cartContents: []
+  cartContents: [],
+  cookieAccepted: false
 })
 
 export const getters = {
@@ -23,6 +24,9 @@ export const getters = {
 export const mutations = {
   SET_USER: function (state, user) {
     state.authUser = user
+  },
+  SET_COOKIEACCEPT: function (state, value) {
+    state.cookieAccepted = value
   },
   SET_CART: function (state, cart) {
     // used to restore the cart from cookie
@@ -72,6 +76,7 @@ export const actions = {
       const { data } = await axios.post((state.dbUrl + '/_open/auth'), { username, password })
       commit('SET_USER', data)
     } catch (error) {
+      console.log(error)
       if (error.response && error.response.status === 401) {
         throw new Error('Bad credentials')
       }

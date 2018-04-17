@@ -55,6 +55,7 @@
       </div>
     </nav>
     <main role="main">
+      <cookiewall></cookiewall>
       <nuxt/>
     </main>
     <footer class="footer">
@@ -71,11 +72,13 @@
   import cartWidgets from '~/components/widgets/cart.vue'
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
   import search from '~/components/widgets/search.vue'
+  import cookiewall from '~/components/widgets/cookiewall.vue'
+
   export default {
     created () {
-      this.$store.dispatch('connectDB')
+      // this.$store.dispatch('connectDB')
     },
-    components: { cartWidgets, breadCrumb, search },
+    components: { cartWidgets, breadCrumb, search, cookiewall },
     data () {
       return {
         showNav: false

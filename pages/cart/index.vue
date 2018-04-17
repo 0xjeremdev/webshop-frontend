@@ -14,7 +14,7 @@
             {{ props.row.id }}
           </b-table-column>
 
-          <b-table-column field="name" label="Name" numeric>
+          <b-table-column field="name" label="Name">
             {{ props.row.name }}
           </b-table-column>
 
@@ -24,11 +24,11 @@
             </b-field>
           </b-table-column>
 
-          <b-table-column field="price" label="Price" numeric>
+          <b-table-column field="price" label="Price" numeric width="120">
             € {{ (parseFloat(props.row.price ) * Number(props.row.amount)).toFixed(2) }}
           </b-table-column>
 
-          <b-table-column label="Actions">
+          <b-table-column label="Actions" width="100">
               <button class="button is-danger" @click="doDeleteCart(key)"><b-icon icon="delete-forever"></b-icon></button>
           </b-table-column>
         </template>
@@ -60,6 +60,16 @@
           </section>
         </template>
       </b-table>
+      <div class="columns">
+        <div class="column">
+        </div>
+        <div class="column is-one-fifth">
+          <button class="button is-orange">Ask for Quote</button>
+        </div>
+        <div class="column is-one-fifth">
+          <button class="button is-orange">Order</button></div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -131,3 +141,15 @@
     }
   }
 </script>
+
+<style scoped>
+  .is-orange {
+    background-color: #ee7600;
+    color: white;
+  }
+
+  .is-orange:hover {
+    background-color: #0f77ea;
+    color: white;
+  }
+</style>

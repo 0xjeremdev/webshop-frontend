@@ -1,13 +1,12 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <p>Protocols</p>
-    </div>
-  </section>
+  <page></page>
 </template>
 
 <script>
+  import page from '~/components/ui/page.vue'
+
   export default {
+    components: { page },
     head () {
       return {
         title: 'LabNed.com - Exploring Possibilities'
