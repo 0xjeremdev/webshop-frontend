@@ -42,13 +42,21 @@
         <div class="navbar-item">
           <div class="field is-grouped">
             <cartWidgets></cartWidgets>
-            <b-dropdown hoverable position="is-bottom-left">
+            <b-dropdown hoverable position="is-bottom-left" v-if="getAuth">
               <button class="button is-info" slot="trigger">
                 <b-icon icon="account-circle"></b-icon>
                 <span>Account</span>
               </button>
-              <b-dropdown-item>Account info</b-dropdown-item>
+              <b-dropdown-item v-on:click="account()">Account info</b-dropdown-item>
               <b-dropdown-item v-on:click="logout()">Logout</b-dropdown-item>
+            </b-dropdown>
+            <b-dropdown hoverable position="is-bottom-left" v-else>
+              <button class="button is-info" slot="trigger">
+                <b-icon icon="account-circle"></b-icon>
+                <span>Account</span>
+              </button>
+              <b-dropdown-item v-on:click="signup()">Register Account</b-dropdown-item>
+              <b-dropdown-item v-on:click="login()">Login</b-dropdown-item>
             </b-dropdown>
           </div>
         </div>
@@ -93,13 +101,27 @@
       collapse () {
         this.showNav = !this.showNav
       },
+      account () {
+        this.$router.push('/account')
+      },
       async logout () {
         try {
           await this.$store.dispatch('logout')
-          this.$router.replace({ path: '/admin' })
+          this.$router.replace({ path: '/' })
         } catch (e) {
           this.formError = e.message
         }
+      },
+      signup () {
+        this.$router.push('/account/signup')
+      },
+      login () {
+        this.$router.push('/account/login')
+      }
+    },
+    computed: {
+      getAuth: function () {
+        return this.$store.state.authUser
       }
     }
   }
