@@ -5,8 +5,8 @@ export const state = () => ({
   searchVal: '',
   page: 1,
   total: 0,
-  filters: { 'Product Type': [], 'Reactivity': [], 'Host': [], 'Clone': [], 'Application': [], Conjugate: [] },
-  searchFilters: { 'Product Type': [], 'Reactivity': [], 'Host': [], 'Clone': [], 'Application': [], Conjugate: [] }
+  filters: { 'Product Type': [], 'Reactivity': [], 'Host': [], 'Clone': [], 'Applications': [], Conjugate: [] },
+  searchFilters: { 'Product Type': [], 'Reactivity': [], 'Host': [], 'Clone': [], 'Applications': [], Conjugate: [] }
 })
 
 export const mutations = {
@@ -30,7 +30,9 @@ export const mutations = {
   },
   SET_SEARCH_FILTERS: function (state, value) {
     for (let key in value) {
-      state.searchFilters[key] = value[key]
+      for (let filter in value[key]) {
+        state.searchFilters[key][filter] = value[key][filter]
+      }
     }
   }
 }
@@ -45,20 +47,56 @@ export const actions = {
         commit('SET_SEARCHVAL', Cookies.getJSON('key2publish').product.searchVal)
       }
       this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
-      // console.log(params.search)
       let searchVal = state.searchVal
-      console.log(searchVal)
       let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toUpperCase() : ''
       // search = (params.search !== '' && params.search !== undefined) ? params.search.toUpperCase() : search
-      console.log(search)
+
+      let searchFilters = state.searchFilters
+      let filterString = ''
+      for (var key in searchFilters) {
+        if (searchFilters[key].length > 0) {
+          let valueString = []
+          let found = false
+          for (var filter in searchFilters[key]) {
+            if (searchFilters[key][filter] instanceof Object) {
+              if ((searchFilters[key][filter].checked) && (searchFilters[key][filter].value !== '')) {
+                valueString.push(searchFilters[key][filter].value)
+                found = true
+              }
+            }
+          }
+
+          if (found) {
+            if (filterString !== '') filterString += ' AND p.basic["' + key + '"] IN ' + JSON.stringify(valueString)
+            if (filterString === '') filterString = 'FILTER p.basic["' + key + '"] IN ' + JSON.stringify(valueString)
+          }
+        }
+      }
+      console.log(filterString)
+      let aql = 'FOR p in k2p_product ' + filterString + ' LIMIT ' + ((page - 1) * 10) + ', 10 RETURN { _key: p._key, _id: p._id, artno: p.basic.vat, name: p.basic.name, description: p.basic.description, clone: p.basic.clone, size: p.basic.size, price: p.basic[\'Price LabNed\'], reactivity: p.basic.Reactivity, host: p.basic.Host, applications: p.basic.Applications, conjugate: p.basic.Conjugate, images: { image1: p.basic.picture, image2: p.basic.price } }'
+      if (search.trim() !== '') {
+        if (filterString === '') filterString = 'FILTER p._key != \'\''
+        aql = 'FOR p in FULLTEXT(k2p_product, "searchNames", @search) ' + filterString + ' LIMIT ' + ((page - 1) * 10) + ', 10 RETURN { _key: p._key, _id: p._id, artno: p.basic.vat, name: p.basic.name, description: p.basic.description, clone: p.basic.clone, size: p.basic.size, price: p.basic[\'Price LabNed\'], reactivity: p.basic.Reactivity, host: p.basic.Host, applications: p.basic.Applications, conjugate: p.basic.Conjugate, images: { image1: p.basic.picture, image2: p.basic.price } }'
+      }
+
       let query = {
         'options': {
           'fullCount': true
         },
         'count': true,
-        'query': 'FOR p in k2p_product FILTER UPPER(p.basic.name) LIKE @search OR UPPER(p.basic.description) LIKE @search LIMIT ' + ((page - 1) * 10) + ', 10 RETURN { _key: p._key, _id: p._id, artno: p.basic.vat, name: p.basic.name, description: p.basic.description, clone: p.basic.clone, size: p.basic.size, price: p.basic[\'Price LabNed\'], reactivity: p.basic.Reactivity, host: p.basic.Host, applications: p.basic.Applications, conjugate: p.basic.Conjugate, images: { image1: p.basic.picture, image2: p.basic.price } }',
-        'bindVars': {
-          'search': (search.trim() !== '') ? (search.trim() + '%') : '%'
+        'query': aql
+      }
+      if (search.trim() !== '') {
+        query = {
+          'options': {
+            'fullCount': true
+          },
+          'count': true,
+          'query': aql,
+          'bindVars': {
+            'search': (search.trim() !== '') ? ('prefix:' + search.trim() + ', -prefix:' + search.trim() + '0, -prefix:' + search.trim() + '1, -prefix:' + search.trim() + '2, -prefix:' + search.trim() + '3, -prefix:' +
+            search.trim() + '4, -prefix:' + search.trim() + '5, -prefix:' + search.trim() + '6, -prefix:' + search.trim() + '7, -prefix:' + search.trim() + '8, -prefix:' + search.trim() + '9') : ''
+          }
         }
       }
       console.log(query)
@@ -89,22 +127,33 @@ export const actions = {
       // console.log(searchVal)
       let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toLowerCase() : ''
       search = (params.search !== '' && params.search !== undefined) ? params.search.toLowerCase() : search
-      // console.log(search)
       let query = {
         'options': {
           'fullCount': true
         },
         'count': true,
-        'query': 'FOR p in k2p_product FILTER LOWER(p.basic.name) LIKE @search OR LOWER(p.basic.description) LIKE @search FILTER p.basic[\'' + field + '\'] != "" AND p.basic[\'' + field + '\'] != null COLLECT field = p.basic[\'' + field + '\'] LIMIT 0,100 RETURN { \'' + field + '\': field }',
-        'bindVars': {
-          'search': (search !== '') ? (search + '%') : '%'
+        'query': 'FOR p IN k2p_product FILTER p.basic[\'' + field + '\'] != "" AND p.basic[\'' + field + '\'] != null LIMIT 0, 1000 COLLECT field = p.basic[\'' + field + '\'] RETURN { \'' + field + '\': field }'
+      }
+      if (search.trim()) {
+      // console.log(search)
+        query = {
+          'options': {
+            'fullCount': true
+          },
+          'count': true,
+          // 'query': 'FOR p in k2p_product FILTER LOWER(p.basic.name) LIKE @search OR LOWER(p.basic.description) LIKE @search FILTER p.basic[\'' + field + '\'] != "" AND p.basic[\'' + field + '\'] != null COLLECT field = p.basic[\'' + field + '\'] LIMIT 0,100 RETURN { \'' + field + '\': field }',
+          'query': 'FOR p in FULLTEXT(k2p_product, "searchNames", @search) FILTER p.basic[\'' + field + '\'] != "" AND p.basic[\'' + field + '\'] != null LIMIT 0, 1000 COLLECT field = p.basic[\'' + field + '\'] RETURN { \'' + field + '\': field }',
+          'bindVars': {
+            'search': (search.trim() !== '') ? ('prefix:' + search.trim() + ', -prefix:' + search.trim() + '0, -prefix:' + search.trim() + '1, -prefix:' + search.trim() + '2, -prefix:' + search.trim() + '3, -prefix:' +
+            search.trim() + '4, -prefix:' + search.trim() + '5, -prefix:' + search.trim() + '6, -prefix:' + search.trim() + '7, -prefix:' + search.trim() + '8, -prefix:' + search.trim() + '9') : ''
+          }
         }
       }
-      // console.log(query)
+      console.log(query)
       let mydata = await this.$axios.$post(rootState.productUrl + '/_api/cursor', query)
       let val = {}
       val[field] = mydata.result
-      // console.log(val)
+      console.log(val)
       // console.log(mydata.extra.stats.fullCount)
       commit('SET_FILTERS', val)
       // console.log(mydata)

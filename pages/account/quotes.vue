@@ -7,7 +7,6 @@
         </div>
         <div class="column">
           <h1 class="title">Quotes</h1>
-          <DataGridForOrder></DataGridForOrder>
         </div>
       </div>
     </div>
@@ -16,10 +15,9 @@
 
 <script>
   import accountMenu from '~/components/ui/accountMenu.vue'
-  import DataGridForOrder from '~/components/ui/DataGridForOrder.vue'
 
   export default {
-    components: { accountMenu, DataGridForOrder },
+    components: { accountMenu },
     data () {
       return {
         newsletter: false

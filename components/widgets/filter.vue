@@ -29,7 +29,7 @@
   export default {
     data () {
       return {
-        searchColumns: [ 'Product Type', 'Reactivity', 'Host', 'Clone', 'Application', 'Conjugate' ],
+        searchColumns: [ 'Product Type', 'Reactivity', 'Host', 'Clone', 'Applications', 'Conjugate' ],
         // searchValues: { 'Product Type': [], 'Reactivity': [], 'Host': [], 'Clone': [], 'Application': [], Conjugate: [] },
         isFetching: false
       }
@@ -40,7 +40,7 @@
       this.getData('Reactivity')
       this.getData('Host')
       this.getData('Clone')
-      this.getData('Application')
+      this.getData('Applications')
       this.getData('Conjugate')
       if (!(this.$store.state.product.searchFilters instanceof Object)) {
         this.$store.commit('product/SET_SEARCH_FILTERS', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchFilters : '')
@@ -54,19 +54,46 @@
     },
     methods: {
       getSearchFilters (type, key, value) {
-        return (typeof this.$store.state.product.searchFilters.product !== 'undefined') ? (typeof this.$store.state.product.searchFilters.product[type] !== 'undefined') ? (typeof this.$store.state.product.searchFilters.product[type][key] !== 'undefined') ? (typeof this.$store.state.product.searchFilters.product[type][key] !== 'undefined') ? this.$store.state.product.searchFilters.product[type][key]['checked'] : false : false : false : false
+        let mySearchFiltersState = this.$store.state.product.searchFilters
+        // console.log(mySearchFiltersState)
+        /* console.log(type)
+        console.log(key)
+        console.log(value[type]) */
+        // let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (typeof mySearchFiltersState[type][key] !== 'undefined') ? (typeof mySearchFiltersState[type][key]['checked'] !== 'undefined') ? mySearchFiltersState[type][key]['checked'] : false : false : false : false
+        // return checked
+        if (typeof mySearchFiltersState !== 'undefined') {
+          if (typeof mySearchFiltersState[type] !== 'undefined') {
+            if (typeof mySearchFiltersState[type][key] !== 'undefined' && mySearchFiltersState[type][key] !== null) {
+              if (mySearchFiltersState[type][key].checked) {
+                return true
+              }
+            }
+          }
+        }
+        return false
+        // return (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][key].length > 0) ? (mySearchFiltersState[type][key]['checked'] !== null) ? mySearchFiltersState[type][key]['checked'] : false : false : false : false
       },
       async setSearch (type, key, value) {
-        console.log(type)
-        console.log(key)
-        console.log(value[type])
-        let checked = (typeof this.$store.state.product.searchFilters.product !== 'undefined') ? (typeof this.$store.state.product.searchFilters.product[type] !== 'undefined') ? (typeof this.$store.state.product.searchFilters.product[type][key] !== 'undefined') ? (typeof this.$store.state.product.searchFilters.product[type][key] !== 'undefined') ? this.$store.state.product.searchFilters.product[type][key]['checked'] : false : false : false : false
+        // console.log(type)
+        // console.log(key)
+        // console.log(value[type])
+        let mySearchFiltersState = this.$store.state.product.searchFilters
+        let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (typeof mySearchFiltersState[type][key] !== 'undefined') ? (typeof mySearchFiltersState[type][key]['checked'] !== 'undefined') ? mySearchFiltersState[type][key]['checked'] : false : false : false : false
+        console.log(checked)
         let myVal = []
         myVal[type] = []
         myVal[type][key] = {}
         myVal[type][key]['value'] = value[type]
         myVal[type][key]['checked'] = !checked
         this.$store.commit('product/SET_SEARCH_FILTERS', myVal)
+        let params = this.$route.query
+        await this.$store.dispatch('product/getProducts', {
+          page: 1,
+          params: params
+        },
+        {
+          root: true
+        })
       },
       async getData (type) {
         try {

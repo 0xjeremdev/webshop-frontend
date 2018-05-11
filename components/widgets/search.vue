@@ -2,17 +2,16 @@
   <section id="search">
     <b-field>
       <b-autocomplete
-        v-model="productName"
+        v-model.lazy="productName"
         icon="magnify"
         :data="productData"
         placeholder="Search for products ... e.g. CD3"
         field="name"
         :loading="isFetching"
-        @input="getProducts()"
         @select="option => selectProduct(option)"
         v-on:keyup.13.native="doSubmit()"
         >
-        <template slot="empty">No results found</template>
+        <template slot="empty">{{ message }}</template>
       </b-autocomplete>
     </b-field>
     <hr class="navbar-divider my_div">
@@ -21,6 +20,7 @@
 
 <script>
   import Cookies from 'js-cookie'
+  import _ from 'lodash'
 
   export default {
     data () {
@@ -28,8 +28,16 @@
         productName: '',
         productData: [],
         isFetching: false,
-        selected: ''
+        selected: '',
+        delay: 500,
+        message: 'Waiting for user to stop typing ...'
       }
+    },
+    watch: {
+      productName: _.debounce(function (e) {
+        // Do something with search term after it debounced
+        this.getProducts()
+      }, 500)
     },
     mounted () {
       let route = this.$route.path
@@ -59,13 +67,57 @@
           if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
           }
-
+          let searchFiltersReset = { 'Product Type': [], 'Reactivity': [], 'Host': [], 'Clone': [], 'Applications': [], Conjugate: [] }
+          this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
           let page = 1
-          let option = { name: this.productName, description: this.productName }
+          let option = { name: this.productName.replace(/[^-a-zA-Z0-9-]+/gmi, ''), description: this.productName.replace(/[^-a-zA-Z0-9-]+/gmi, '') }
           this.$store.commit('product/SET_SEARCHVAL', option)
           let params = { search: '' }
           if (this.$route.path === '/search') {
             params = this.$route.query
+
+            await this.$store.dispatch('product/getFilters', {
+              field: 'Product Type',
+              params: params
+            },
+            {
+              root: true
+            })
+            await this.$store.dispatch('product/getFilters', {
+              field: 'Reactivity',
+              params: params
+            },
+            {
+              root: true
+            })
+            await this.$store.dispatch('product/getFilters', {
+              field: 'Host',
+              params: params
+            },
+            {
+              root: true
+            })
+            await this.$store.dispatch('product/getFilters', {
+              field: 'Clone',
+              params: params
+            },
+            {
+              root: true
+            })
+            await this.$store.dispatch('product/getFilters', {
+              field: 'Applications',
+              params: params
+            },
+            {
+              root: true
+            })
+            await this.$store.dispatch('product/getFilters', {
+              field: 'Conjugate',
+              params: params
+            },
+            {
+              root: true
+            })
           }
           await this.$store.dispatch('product/getProducts', {
             page: page,
@@ -77,6 +129,7 @@
 
           // console.log(mydata)
           this.productData = this.$store.state.product.data
+          this.message = ''
           this.isFetching = false
         } catch (e) {
           console.log(e)
