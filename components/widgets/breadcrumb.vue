@@ -49,4 +49,8 @@
     margin-top: 0px;
     margin-bottom: 0px;
   }
+
+  .my_crumb {
+    font-size: 10px;
+  }
 </style>

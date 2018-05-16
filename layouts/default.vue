@@ -14,9 +14,6 @@
 
       <div id="navBarAdmin" class="navbar-menu" :class="{ 'is-active': showNav }">
         <div class="navbar-start">
-          <nuxt-link class="navbar-item" to="/">
-            Home
-          </nuxt-link>
           <nuxt-link class="navbar-item" to="/search">
             Products
           </nuxt-link>

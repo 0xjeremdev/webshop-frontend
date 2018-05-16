@@ -64,10 +64,10 @@
         <div class="column">
         </div>
         <div class="column is-one-fifth">
-          <button class="button is-orange">Ask for Quote</button>
+          <nuxt-link to="/order/quote"><button class="button is-orange">Ask for Quote</button></nuxt-link>
         </div>
         <div class="column is-one-fifth">
-          <button class="button is-orange">Order</button></div>
+          <nuxt-link to="/order"><button class="button is-success">Order</button></nuxt-link>
         </div>
       </div>
     </div>

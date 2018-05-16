@@ -30,14 +30,14 @@ export const mutations = {
   },
   SET_CART: function (state, cart) {
     // used to restore the cart from cookie
-    console.log('test')
-    console.log(cart)
+    // console.log('test')
+    // console.log(cart)
     state.cartContents = cart
   },
   ADD_TO_CART: function (state, cart) {
     // simpler function to add to the cart
     let mycart = state.cartContents
-    console.log(typeof mycart)
+    // console.log(typeof mycart)
     let found = false
     for (let key in mycart) {
       if (mycart[key]['id'] === cart['id']) {
@@ -54,7 +54,7 @@ export const mutations = {
   },
   REMOVE_FROM_CART: function (state, index) {
     // simpler function to remove from the cart
-    console.log('index:' + index)
+    // console.log('index:' + index)
     let mycart = state.cartContents
     mycart.splice(index, 1)
     state.cartContents = mycart
@@ -70,7 +70,7 @@ export const actions = {
   },
   async connectDB ({ commit, state }) {
     try {
-      console.log('connectDB')
+      // console.log('connectDB')
       let username = 'root'
       let password = 'key2publish'
       const { data } = await axios.post((state.dbUrl + '/_open/auth'), { username, password })
@@ -85,7 +85,7 @@ export const actions = {
   },
   async login ({ commit, state }, { username, password }) {
     try {
-      console.log(state)
+      // console.log(state)
       const { data } = await axios.post('http://localhost:8529/_open/auth', { username, password })
       commit('SET_USER', data)
     } catch (error) {

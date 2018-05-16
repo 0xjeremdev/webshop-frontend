@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title">Order - Personal Info</h1>
+      <h1 class="title">Order - Billing Address</h1>
       <orderMenu :step="step"></orderMenu>
       <!-- step 2: if logged in show dropdown boxes with billing and delivery address go to step 4 -->
       <div v-if="loggedIn" class="container">
@@ -35,7 +35,7 @@
             </b-taginput>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
-            <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon></b-checkbox-button>
+            <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon>{{ val.text }}</b-checkbox-button>
             <div v-else-if="val.inputType === 'radio'">
               <b-radio v-for="ro in val.options"
                 :key="ro"
@@ -51,6 +51,13 @@
                 v-model="productData[fieldKey]"
                 :readonly="false">
             </b-datepicker>
+            <b-field v-else-if="val.inputType === 'dropdown'"
+                type="is-danger"
+                message="Please select your country">
+                <b-select placeholder="Select your country">
+                    <option v-for="(val, fieldKey) in countryList" :value="val.code">{{ val.name }}</option>
+                </b-select>
+            </b-field>
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
         </div>
@@ -66,12 +73,12 @@
       <br />
       <div class="columns">
         <div class="column is-one-fifth has-text-right">
-          <nuxt-link to="/cart"><button class="button is-orange">Previous</button></nuxt-link>
+          <nuxt-link to="/order"><button class="button is-orange">Previous</button></nuxt-link>
         </div>
         <div class="column">
         </div>
         <div class="column is-one-fifth">
-          <nuxt-link to="/order/step2"><button class="button is-orange">Next</button></nuxt-link>
+          <nuxt-link to="/order/step3"><button class="button is-orange">Next</button></nuxt-link>
         </div>
       </div>
       <b-loading :active.sync="isFetching" :canCancel="true"></b-loading>
@@ -84,60 +91,52 @@
 
   export default {
     components: { orderMenu },
+    created () {
+      this.getCountryList()
+    },
     data () {
       return {
         isFetching: false,
-        step: '1',
+        step: '2',
         loggedIn: true,
-        productData: {},
+        productData: { deliverySame: true },
+        countryList: {},
         fields: {
-          'Customer': {
-            'lastname': {
-              'inputType': 'input',
-              'label': 'Lastname'
-            },
-            'firstname': {
-              'inputType': 'input',
-              'label': 'Firstname'
-            },
-            'gender': {
-              'inputType': 'radio',
-              'label': 'Gender',
-              'options': ['M', 'F']
-            },
-            'birthdate': {
-              'inputType': 'date',
-              'label': 'Birthdate'
-            },
-            'company': {
-              'inputType': 'input',
-              'label': 'Company'
-            },
-            'VAT_No': {
-              'inputType': 'input',
-              'label': 'VAT No.'
-            },
-            'email': {
-              'inputType': 'input',
-              'label': 'E-mail'
-            },
-            'phone': {
-              'inputType': 'input',
-              'label': 'Phone'
-            },
-            'mobile': {
-              'inputType': 'input',
-              'label': 'Mobile'
-            },
-            'newsletter': {
+          'Billing': {
+            'deliverySame': {
               'inputType': 'checkbox',
-              'label': 'Newsletter Subscription'
+              'text': 'Billing Address is the same as Delivery Address'
+            },
+            'Street': {
+              'inputType': 'input',
+              'label': 'Street'
+            },
+            'HouseNo': {
+              'inputType': 'input',
+              'label': 'House No'
+            },
+            'Postcode': {
+              'inputType': 'input',
+              'label': 'Postcode'
+            },
+            'City': {
+              'inputType': 'input',
+              'label': 'City'
+            },
+            'country': {
+              'inputType': 'dropdown',
+              'label': 'Company'
             }
           }
         }
       }
     },
     methods: {
+      async getCountryList () {
+        let countryList = await this.$store.dispatch('order/getCountryList', {}, { root: true })
+        console.log(countryList)
+        this.countryList = countryList['result']
+      },
       setModel (val, fieldKey, tabKey, inputType) {
         console.log(val)
         if (inputType === 'date') {
@@ -149,13 +148,16 @@
         if (val.label) {
           return val.label
         }
+        if (val.inputType === 'checkbox') {
+          return ''
+        }
         return fieldKey
       },
       getValue (val, fieldKey, tabKey, inputType) {
         if (this.productData instanceof Object) {
           if (inputType === 'checkbox') {
             if (this.productData[fieldKey] === 'true') { console.log('true') }
-            return !this.productData[fieldKey]
+            return this.productData[fieldKey]
           } else if (inputType === 'date') {
             let d = new Date(this.productData[fieldKey])
             return d

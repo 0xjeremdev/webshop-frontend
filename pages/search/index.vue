@@ -1,10 +1,16 @@
 <template>
-  <section class="section">
-    <hr class="navbar-divider my_div">
-    <breadCrumb></breadCrumb>
+  <section>
     <hr class="navbar-divider my_div">
     <div class="container">
-      <h1 class="title">Products</h1>
+      <div class="columns">
+        <div class="column is-one-quarter">
+            <h1 class="title">Products</h1>
+        </div>
+        <div class="column">
+          <breadCrumb></breadCrumb>
+        </div>
+      </div>
+      <hr class="navbar-divider my_div">
       <search></search>
       <!-- <div class="columns">
         <div class="column is-one-quarter">
@@ -26,19 +32,20 @@
           <FilterSearch></FilterSearch>
         </div>
         <div class="column">
+          <section>
+            <div class="columns">
+              <div class="column my-section">
+                <h2 class="subtitle" style="color: white;">Total products found: {{ getProductData.length }}</h2>
+              </div>
+              <div class="column is-one-third">
+              </div>
+            </div>
+          </section>
           <section v-if="getProductData.length > 0" class="section" v-for="(val, key) in getProductData">
             <div class="columns my-margin">
               <div class="column">
                 <h2 class="subtitle"><nuxt-link :to="'/' + slugify(val.name + '-' + val.artno)">{{ val.name }} - {{ val.artno }}</nuxt-link></h2>
-                <div class="art-line">
-                  <div class="art-label">
-                    Description
-                  </div>
-                  <div class="art-value">
-                    {{ val.description }}
-                  </div>
-                </div>
-                <div class="art-line">
+                <div v-if="val.reactivity !== '' || val.reactivity !== null" class="art-line">
                   <div class="art-label">
                     Reactivity
                   </div>
@@ -46,7 +53,7 @@
                     {{ val.reactivity }}
                   </div>
                 </div>
-                <div class="art-line">
+                <div v-if="val.host !== '' && val.host !== null" class="art-line">
                   <div class="art-label">
                     Host
                   </div>
@@ -54,7 +61,7 @@
                     {{ val.host }}
                   </div>
                 </div>
-                <div class="art-line">
+                <div v-if="val.clone !== '' && val.clone !== null" class="art-line">
                   <div class="art-label">
                     Clone
                   </div>
@@ -62,7 +69,7 @@
                     {{ val.clone }}
                   </div>
                 </div>
-                <div class="art-line">
+                <div v-if="val.applications !== '' && val.applications !== null" class="art-line">
                   <div class="art-label">
                     Applications
                   </div>
@@ -70,7 +77,7 @@
                     {{ val.applications }}
                   </div>
                 </div>
-                <div class="art-line">
+                <div v-if="val.conjugate !== '' && val.conjugate !== null" class="art-line">
                   <div class="art-label">
                     Conjugate
                   </div>
@@ -78,7 +85,7 @@
                     {{ val.conjugate }}
                   </div>
                 </div>
-                <div class="art-line">
+                <div v-if="val.size !== '' && val.size !== null" class="art-line">
                   <div class="art-label">
                     Size
                   </div>
@@ -110,6 +117,10 @@
         </div>
         <div class="column" v-if="getProductData.length > 0">
           <hr>
+          <section class="section my-section">
+            <h2 class="subtitle" style="color: white;">Total products found: {{ getProductData.length }}</h2>
+          </section>
+          <br />
           <b-pagination
               :total="getTotalData"
               :current.sync="current"
@@ -117,6 +128,7 @@
               :per-page="perPage"
               @change="nextProduct">
           </b-pagination>
+          <br />
         </div>
       </div>
     </div>
@@ -230,7 +242,19 @@
   }
 
   .my-margin {
-    margin-bottom: 1rem;
+    margin-bottom: -5rem;
+  }
+
+  .my-section {
+    padding: 0.5rem;
+    margin-left: 1.5rem;
+    margin-top: 0.5rem;
+    background-color: #0f77ea;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+    border-radius: 30px;
+    /* border: 2px black solid; */
+
   }
 
   .art-line {

@@ -12,10 +12,11 @@
             </a>
         </div>
         <div class="card-content">
-            <div class="content">
-              <b-field v-for="( svVal, svKey ) in getFilters[val]" :key="svKey">
-                <b-checkbox :value="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)">{{ svVal[val] }}</b-checkbox>
-              </b-field>
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey">
+              <!--<b-field >
+                <b-checkbox :value="getSearchFilters(val, svKey, svVal)" @input.lazy="setSearch(val, svKey, svVal)">{{ svVal[val] }}</b-checkbox>
+              </b-field> -->
+              <input type="checkbox" :name="svVal[val]" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)">{{ svVal[val] }}
             </div>
         </div>
     </b-collapse>
@@ -29,14 +30,14 @@
   export default {
     data () {
       return {
-        searchColumns: [ 'Product Type', 'Reactivity', 'Host', 'Clone', 'Applications', 'Conjugate' ],
+        searchColumns: [ 'Product category LabNed', 'Reactivity', 'Host', 'Clone', 'Applications', 'Conjugate' ],
         // searchValues: { 'Product Type': [], 'Reactivity': [], 'Host': [], 'Clone': [], 'Application': [], Conjugate: [] },
         isFetching: false
       }
     },
     created () {
       this.isFetching = true
-      this.getData('Product Type')
+      this.getData('Product category LabNed')
       this.getData('Reactivity')
       this.getData('Host')
       this.getData('Clone')
@@ -55,37 +56,44 @@
     methods: {
       getSearchFilters (type, key, value) {
         let mySearchFiltersState = this.$store.state.product.searchFilters
-        // console.log(mySearchFiltersState)
-        /* console.log(type)
-        console.log(key)
-        console.log(value[type]) */
         // let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (typeof mySearchFiltersState[type][key] !== 'undefined') ? (typeof mySearchFiltersState[type][key]['checked'] !== 'undefined') ? mySearchFiltersState[type][key]['checked'] : false : false : false : false
         // return checked
-        if (typeof mySearchFiltersState !== 'undefined') {
+        /* if (typeof mySearchFiltersState !== 'undefined') {
           if (typeof mySearchFiltersState[type] !== 'undefined') {
-            if (typeof mySearchFiltersState[type][key] !== 'undefined' && mySearchFiltersState[type][key] !== null) {
-              if (mySearchFiltersState[type][key].checked) {
+            if (typeof mySearchFiltersState[type][value] !== 'undefined') {
+              console.log('benhier')
+              if () {
+                console.log(mySearchFiltersState[type][value])
                 return true
               }
             }
           }
         }
-        return false
-        // return (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][key].length > 0) ? (mySearchFiltersState[type][key]['checked'] !== null) ? mySearchFiltersState[type][key]['checked'] : false : false : false : false
+        return false */
+        let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][value[type]] !== '') ? mySearchFiltersState[type][value[type]] : false : false : false
+        // console.log(checked)
+        return checked
       },
-      async setSearch (type, key, value) {
-        // console.log(type)
-        // console.log(key)
-        // console.log(value[type])
+      setSearch (type, key, value) {
+        console.log(type)
+        console.log(key)
+        console.log(value[type])
         let mySearchFiltersState = this.$store.state.product.searchFilters
-        let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (typeof mySearchFiltersState[type][key] !== 'undefined') ? (typeof mySearchFiltersState[type][key]['checked'] !== 'undefined') ? mySearchFiltersState[type][key]['checked'] : false : false : false : false
-        console.log(checked)
+        let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][value[type]] !== '') ? mySearchFiltersState[type][value[type]] : false : false : false
+        // console.log(checked)
         let myVal = []
-        myVal[type] = []
-        myVal[type][key] = {}
-        myVal[type][key]['value'] = value[type]
-        myVal[type][key]['checked'] = !checked
+        myVal[type] = {}
+        myVal[type][value[type]] = !checked
         this.$store.commit('product/SET_SEARCH_FILTERS', myVal)
+        this.getProductData()
+        this.getData('Product category LabNed')
+        this.getData('Reactivity')
+        this.getData('Host')
+        this.getData('Clone')
+        this.getData('Applications')
+        this.getData('Conjugate')
+      },
+      async getProductData () {
         let params = this.$route.query
         await this.$store.dispatch('product/getProducts', {
           page: 1,

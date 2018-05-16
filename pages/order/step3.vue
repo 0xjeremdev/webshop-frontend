@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title">Order - Personal Info</h1>
+      <h1 class="title">Order - Delivery</h1>
       <orderMenu :step="step"></orderMenu>
       <!-- step 2: if logged in show dropdown boxes with billing and delivery address go to step 4 -->
       <div v-if="loggedIn" class="container">
@@ -51,6 +51,13 @@
                 v-model="productData[fieldKey]"
                 :readonly="false">
             </b-datepicker>
+            <b-field v-if="val.inputType === 'dropdown'"
+                type="is-danger"
+                message="Please select your country">
+                <b-select placeholder="Select your country">
+                    <option v-for="(val, fieldKey) in productData" :value="val.code">{{ val.name }}</option>
+                </b-select>
+            </b-field>
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
         </div>
@@ -66,12 +73,12 @@
       <br />
       <div class="columns">
         <div class="column is-one-fifth has-text-right">
-          <nuxt-link to="/cart"><button class="button is-orange">Previous</button></nuxt-link>
+          <nuxt-link to="/order/step2"><button class="button is-orange">Previous</button></nuxt-link>
         </div>
         <div class="column">
         </div>
         <div class="column is-one-fifth">
-          <nuxt-link to="/order/step2"><button class="button is-orange">Next</button></nuxt-link>
+          <nuxt-link to="/order/step4"><button class="button is-orange">Next</button></nuxt-link>
         </div>
       </div>
       <b-loading :active.sync="isFetching" :canCancel="true"></b-loading>
@@ -84,60 +91,50 @@
 
   export default {
     components: { orderMenu },
+    created () {
+      this.getCountryList()
+    },
     data () {
       return {
         isFetching: false,
-        step: '1',
+        step: '3',
         loggedIn: true,
         productData: {},
+        countryList: {},
+        customerid: '',
+        isBilling: false,
         fields: {
-          'Customer': {
-            'lastname': {
+          'Billing': {
+            'Street': {
               'inputType': 'input',
-              'label': 'Lastname'
+              'label': 'Street'
             },
-            'firstname': {
+            'HouseNo': {
               'inputType': 'input',
-              'label': 'Firstname'
+              'label': 'HouseNo'
             },
-            'gender': {
-              'inputType': 'radio',
-              'label': 'Gender',
-              'options': ['M', 'F']
-            },
-            'birthdate': {
-              'inputType': 'date',
-              'label': 'Birthdate'
-            },
-            'company': {
+            'Postcode': {
               'inputType': 'input',
-              'label': 'Company'
+              'label': 'Postcode'
             },
-            'VAT_No': {
+            'City': {
               'inputType': 'input',
-              'label': 'VAT No.'
+              'label': 'City'
             },
-            'email': {
-              'inputType': 'input',
-              'label': 'E-mail'
-            },
-            'phone': {
-              'inputType': 'input',
-              'label': 'Phone'
-            },
-            'mobile': {
-              'inputType': 'input',
-              'label': 'Mobile'
-            },
-            'newsletter': {
-              'inputType': 'checkbox',
-              'label': 'Newsletter Subscription'
+            'Country': {
+              'inputType': 'dropdown',
+              'label': 'Country'
             }
           }
         }
       }
     },
     methods: {
+      async getCountryList () {
+        let countryList = await this.$store.dispatch('order/getCountryList', {}, { root: true })
+        console.log(countryList)
+        this.productData = countryList['result']
+      },
       setModel (val, fieldKey, tabKey, inputType) {
         console.log(val)
         if (inputType === 'date') {

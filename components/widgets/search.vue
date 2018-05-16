@@ -10,9 +10,15 @@
         :loading="isFetching"
         @select="option => selectProduct(option)"
         v-on:keyup.13.native="doSubmit()"
+        expanded
         >
         <template slot="empty">{{ message }}</template>
       </b-autocomplete>
+      <p class="control">
+        <button class="button is-orange" @click="doSubmit()">
+            Search
+        </button>
+      </p>
     </b-field>
     <hr class="navbar-divider my_div">
   </section>
@@ -42,7 +48,8 @@
     mounted () {
       let route = this.$route.path
       this.productName = ''
-
+      let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
+      this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
       if (route === '/search') {
         if (!(this.$store.state.product.searchVal instanceof Object)) {
           this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
@@ -67,10 +74,13 @@
           if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
           }
-          let searchFiltersReset = { 'Product Type': [], 'Reactivity': [], 'Host': [], 'Clone': [], 'Applications': [], Conjugate: [] }
+          let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
           this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
           let page = 1
-          let option = { name: this.productName.replace(/[^-a-zA-Z0-9-]+/gmi, ''), description: this.productName.replace(/[^-a-zA-Z0-9-]+/gmi, '') }
+          let option = { name: '', description: '' }
+          if (typeof this.productName !== 'undefined') {
+            option = { name: this.productName.replace(/[^-a-zA-Z0-9-]+/gmi, ''), description: this.productName.replace(/[^-a-zA-Z0-9-]+/gmi, '') }
+          }
           this.$store.commit('product/SET_SEARCHVAL', option)
           let params = { search: '' }
           if (this.$route.path === '/search') {
@@ -149,5 +159,15 @@
 <style>
   .my_div {
     margin-bottom: 15px;
+  }
+
+  .is-orange {
+    background-color: #ee7600;
+    color: white;
+  }
+
+  .is-orange:hover {
+    background-color: #0f77ea;
+    color: white;
   }
 </style>
