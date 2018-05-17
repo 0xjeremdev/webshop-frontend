@@ -2,10 +2,11 @@
   <section>
     <div class="columns is-mobile">
       <div class="column">
-      <search></search>
+        <br/>
       <Banner></Banner>
       </div>
-      <div class="column is-one-third">
+      <div class="column is-one-third is-primary">
+        <br />
         Other widgets
       </div>
     </div>

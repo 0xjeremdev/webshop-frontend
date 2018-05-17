@@ -13,10 +13,20 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', type: 'text/css', href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css'}
+      { rel: 'stylesheet', type: 'text/css', href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css' },
+      { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto+Slab' }
     ]
   },
   mode: 'spa',
+
+  // include buefy js on startup
+  plugins: [
+    { src: '~plugins/buefy', ssr: false },
+    { src: '~plugins/persistedstate.js', ssr: false }
+    //'~plugins/bootstrap.js'
+    //{ src: '~/plugins/vue-notifications.js', ssr: false }
+  ],
+
   // include your own css
   css: [
     '~/assets/main.css'
@@ -32,13 +42,7 @@ module.exports = {
   /* router: {
     middleware: ['auth', 'user-agent']
   }, */
-  // include buefy js on startup
-  plugins: [
-    { src: '~plugins/buefy', ssr: false },
-    { src: '~plugins/persistedstate.js', ssr: false }
-    //'~plugins/bootstrap.js'
-    //{ src: '~/plugins/vue-notifications.js', ssr: false }
-  ],
+
   /*
   ** Customize the progress bar color
   */

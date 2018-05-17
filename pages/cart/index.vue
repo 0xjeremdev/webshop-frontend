@@ -1,9 +1,14 @@
 <template>
-  <section class="section">
+  <section>
+    <div class="columns my-margin-top">
+      <div class="column">
+          <breadCrumb></breadCrumb>
+      </div>
+      <div class="column">
+
+      </div>
+    </div>
     <hr class="navbar-divider my_div">
-    <breadCrumb></breadCrumb>
-    <hr class="navbar-divider my_div">
-    <search></search>
     <div class="container">
       <h1 class="title">Cart</h1>
       <b-table :data="getCartContents"
@@ -151,5 +156,9 @@
   .is-orange:hover {
     background-color: #0f77ea;
     color: white;
+  }
+
+  .my-margin-top {
+    padding-top: 1rem;
   }
 </style>

@@ -1,9 +1,16 @@
 <template>
   <section id="search">
+    <!-- <hr class="navbar-divider my_div"> -->
+    <br />
     <b-field>
+      <p class="control">
+        <button class="button is-orange" @click="doSubmit()">
+            Search
+        </button>
+      </p>
       <b-autocomplete
         v-model.lazy="productName"
-        icon="magnify"
+        icon="microscope"
         :data="productData"
         placeholder="Search for products ... e.g. CD3"
         field="name"
@@ -14,13 +21,7 @@
         >
         <template slot="empty">{{ message }}</template>
       </b-autocomplete>
-      <p class="control">
-        <button class="button is-orange" @click="doSubmit()">
-            Search
-        </button>
-      </p>
     </b-field>
-    <hr class="navbar-divider my_div">
   </section>
 </template>
 
@@ -79,7 +80,7 @@
           let page = 1
           let option = { name: '', description: '' }
           if (typeof this.productName !== 'undefined') {
-            option = { name: this.productName.replace(/[^-a-zA-Z0-9-]+/gmi, ''), description: this.productName.replace(/[^-a-zA-Z0-9-]+/gmi, '') }
+            option = { name: this.productName.replace(/[^a-zA-Z0-9]+/gmi, ''), description: this.productName.replace(/[^a-zA-Z0-9]+/gmi, '') }
           }
           this.$store.commit('product/SET_SEARCHVAL', option)
           let params = { search: '' }

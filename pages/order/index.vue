@@ -35,7 +35,7 @@
             </b-taginput>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
-            <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon></b-checkbox-button>
+            <b-checkbox  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"></b-checkbox>
             <div v-else-if="val.inputType === 'radio'">
               <b-radio v-for="ro in val.options"
                 :key="ro"
@@ -105,10 +105,6 @@
               'label': 'Gender',
               'options': ['M', 'F']
             },
-            'birthdate': {
-              'inputType': 'date',
-              'label': 'Birthdate'
-            },
             'company': {
               'inputType': 'input',
               'label': 'Company'
@@ -131,7 +127,7 @@
             },
             'newsletter': {
               'inputType': 'checkbox',
-              'label': 'Newsletter Subscription'
+              'label': 'Monthly Newsletter Subscription'
             }
           }
         }

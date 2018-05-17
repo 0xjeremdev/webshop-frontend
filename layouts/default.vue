@@ -1,10 +1,24 @@
 <template>
   <div id="#itkdiagnostics" class="container">
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <nuxt-link class="navbar-item" to="/">
+    <section>
+      <div class="columns">
+        <div class="column is-one-quarter">
+
+      <nuxt-link to="/">
+        <img src="http://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="LabNed.com" width="auto" height="74px">
+      </nuxt-link>
+    </div>
+    <div class="column">
+      <search>
+      </search>
+    </div>
+  </div>
+    </section>
+    <nav class="navbar is-info rounded" role="navigation" aria-label="main navigation">
+      <div class="navbar-item">
+        <!-- <nuxt-link class="navbar-item" to="/">
           <img src="http://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="ITK Diagnostics B.V." width="auto" height="28px">
-        </nuxt-link>
+        </nuxt-link> -->
         <button v-on:click="collapse" class="button navbar-burger">
           <span></span>
           <span></span>
@@ -40,7 +54,7 @@
           <div class="field is-grouped">
             <cartWidgets></cartWidgets>
             <b-dropdown hoverable position="is-bottom-left" v-if="getAuth">
-              <button class="button is-info" slot="trigger">
+              <button class="button is-info" style="border: 1px solid white;" slot="trigger">
                 <b-icon icon="account-circle"></b-icon>
                 <span>Account</span>
               </button>
@@ -123,3 +137,7 @@
     }
   }
 </script>
+
+<style scoped>
+
+</style>

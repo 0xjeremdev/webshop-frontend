@@ -1,17 +1,17 @@
 <template>
   <section>
-    <hr class="navbar-divider my_div">
-    <div class="container">
+    <!-- <hr class="navbar-divider my_div"> -->
+    <div class="container my-margin-top">
       <div class="columns">
-        <div class="column is-one-quarter">
-            <h1 class="title">Products</h1>
+        <div class="column">
+            <breadCrumb></breadCrumb>
         </div>
         <div class="column">
-          <breadCrumb></breadCrumb>
+
         </div>
       </div>
       <hr class="navbar-divider my_div">
-      <search></search>
+      <!-- <search></search> -->
       <!-- <div class="columns">
         <div class="column is-one-quarter">
 
@@ -35,14 +35,12 @@
           <section>
             <div class="columns">
               <div class="column my-section">
-                <h2 class="subtitle" style="color: white;">Total products found: {{ getProductData.length }}</h2>
-              </div>
-              <div class="column is-one-third">
+                <h2 class="subtitle" style="padding-left: 5px; color: white;">Total products found: {{ getTotalData }}</h2>
               </div>
             </div>
           </section>
           <section v-if="getProductData.length > 0" class="section" v-for="(val, key) in getProductData">
-            <div class="columns my-margin">
+            <div class="columns my-margin-bottom">
               <div class="column">
                 <h2 class="subtitle"><nuxt-link :to="'/' + slugify(val.name + '-' + val.artno)">{{ val.name }} - {{ val.artno }}</nuxt-link></h2>
                 <div v-if="val.reactivity !== '' || val.reactivity !== null" class="art-line">
@@ -97,13 +95,16 @@
               <div class="column is-one-third">
                 <p class="title"> € {{ Number(val.price).toFixed(2) }}</p>
                 <p class="control">
-                  <button class="button is-orange" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+                  <button class="button is-orange my-button" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+                </p>
+                <p class="control" style="padding-top: 5px;">
+                  <button class="button is-success my-button" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
                 </p>
               </div>
             </div>
           </section>
           <section v-if="getProductData.length <= 0" class="section">
-            <div class="columns my-margin">
+            <div class="columns my-margin-bottom">
               <div class="column">
                 <p>No results found!</p>
               </div>
@@ -117,18 +118,23 @@
         </div>
         <div class="column" v-if="getProductData.length > 0">
           <hr>
-          <section class="section my-section">
-            <h2 class="subtitle" style="color: white;">Total products found: {{ getProductData.length }}</h2>
-          </section>
-          <br />
-          <b-pagination
-              :total="getTotalData"
-              :current.sync="current"
-              rounded
-              :per-page="perPage"
-              @change="nextProduct">
-          </b-pagination>
-          <br />
+          <div class="columns">
+            <div class="column my-section">
+              <h2 class="subtitle" style="color: white;">Total products found: {{ getTotalData }}</h2>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column my-pagination">
+              <br />
+              <b-pagination
+                  :total="getTotalData"
+                  :current.sync="current"
+                  :per-page="perPage"
+                  @change="nextProduct">
+              </b-pagination>
+              <br />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -241,8 +247,16 @@
     color: white;
   }
 
-  .my-margin {
+  .my-button {
+    width: 150px;
+  }
+
+  .my-margin-bottom {
     margin-bottom: -5rem;
+  }
+
+  .my-margin-top {
+    margin-top: 1rem;
   }
 
   .my-section {
@@ -251,10 +265,17 @@
     margin-top: 0.5rem;
     background-color: #0f77ea;
     color: white;
-    text-shadow: 2px 2px 4px #000000;
-    border-radius: 30px;
+    /* text-shadow: 2px 2px 4px #000000; */
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
     /* border: 2px black solid; */
 
+  }
+
+  .my-pagination {
+    padding: 0.5rem;
+    margin-left: 1.5rem;
+    margin-top: 0.5rem;
   }
 
   .art-line {

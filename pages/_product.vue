@@ -1,15 +1,24 @@
 <template>
-  <section class="section">
-    <hr class="navbar-divider my_div">
-    <breadCrumb></breadCrumb>
+  <section class="container">
+    <div class="columns my-margin-top">
+      <div class="column">
+          <breadCrumb></breadCrumb>
+      </div>
+      <div class="column">
+
+      </div>
+    </div>
     <hr class="navbar-divider my_div">
     <div class="container" v-if="product[0]">
       <div class="columns">
         <div class="column is-one-fifth">
           <p class="title"> € {{ Number(product[0].basic['Price LabNed']).toFixed(2) }}</p>
           <p class="control">
-            <button class="button is-orange" @click="addToCart(product[0].basic.vat, product[0].basic['name'], product[0].basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+            <button class="button is-orange" style="width: 150px;" @click="addToCart(product[0].basic.vat, product[0].basic['name'], product[0].basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+            <button class="button is-info" style="width: 150px;" @click="addToCart(product[0].basic.vat, product[0].basic['name'], product[0].basic['Price LabNed'])"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
           </p>
+          <br />
+          <Banner></Banner>
         </div>
         <div class="column">
           <h2 class="subtitle">{{ product[0].basic.name }} - {{ product[0].basic.vat }}</h2>
@@ -54,9 +63,10 @@
 <script>
   import Cookies from 'js-cookie'
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
+  import Banner from '~/components/widgets/banner.vue'
 
   export default {
-    components: { breadCrumb },
+    components: { breadCrumb, Banner },
     head () {
       return {
         title: 'LabNed.com - Exploring Possibilities',
@@ -392,5 +402,9 @@
   .is-orange:hover {
     background-color: #0f77ea;
     color: white;
+  }
+
+  .my-margin-top {
+    padding-top: 1rem;
   }
 </style>

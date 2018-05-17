@@ -40,13 +40,6 @@
               <b-input placeholder="Fax"></b-input>
             </b-field>
           </b-field>
-          <b-field label="birthdate">
-            <b-datepicker
-                placeholder="Type or select a date..."
-                icon="calendar-today"
-                :readonly="false">
-            </b-datepicker>
-          </b-field>
           <p class="control">
             <button type="submit" @click="doSubmit()" class="button is-primary">Change</button>
           </p>
