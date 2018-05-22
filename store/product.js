@@ -53,10 +53,9 @@ export const actions = {
       this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
       let searchVal = state.searchVal
       let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toUpperCase() : ''
-      // search = (params.search !== '' && params.search !== undefined) ? params.search.toUpperCase() : search
 
       let searchFilters = state.searchFilters
-      let filterString = ''
+      /* let filterString = ''
       for (var key in searchFilters) {
         if (Object.keys(searchFilters[key]).length > 0) {
           let valueString = []
@@ -104,10 +103,16 @@ export const actions = {
         }
       }
       console.log(query)
-      let mydata = await this.$axios.$post(rootState.productUrl + '/_api/cursor', query)
+      let mydata = await this.$axios.$post(rootState.productUrl + '/_api/cursor', query) */
+      let query = {
+        search: search,
+        page: page,
+        searchFilters: searchFilters
+      }
+      let mydata = await this.$axios.$post('http://localhost:25678/products/search', query)
       console.log(mydata)
-      commit('SET_TOTAL', mydata.extra.stats.fullCount)
-      commit('SET_DATA', mydata.result)
+      commit('SET_TOTAL', mydata.result.extra.stats.fullCount)
+      commit('SET_DATA', mydata.result._result)
       return mydata
     } catch (e) {
       console.log(e)
