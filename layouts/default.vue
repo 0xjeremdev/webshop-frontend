@@ -117,7 +117,7 @@
       },
       async logout () {
         try {
-          await this.$store.dispatch('logout')
+          await this.$store.dispatch('account/logout')
           this.$router.replace({ path: '/' })
         } catch (e) {
           this.formError = e.message
@@ -132,7 +132,7 @@
     },
     computed: {
       getAuth: function () {
-        return this.$store.state.authUser
+        return this.$store.state.account.token
       }
     }
   }

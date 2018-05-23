@@ -13,7 +13,7 @@
                 <b-input placeholder="Email"
                     icon="email"
                     :value="email"
-                    v-model="formUsername">
+                    v-model="formEmail">
                 </b-input>
             </b-field>
 
@@ -24,6 +24,7 @@
                   icon="lock"
                   :value="password"
                   type="password"
+                  password-reveal
                   v-model="formPassword"></b-input>
             </b-field>
 
@@ -52,7 +53,7 @@
         password_message: '',
         password: '',
         formError: null,
-        formUsername: '',
+        formEmail: '',
         formPassword: '',
         showError: false
       }
@@ -60,15 +61,15 @@
     methods: {
       async login () {
         try {
-          await this.$store.dispatch('login', {
-            username: this.formUsername,
+          await this.$store.dispatch('account/login', {
+            email: this.formEmail,
             password: this.formPassword
           })
-          this.formUsername = ''
+          this.formEmail = ''
           this.formPassword = ''
           this.formError = null
           this.showError = false
-          if (this.$store.state.authUser) {
+          if (this.$store.state.account.token) {
             this.$router.replace({ path: '/' })
           } else {
             this.formError = 'Could not login'

@@ -10,9 +10,10 @@ require('whatwg-fetch')
 
 export const state = () => ({
   authUser: null,
-  dbUrl: 'http://localhost:8529',
-  productUrl: 'http://localhost:8529/_db/key2publish/',
-  shopUrl: 'http://localhost:8529/_db/k2p_webshop/',
+  dbUrl: 'http://localhost:8529', // dev only
+  productUrl: 'http://localhost:8529/_db/key2publish/', // dev only
+  shopUrl: 'http://localhost:8529/_db/k2p_webshop/', // dev only
+  apiUrl: 'http://localhost:25678',
   cartContents: [],
   cookieAccepted: false
 })
