@@ -1,12 +1,16 @@
 import axios from 'axios'
 
 export const state = () => ({
-  token: null
+  token: null,
+  error: {}
 })
 
 export const mutations = {
   SET_TOKEN: function (state, value) {
     state.token = value
+  },
+  SET_ERROR: function (state, value) {
+    state.error = value
   }
 }
 
@@ -31,16 +35,19 @@ export const actions = {
     try {
       commit('SET_TOKEN', '')
     } catch (error) {
-      throw new Error('')
+      throw new Error('help')
     }
   },
 
   async register ({ commit, state, rootState }, { regData }) {
     try {
-      const { data } = await axios.post(rootState.apiUrl + '/auth/register', regData)
-      return data
+      console.log(regData)
+      await axios.post(rootState.apiUrl + '/auth/register', regData)
+      // return data.status === 200
+      return true
     } catch (error) {
-
+      commit('SET_ERROR', error.response.data.errors)
+      return false
     }
   }
 }

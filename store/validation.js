@@ -19,7 +19,7 @@ export const actions = {
     try {
       let message = ''
       if (value === null || value === '') {
-        message = 'This field cannot be empty'
+        message = 'Please select a value'
       }
 
       return message

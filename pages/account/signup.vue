@@ -31,14 +31,16 @@
                 <b-input type="password"
                     placeholder="Password reveal input"
                     password-reveal
-                    @blur="validate($event.srcElement.value, 'formPassword', 'password')">
+                    @blur="validate($event.srcElement.value, 'formPassword', 'password')"
+                    v-model.sync="formPassword">
                 </b-input>
             </b-field>
             <b-field label="Repeat Password" :type="(typeof message.formRepeatPassword !== 'undefined' && message.formRepeatPassword !== '') ? 'is-danger' : ''" :message="message.formRepeatPassword">
                 <b-input type="password"
                     placeholder="Password reveal input"
                     password-reveal
-                    @blur="validate($event.srcElement.value, 'formRepeatPassword', 'repeatPassword')">
+                    @blur="validate($event.srcElement.value, 'formRepeatPassword', 'repeatPassword')"
+                    v-model.sync="formRepeatPassword">
                 </b-input>
             </b-field>
             <b-field>
@@ -113,30 +115,35 @@
           this.validate(this.formEmail, 'formEmail', 'email')
           this.validate(this.formPassword, 'formPassword', 'password')
           this.validate(this.formRepeatPassword, 'formRepeatPassword', 'repeatPassword')
-          console.log(this.message)
+          // console.log(this.message)
           if (this.checkErrors) this.showError = true
           if (!this.checkErrors) {
             this.showError = false
-            await this.$store.dispatch('account/register', {
+            let register = await this.$store.dispatch('account/register', { regData: {
               email: this.formEmail,
               password: this.formPassword,
               title: this.formTitle,
               firstname: this.formFirstname,
               lastname: this.formLastname,
               newsletter: this.formNewsletter
-            })
-            this.formTitle = ''
-            this.formLastname = ''
-            this.formFirstname = ''
-            this.formEmail = ''
-            this.formPassword = ''
-            this.formRepeatPassword = ''
-            this.formNewsletter = false
-            this.showError = false
-            if (this.$store.state.account.token) {
-              this.$router.replace({ path: '/' })
+            }})
+
+            if (register) {
+              this.formTitle = null
+              this.formLastname = ''
+              this.formFirstname = ''
+              this.formEmail = ''
+              this.formPassword = ''
+              this.formRepeatPassword = ''
+              this.formNewsletter = false
+              this.showError = false
+              this.$router.replace({ path: '/account/success' })
             } else {
-              this.formError = 'Could not register'
+              this.formPassword = ''
+              this.formRepeatPassword = ''
+              const errors = this.$store.state.account.error
+              this.formError = 'Unexpected error: Could not register'
+              if (errors.length > 0) this.formError = errors[0].message
               this.showError = true
             }
           }
