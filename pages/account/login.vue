@@ -35,6 +35,14 @@
                 </button>
               </p>
             </b-field>
+            <hr>
+            <b-field>
+              <p class="control">
+                <button type="button" v-on:click="forgotpassword()" class="button is-info is-small">
+                  I forgot my Password
+                </button>
+              </p>
+            </b-field>
           </form>
         </div>
         <div class="column"></div>
