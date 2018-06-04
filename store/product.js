@@ -56,7 +56,7 @@ export const actions = {
         page: page,
         searchFilters: searchFilters
       }
-      let mydata = await this.$axios.$post(rootState.apiUrl + '/products/search', query)
+      let mydata = await this.$axios.$post(rootState.apiUrl + '/product/search', query)
       console.log(mydata)
       commit('SET_TOTAL', mydata.result.extra.stats.fullCount)
       commit('SET_DATA', mydata.result._result)

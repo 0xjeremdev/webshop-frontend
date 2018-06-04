@@ -31,13 +31,13 @@
             <p>No data found</p>
           </div>
         </section>
-      </template>      
+      </template>
     </b-table>
   </div>
 </template>
 
 <script>
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 export default {
   template: '#last-customer',
@@ -54,27 +54,16 @@ export default {
     async getData () {
       try {
         this.isLoading = true
-        if (!(this.$store.state.authUser instanceof Object)) {
-          this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
-        }
-        this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-        let query = {
-          'options':
-          {
-            'fullCount': true
-          },
-          'count': true,
-          'query': 'FOR p in Customer SORT p.creation_date DESC LIMIT 0,5 RETURN p'
-        }
-        console.log(query)
-        let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
-        console.log(data)
-        this.customerData = data['result']
-        if (!(data['result'][0] instanceof Object)) {
+        // get user token
+        let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/widgets/lastcustomers', '')
+        console.log(data['result'])
+        this.customerData = data['result']['_result']
+        if (!(data['result']['_result'][0] instanceof Object)) {
           this.isEmpty = true
         }
         this.isLoading = false
       } catch (e) {
+        console.log(e)
         this.$toast.open('Could not load data')
         this.isLoading = false
       }

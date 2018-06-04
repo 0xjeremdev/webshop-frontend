@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 export default {
   template: '#last-order',
@@ -55,24 +55,18 @@ export default {
     async getData () {
       try {
         this.isLoading = true
-        if (!(this.$store.state.authUser instanceof Object)) {
+        /* if (!(this.$store.state.authUser instanceof Object)) {
           this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
         }
-        this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-        let query = {
-          'options':
-          {
-            'fullCount': true
-          },
-          'count': true,
-          'query': 'FOR p in Order FILTER p.order_date != \'\' SORT p.order_date DESC LIMIT 0,5 RETURN p'
-        }
-        console.log(query)
-        let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
+        this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer') */
+
+        let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/widgets/lastorders')
         console.log(data)
-        this.orderData = data['result']
-        if (!(data['result'][0] instanceof Object)) {
-          this.isEmpty = true
+        if (data.status === 200) {
+          this.orderData = data['result']['_result']
+          if (!(data['result']['_result'][0] instanceof Object)) {
+            this.isEmpty = true
+          }
         }
         this.isLoading = false
       } catch (e) {

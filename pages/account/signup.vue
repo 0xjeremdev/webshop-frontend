@@ -13,8 +13,8 @@
             <b-field grouped>
               <b-field label="Title" :type="(typeof message.formTitle !== 'undefined' && message.formTitle !== '') ? 'is-danger' : ''" :message="message.formTitle">
                   <b-select placeholder="Title" v-model="formTitle">
-                      <option key="M" value="M">Mr.</option>
-                      <option key="F" value="F">Ms.</option>
+                      <option key="Mr." value="Mr.">Mr.</option>
+                      <option key="Mrs." value="Mrs.">Ms.</option>
                   </b-select>
               </b-field>
                 <b-field label="Lastname" expanded :type="(typeof message.formLastname !== 'undefined' && message.formLastname !== '') ? 'is-danger' : ''" :message="message.formLastname">

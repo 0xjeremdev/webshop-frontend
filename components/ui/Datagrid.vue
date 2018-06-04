@@ -199,15 +199,15 @@
               this.sortField = this.customSortField
               this.startValue = ''
             }
-            if (!(this.$store.state.authUser instanceof Object)) {
+            /* if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
-            this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
+            this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer') */
 
-            let dbIdentifier = 'p.'
-            if (this.type === 'product' || this.type === 'category') { dbIdentifier = 'p.basic.' }
+            // let dbIdentifier = 'p.'
+            // if (this.type === 'product' || this.type === 'category') { dbIdentifier = 'p.basic.' }
 
-            let searchFilter = ''
+            /* let searchFilter = ''
             for (let search in this.searches) {
               console.log(search)
               if (searchFilter !== '') { searchFilter += ' && ' }
@@ -226,12 +226,13 @@
             let executedQuery = this.queryOptions
 
             executedQuery['query'] = 'FOR p IN ' + this.tableName + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.perPage * (this.currentPage - 1)) + ', ' + this.perPage + ' RETURN p'
-            console.log(executedQuery)
-            let data = await this.$axios.$post(this.postUrl + '/_api/cursor', executedQuery)
+            console.log(executedQuery) */
+            console.log(this.$store.state.apiUrl + '/admin/' + this.type)
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/' + this.type)
             console.log(data)
-            if (data['result'][0] instanceof Object) {
-              this.data = data['result']
-              this.total = data['extra']['stats']['fullCount']
+            if (data['result']['_result'][0] instanceof Object) {
+              this.data = data['result']['_result']
+              this.total = data['result']['extra']['stats']['fullCount']
               this.loading = false
             } else {
               this.data = []
