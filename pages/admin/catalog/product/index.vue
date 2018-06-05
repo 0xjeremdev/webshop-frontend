@@ -2,7 +2,7 @@
   <div>
     <br />
     <h1 class="title">Products</h1>
-    <datagrid :data="gridData" :columns="gridColumns" :types="gridTypes" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type"></datagrid>
+    <datagrid :data="gridData" :columns="gridColumns" :types="gridTypes" :tableName="tableName" :apiUrl="apiUrl" :queryOptions="queryOptions" :type="type"></datagrid>
 </div>
 </template>
 
@@ -27,7 +27,7 @@
         gridTypes: { 'code': 'string', 'name': 'string' },
         gridData: [],
         queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
-        postUrl: this.$store.state.productUrl,
+        apiUrl: this.$store.state.apiUrl,
         tableName: 'k2p_product',
         type: 'product'
       }

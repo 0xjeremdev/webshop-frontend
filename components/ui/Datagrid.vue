@@ -60,7 +60,7 @@
         </b-table-column>
       </template>
       <template slot="footer">
-        <b-select class="" placeholder="Select an Action" @input="onActionChange" rounded>
+        <b-select v-model="actionChange" class="" placeholder="Select an Action" @input="onActionChange" rounded>
           <option value="deleteSelected">Delete Selected</option>
           <option value="addNew">Add New</option>
         </b-select>
@@ -94,14 +94,14 @@
 </template>
 
 <script>
-  import Cookies from 'js-cookie'
+  // import Cookies from 'js-cookie'
   export default {
     template: '#grid-template',
     props: {
       columns: Array,
       types: Object,
       queryOptions: Object,
-      postUrl: String,
+      apiUrl: String,
       tableName: String,
       type: String,
       customSortField: String,
@@ -109,6 +109,7 @@
     },
     data: function () {
       return {
+        actionChange: null,
         data: [],
         searches: {},
         isPaginated: true,
@@ -159,31 +160,38 @@
       },
       async doDelete (withCheckbox, row) {
         try {
-          if (!(this.$store.state.authUser instanceof Object)) {
+          /* if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
           }
-          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-          let codes = '['
-          let count = 0
+          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer') */
+          let codes = []
           if (withCheckbox) {
             for (var prod in this.checkedRows) {
-              if (count !== 0) { codes += ', ' }
-              codes += '\'' + this.checkedRows[prod]._key + '\''
-              count++
+              codes.push(this.checkedRows[prod]._key)
             }
-            codes += ']'
           }
-          let query
+          /* let query
           if (withCheckbox) {
             query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p._key IN ' + codes + ' REMOVE { _key: p._key } IN ' + this.tableName }
           } else {
             query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p._key == @key REMOVE { _key: p._key } IN ' + this.tableName + ' OPTIONS { waitForSync: true }', bindVars: { 'key': row._key } }
+          } */
+
+          let data
+          if (withCheckbox) {
+            console.log(this.apiUrl + '/admin/' + this.type + '/delete')
+            data = await this.$axios.$post(this.apiUrl + '/admin/' + this.type + '/delete', {id: codes})
+          } else {
+            console.log(this.apiUrl + '/admin/' + this.type + '/' + row._key)
+            data = await this.$axios.$delete(this.apiUrl + '/admin/' + this.type + '/' + row._key)
           }
-          console.log(query)
-          await this.$axios.$post(this.postUrl + '/_api/cursor', query)
+
+          console.log(data['_result'])
           await this.loadAsyncData()
+          await this.resetAction()
           this.$toast.open('Deleted ' + this.type)
         } catch (e) {
+          await this.resetAction()
           console.log(e)
           this.$toast.open('Could not delete ' + this.type)
         }
@@ -227,8 +235,23 @@
 
             executedQuery['query'] = 'FOR p IN ' + this.tableName + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.perPage * (this.currentPage - 1)) + ', ' + this.perPage + ' RETURN p'
             console.log(executedQuery) */
-            console.log(this.$store.state.apiUrl + '/admin/' + this.type)
-            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/' + this.type)
+            let queryString = ''
+            if (this.perPage !== undefined || this.perPage.isInteger()) queryString += '?perPage=' + this.perPage
+            if (this.currentPage !== undefined || this.currentPage.isInteger()) queryString += '&currentPage=' + this.currentPage
+            if (this.sortField !== undefined || this.sortField !== '') queryString += '&mysort=' + this.sortField
+            if (this.sortOrder !== undefined || this.sortOrder !== '') queryString += '&sortOrder=' + this.sortOrder
+
+            let searchFilter = ''
+            for (let search in this.searches) {
+              if (search !== 'undefined') searchFilter += '&' + search + '=' + this.searches[search]
+            }
+            if (this.customFilter !== undefined) {
+              searchFilter += this.customFilter
+            }
+            queryString += searchFilter
+
+            console.log(this.$store.state.apiUrl + '/admin/' + this.type + queryString)
+            let data = await this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString)
             console.log(data)
             if (data['result']['_result'][0] instanceof Object) {
               this.data = data['result']['_result']
@@ -273,10 +296,10 @@
         // console.log('jomhier')
         await this.loadAsyncData()
       },
-      onActionChange: function (action) {
+      async onActionChange (action) {
         switch (action) {
           case 'deleteSelected':
-            if (this.checkedRows.length > 1) {
+            if (this.checkedRows.length > 0) {
               this.$dialog.confirm({
                 title: 'Verwijder ' + this.type,
                 message: 'Weet u zeker dat u de ' + this.type + ' wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
@@ -284,9 +307,11 @@
                 cancelText: 'Annuleren',
                 type: 'is-danger',
                 hasIcon: true,
-                onConfirm: () => this.doDelete(true)
+                onConfirm: () => this.doDelete(true),
+                onCancel: () => this.resetAction()
               })
             } else {
+              await this.resetAction()
               this.$toast.open('No Data Selected')
             }
             break
@@ -294,6 +319,10 @@
             this.newProduct()
             break
         }
+      },
+      async resetAction () {
+        this.checkedRows = []
+        this.actionChange = null
       }
     },
     filters: {

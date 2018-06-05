@@ -57,7 +57,7 @@
 </template>
 
 <script>
-  import Cookies from 'js-cookie'
+  // import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
 
@@ -370,14 +370,14 @@
           let routeParams = this.$route.params
           // console.log(routeParams)
           if (routeParams instanceof Object && routeParams.key !== 'new') {
-            if (!(this.$store.state.authUser instanceof Object)) {
+            /* if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
-            let data = await this.$axios.$post(this.$store.state.productUrl + '/_api/cursor', query)
+            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } } */
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/product/' + routeParams.key)
             console.log(data)
-            this.productData = data['result'][0]
+            this.productData = data['result']['_result'][0]
             this.isNew = false
             this.isLoading = false
           } else {
@@ -407,7 +407,7 @@
       async saveData () {
         try {
           this.isLoading = true
-          if (!(this.$store.state.authUser instanceof Object)) {
+          /* if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
           }
           this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
@@ -438,8 +438,15 @@
               }
             }
             // console.log(query)
+          } */
+          console.log(this.productData)
+          let data = ''
+          if (!this.isNew) {
+            data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/product', { basic: this.productData.basic, seo: this.productData.seo, key: this.productData['_key'] })
+          } else {
+            data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/product', { basic: this.productData.basic, seo: this.productData.seo, key: this.productData['_key'] })
           }
-          let data = await this.$axios.$post(this.$store.state.productUrl + '/_api/cursor', query)
+
           console.log(data)
           this.isLoading = false
           this.$toast.open('Saved')
