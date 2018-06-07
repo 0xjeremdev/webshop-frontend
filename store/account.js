@@ -24,6 +24,7 @@ export const actions = {
       }
       commit('SET_TOKEN', data.result)
     } catch (error) {
+      if (error.response.data.errors[0].type === 'AccountInactive') throw new Error('Your account is inactive, please validate your account by checking your email for the activation link. If no activation link was received please contact our Customer Support')
       if (error.response && error.response.status === 401) {
         throw new Error('Could not log in, invalid username/password')
       }
@@ -39,7 +40,7 @@ export const actions = {
     }
   },
 
-  async register ({ commit, state, rootState }, { regData }) {
+  async register ({ commit, rootState }, { regData }) {
     try {
       console.log(regData)
       await axios.post(rootState.apiUrl + '/auth/register', regData)
@@ -48,6 +49,15 @@ export const actions = {
     } catch (error) {
       commit('SET_ERROR', error.response.data.errors)
       return false
+    }
+  },
+
+  async forgotPassword ({ rootState }, { email }) {
+    try {
+      await axios.post(rootState.apiUrl + '/auth/forgotpassword', email)
+      return true
+    } catch (error) {
+      throw new Error('Email was send to ' + email)
     }
   }
 }

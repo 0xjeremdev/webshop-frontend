@@ -2,7 +2,7 @@
   <div>
     <br />
     <h1 class="title">Products</h1>
-    <datagrid :data="gridData" :columns="gridColumns" :types="gridTypes" :tableName="tableName" :apiUrl="apiUrl" :queryOptions="queryOptions" :type="type"></datagrid>
+    <datagrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :apiUrl="apiUrl" :type="type"></datagrid>
 </div>
 </template>
 
@@ -23,12 +23,11 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['code', 'name'],
-        gridTypes: { 'code': 'string', 'name': 'string' },
+        gridColumns: ['vat', 'name', 'Price LabNed'],
+        gridLabels: ['LabNed No', 'Name', 'Price LabNed'],
+        gridTypes: { 'vat': 'string', 'name': 'string' },
         gridData: [],
-        queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
         apiUrl: this.$store.state.apiUrl,
-        tableName: 'k2p_product',
         type: 'product'
       }
     },

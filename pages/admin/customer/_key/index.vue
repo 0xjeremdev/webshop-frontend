@@ -1,6 +1,7 @@
 <template>
   <div>
     <br />
+    <form v-on:submit.prevent>
     <b-tabs position="is-centered" class="block" inputType="is-toggle-rounded">
       <b-tab-item v-for="(value, tabKey) in fields" :key="tabKey" :label="tabKey" :icon="fields[tabKey].icon">
         <div v-if="!isLoading">
@@ -24,7 +25,7 @@
             :data="val"
             :key="fieldKey"
             :label="getLabel(val, fieldKey)">
-            <b-input v-if="val.inputType === 'input'" :value="getValue(val, fieldKey, tabKey)" :placeholder="getLabel(val, fieldKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
+            <b-input v-if="val.inputType === 'input'" :autocomplete="fieldKey" :value="getValue(val, fieldKey, tabKey)" :placeholder="getLabel(val, fieldKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <imageControl v-else-if="val.inputType === 'imageUpload'" image="/images/Accus-Siezenis.png"></imageControl>
             <b-taginput v-else-if="val.inputType === 'tagInput'"
               :placeholder="getLabel(val, fieldKey)"
@@ -34,6 +35,9 @@
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
             <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon></b-checkbox-button>
+            <b-select v-else-if="val.inputType === 'dropdown'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
+                  <option v-for="option in val.options" :key="option" :value="option">{{ option }}</option>
+            </b-select>
             <div v-else-if="val.inputType === 'radio'">
               <b-radio v-for="ro in val.options"
                 :key="ro"
@@ -69,12 +73,13 @@
         </div>
       </b-tab-item>
     </b-tabs>
+    </form>
     <b-loading :active.sync="isLoading" :canCancel="true"></b-loading>
   </div>
 </template>
 
 <script>
-  import Cookies from 'js-cookie'
+  // import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
 
@@ -89,33 +94,50 @@
         fields: {
           'Customer': {
             'lastname': {
-              'inputType': 'input'
+              'inputType': 'input',
+              'label': 'Lastname'
             },
             'firstname': {
-              'inputType': 'input'
+              'inputType': 'input',
+              'label': 'Firstname'
+            },
+            'title': {
+              'inputType': 'dropdown',
+              'label': 'Title',
+              'options': ['Mr.', 'Mrs.']
             },
             'gender': {
               'inputType': 'radio',
               'label': 'Gender',
               'options': ['M', 'F']
             },
-            'birthdate': {
-              'inputType': 'date'
-            },
             'company': {
-              'inputType': 'input'
+              'inputType': 'input',
+              'label': 'Company'
             },
             'VAT_No': {
-              'inputType': 'input'
+              'inputType': 'input',
+              'label': 'Vat No'
             },
             'email': {
-              'inputType': 'input'
+              'inputType': 'input',
+              'label': 'Email'
             },
             'phone': {
-              'inputType': 'input'
+              'inputType': 'input',
+              'label': 'Phone'
             },
             'mobile': {
-              'inputType': 'input'
+              'inputType': 'input',
+              'label': 'Mobile'
+            },
+            'fax': {
+              'inputType': 'input',
+              'label': 'Fax'
+            },
+            'state': {
+              'inputType': 'input',
+              'label': 'Active'
             },
             'newsletter': {
               'inputType': 'checkbox',
@@ -191,15 +213,15 @@
           let routeParams = this.$route.params
           // console.log(routeParams)
           if (routeParams instanceof Object && routeParams.key !== 'new') {
-            if (!(this.$store.state.authUser instanceof Object)) {
+            /* if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Customer FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
-            let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
+            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Customer FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } } */
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/customer/' + routeParams.key)
             console.log(data)
-            this.productData = data['result'][0]
-            this.productData.birthdate = new Date(this.productData.birthdate)
+            this.productData = data['result']['_result'][0]
+            // this.productData.birthdate = new Date(this.productData.birthdate)
             this.isNew = false
             this.isLoading = false
           } else {
@@ -223,7 +245,7 @@
       async saveData () {
         try {
           this.isLoading = true
-          if (!(this.$store.state.authUser instanceof Object)) {
+          /* if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
           }
           this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
@@ -273,8 +295,31 @@
               }
             }
             console.log(query)
+          } */
+          console.log(this.productData)
+          let postData = {
+            'key': (this.productData._key !== undefined) ? this.productData._key : '',
+            'lastname': (this.productData.lastname !== undefined) ? this.productData.lastname : '',
+            'firstname': (this.productData.firstname !== undefined) ? this.productData.firstname : '',
+            'company': (this.productData.company !== undefined) ? this.productData.company : '',
+            'title': (this.productData.title !== undefined) ? this.productData.title : '',
+            'gender': (this.productData.gender !== undefined) ? this.productData.gender : '',
+            'email': (this.productData.email !== undefined) ? this.productData.email : '',
+            'phone': (this.productData.phone !== undefined) ? this.productData.phone : '',
+            'VAT_No': (this.productData['VAT_No'] !== undefined) ? this.productData['VAT_No'] : '',
+            'mobile': (this.productData.mobile !== undefined) ? this.productData.mobile : '',
+            'fax': (this.productData.fax !== undefined) ? this.productData.fax : '',
+            'state': (this.productData.state !== undefined) ? this.productData.state : '',
+            'password': (this.productData.password !== undefined) ? this.productData.password : '',
+            'newsletter': (this.productData.newsletter !== undefined) ? this.productData.newsletter : ''
           }
-          let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
+          console.log(postData)
+          let data = ''
+          if (!this.isNew) {
+            data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/customer', postData)
+          } else {
+            data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/customer', postData)
+          }
           console.log(data)
           this.isLoading = false
           this.$toast.open('Saved')

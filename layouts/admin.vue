@@ -1,5 +1,5 @@
 <template>
-  <div id="#itkdiagnostics" class="container">
+  <div id="#labned" class="container">
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <nuxt-link class="navbar-item" to="/">
@@ -25,9 +25,9 @@
               <nuxt-link class="navbar-item" to="/admin/catalog/product">
                 Products
               </nuxt-link>
-              <nuxt-link class="navbar-item" to="/admin/catalog/category">
+              <!-- <nuxt-link class="navbar-item" to="/admin/catalog/category">
                 Categories
-              </nuxt-link>
+              </nuxt-link> -->
             </div>
           </div>
           <nuxt-link class="navbar-item" to="/admin/order">

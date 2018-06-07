@@ -38,9 +38,9 @@
             <hr>
             <b-field>
               <p class="control">
-                <button type="button" v-on:click="forgotpassword()" class="button is-info is-small">
+                <nuxt-link to="/account/forgotpassword"><button type="button" class="button is-info is-small">
                   I forgot my Password
-                </button>
+                </button></nuxt-link>
               </p>
             </b-field>
           </form>

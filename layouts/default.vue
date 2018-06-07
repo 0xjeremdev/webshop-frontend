@@ -1,5 +1,5 @@
 <template>
-  <div id="#itkdiagnostics" class="container">
+  <div id="#labned" class="container">
     <section>
       <div class="columns">
         <div class="column is-one-quarter">
@@ -138,6 +138,25 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .button.is-primary {
+    background-color: #ee7600;
+  }
 
+  a {
+    color: #ee7600;
+  }
+
+  .has-text-primary {
+    color: #ee7600 !important;
+  }
+  .input:focus, .taginput .taginput-container.is-focusable:focus, .input.is-focused, .taginput .is-focused.taginput-container.is-focusable, .input:active, .taginput .taginput-container.is-focusable:active, .input.is-active, .taginput .is-active.taginput-container.is-focusable,
+  .textarea:focus,
+  .textarea.is-focused,
+  .textarea:active,
+  .textarea.is-active {
+    border-color: #aaa;
+    -webkit-box-shadow: 0 0 0 0.125em rgba(125, 125, 125, 0.25);
+            box-shadow: 0 0 0 0.125em rgba(125, 125, 125, 0.25);
+  }
 </style>
