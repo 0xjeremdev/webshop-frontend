@@ -39,6 +39,9 @@
           <nuxt-link class="navbar-item" to="/admin/customer">
             Customers
           </nuxt-link>
+          <nuxt-link class="navbar-item" to="/admin/cms">
+            CMS
+          </nuxt-link>
           <nuxt-link class="navbar-item" to="/admin/blog">
             Blog
           </nuxt-link>

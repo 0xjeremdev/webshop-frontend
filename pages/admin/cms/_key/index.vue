@@ -240,7 +240,7 @@
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
             let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Blog FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
             console.log(query) */
-            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/blog/' + routeParams.key)
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/page/' + routeParams.key)
             console.log(data)
             this.productData = data['result']['_result'][0]
             this.productData['publish_date'] = new Date(this.productData['publish_date'])
@@ -285,14 +285,14 @@
           }
           let data = null
           if (!this.isNew) {
-            data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/blog', postData)
+            data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/page', postData)
           } else {
-            data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/blog', postData)
+            data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/page', postData)
           }
           console.log(data)
           this.isLoading = false
           this.$toast.open('Saved')
-          this.$router.push('/admin/blog')
+          this.$router.push('/admin/cms')
         } catch (e) {
           console.log(e)
           this.$toast.open('Could not save data, please try again')
@@ -303,7 +303,7 @@
         return contains(col, arr)
       },
       goBack () {
-        this.$router.push('/admin/blog')
+        this.$router.push('/admin/cms')
       }
     }
   }

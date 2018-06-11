@@ -145,7 +145,7 @@
     },
     methods: {
       getIcon (val) {
-        if (val === 'true') {
+        if (val) {
           return 'check'
         }
         return 'close'

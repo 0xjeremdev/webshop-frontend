@@ -17,12 +17,12 @@
                       <option key="Mrs." value="Mrs.">Ms.</option>
                   </b-select>
               </b-field>
-                <b-field label="Lastname" expanded :type="(typeof message.formLastname !== 'undefined' && message.formLastname !== '') ? 'is-danger' : ''" :message="message.formLastname">
-                    <b-input autocomplete="lastname" placeholder="Lastname" @blur="validate($event.srcElement.value, 'formLastname', 'field')"></b-input>
-                </b-field>
-                <b-field label="Firstname" expanded :type="(typeof message.formFirstname !== 'undefined' && message.formFirstname !== '') ? 'is-danger' : ''" :message="message.formFirstname">
-                    <b-input autocomplete="firstname" placeholder="Firstname" @blur="validate($event.srcElement.value, 'formFirstname', 'field')"></b-input>
-                </b-field>
+              <b-field label="Firstname" expanded :type="(typeof message.formFirstname !== 'undefined' && message.formFirstname !== '') ? 'is-danger' : ''" :message="message.formFirstname">
+                  <b-input autocomplete="firstname" placeholder="Firstname" @blur="validate($event.srcElement.value, 'formFirstname', 'field')"></b-input>
+              </b-field>
+              <b-field label="Lastname" expanded :type="(typeof message.formLastname !== 'undefined' && message.formLastname !== '') ? 'is-danger' : ''" :message="message.formLastname">
+                  <b-input autocomplete="lastname" placeholder="Lastname" @blur="validate($event.srcElement.value, 'formLastname', 'field')"></b-input>
+              </b-field>
             </b-field>
             <b-field label="E-mail" :type="(typeof message.formEmail !== 'undefined' && message.formEmail !== '') ? 'is-danger' : ''" :message="message.formEmail">
               <b-input type="email" :value="formEmail" autocomplete="email" @blur="validate($event.srcElement.value, 'formEmail', 'email')" placeholder="example@labned.com"></b-input>

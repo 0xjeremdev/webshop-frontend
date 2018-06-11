@@ -43,6 +43,12 @@ export const actions = {
   async register ({ commit, rootState }, { regData }) {
     try {
       console.log(regData)
+      if (regData.vatno === undefined) regData.vatno = ''
+      if (regData.company === undefined) regData.company = ''
+      if (regData.phone === undefined) regData.phone = ''
+      if (regData.fax === undefined) regData.fax = ''
+      if (regData.mobile === undefined) regData.mobile = ''
+      if (regData.gender === undefined) regData.gender = ''
       await axios.post(rootState.apiUrl + '/auth/register', regData)
       // return data.status === 200
       return true
@@ -54,7 +60,8 @@ export const actions = {
 
   async forgotPassword ({ rootState }, { email }) {
     try {
-      await axios.post(rootState.apiUrl + '/auth/forgotpassword', email)
+      console.log(email)
+      await axios.post(rootState.apiUrl + '/recovery/auth/reset/request', { email: email })
       return true
     } catch (error) {
       throw new Error('Email was send to ' + email)

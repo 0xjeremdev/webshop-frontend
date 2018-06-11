@@ -56,9 +56,9 @@
         }
         this.email_type = ''
         this.email_message = ''
-        let forgotPassword = await this.$store.dispatch('account/forgotPassword', { regData: {
+        let forgotPassword = await this.$store.dispatch('account/forgotPassword', {
           email: this.formEmail
-        }})
+        })
         if (forgotPassword) {
           this.formEmail = 'An email was send with the password reset link to ' + this.formEmail
           this.showError = true

@@ -1,7 +1,7 @@
 <template>
   <div>
     <br />
-    <h1 class="title">Blogs</h1>
+    <h1 class="title">CMS</h1>
     <datagrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :tableName="tableName" :apiUrl="apiUrl" :type="type" :customSortField="customSortField"></datagrid>
 </div>
 </template>
@@ -28,8 +28,8 @@
         gridTypes: { 'title': 'string', 'author': 'string', 'active': 'boolean' },
         gridData: [],
         apiUrl: this.$store.state.apiUrl,
-        tableName: 'Blog',
-        type: 'blog',
+        tableName: 'Page',
+        type: 'page',
         customSortField: 'title'
       }
     },
