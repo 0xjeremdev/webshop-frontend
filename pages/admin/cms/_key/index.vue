@@ -31,10 +31,13 @@
               maxtags="5"
               :value="[]">
             </b-taginput>
-            <quill-editor v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
+            <p class="control" v-else-if="val.inputType === 'texteditor'">
+              <quill-editor ref="myTextEditor"
                 :value="getValue(val, fieldKey, tabKey)"
                 @input="setModel($event, fieldKey, tabKey)"
                 :config="editorConfig"></quill-editor>
+              <!-- <button class="button" @click="getHTML()">Show HTML</button> -->
+            </p>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
             <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="!getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon :icon="getIcon(val, fieldKey, tabKey)"></b-icon></b-checkbox-button>
@@ -177,6 +180,9 @@
       return params
     },
     methods: {
+      getHTML () {
+        console.log(this.$refs.myTextEditor[0].quill.root.innerHTML)
+      },
       getIcon (val, fieldKey, tabKey) {
         if (this.productData[fieldKey]) {
           return 'check'

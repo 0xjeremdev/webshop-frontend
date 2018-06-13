@@ -159,4 +159,8 @@
     -webkit-box-shadow: 0 0 0 0.125em rgba(125, 125, 125, 0.25);
             box-shadow: 0 0 0 0.125em rgba(125, 125, 125, 0.25);
   }
+
+  .control ul {
+    list-style: disc;
+  }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <page></page>
+  <page :slug="url_slug"></page>
 </template>
 
 <script>
@@ -10,6 +10,11 @@
     head () {
       return {
         title: 'LabNed.com - Exploring Possibilities'
+      }
+    },
+    data () {
+      return {
+        url_slug: 'protocols'
       }
     }
   }
