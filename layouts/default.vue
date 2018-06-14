@@ -34,7 +34,7 @@
           <nuxt-link class="navbar-item" to="/protocols">
             Protocols
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/aboutus">
+          <nuxt-link class="navbar-item" to="/about-us">
             About Us
           </nuxt-link>
           <nuxt-link class="navbar-item" to="/downloads">

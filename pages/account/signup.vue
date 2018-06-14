@@ -13,8 +13,7 @@
             <b-field grouped>
               <b-field label="Title" :type="(typeof message.formTitle !== 'undefined' && message.formTitle !== '') ? 'is-danger' : ''" :message="message.formTitle">
                   <b-select placeholder="Title" v-model="formTitle">
-                      <option key="Mr." value="Mr.">Mr.</option>
-                      <option key="Mrs." value="Mrs.">Ms.</option>
+                      <option v-for="title in titles" :key="title" :value="title">{{ title }}</option>
                   </b-select>
               </b-field>
               <b-field label="Firstname" expanded :type="(typeof message.formFirstname !== 'undefined' && message.formFirstname !== '') ? 'is-danger' : ''" :message="message.formFirstname">
@@ -69,7 +68,8 @@
         formTitle: null,
         formLastname: '',
         formFirstname: '',
-        message: {}
+        message: {},
+        titles: ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.']
       }
     },
     computed: {

@@ -9,11 +9,9 @@
 
 <script>
   export default {
-    props: [
-      'slug'
-    ],
     data () {
       return {
+        slug: this.$route.params.index,
         content: {
           title: '',
           article: ''

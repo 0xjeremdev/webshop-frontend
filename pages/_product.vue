@@ -61,7 +61,6 @@
   // import Cookies from 'js-cookie'
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
   import Banner from '~/components/widgets/banner.vue'
-  import axios from 'axios'
 
   export default {
     components: { breadCrumb, Banner },
@@ -320,15 +319,10 @@
         }
       }
     },
-    created () {
-      console.log(this.product)
-      // console.log(this.$router)
-      // this.getProduct()
-    },
-    asyncData ({ store, params, error }) {
-      return axios.get(store.state.apiUrl + '/product/' + params.product)
+    asyncData ({ store, params, error, app: { $axios } }) {
+      return $axios.get(store.state.apiUrl + '/product/' + params.product)
         .then((res) => {
-          console.log(res.data.result['_result'][0])
+          console.log(res)
           return { product: res.data.result['_result'][0] }
         })
         .catch((e) => {
@@ -336,35 +330,6 @@
         })
     },
     methods: {
-      async getProduct () {
-        try {
-          /* if (!(this.$store.state.authUser instanceof Object)) {
-            this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
-          }
-          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-
-          let query = {
-            'options': {
-              'fullCount': true
-            },
-            'count': true,
-            'query': 'FOR p in k2p_product FILTER p.seo.url_slug == @search RETURN p',
-            'bindVars': {
-              'search': this.$route.params.product
-            }
-          }
-          console.log(query) */
-          let product = await this.$axios.post(this.$store.state.apiUrl + '/product/' + this.$route.params.product)
-          this.product = product.data.result
-          console.log(this.product)
-          console.log(this.product.length)
-          // return product
-        } catch (e) {
-          this.statusCode = 404
-          console.log(e)
-        }
-        console.log(this.$route.params)
-      },
       addToCart (id, name, price) {
         let contents = {'amount': 1, 'id': id, 'name': name, 'price': price}
         this.$store.commit('ADD_TO_CART', contents)
@@ -374,33 +339,6 @@
         })
       }
     }
-    /* async asyncData ({params, error, store, app: { $axios }}) {
-      try {
-        if (!(store.state.authUser instanceof Object)) {
-          store.commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
-        }
-        $axios.setToken(store.state.authUser.jwt, 'Bearer')
-
-        let query = {
-          'options': {
-            'fullCount': true
-          },
-          'count': true,
-          'query': 'FOR p in k2p_product FILTER p.seo.url_slug == @search RETURN p',
-          'bindVars': {
-            'search': params.product
-          }
-        }
-        console.log(query)
-        let productData = await $axios.post(store.state.productUrl + '/_api/cursor', query)
-        console.log(productData)
-        return productData
-      } catch (e) {
-        console.log(e)
-        error({ message: 'Product not found', statusCode: 404 })
-      }
-      console.log(params)
-    } */
   }
 </script>
 

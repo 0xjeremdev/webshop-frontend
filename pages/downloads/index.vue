@@ -9,12 +9,12 @@
     components: { page },
     head () {
       return {
-        title: 'LabNed.com - Exploring Possibilities - Protocols'
+        title: 'LabNed.com - Exploring Possibilities - Downloads'
       }
     },
     data () {
       return {
-        url_slug: 'protocols'
+        url_slug: 'downloads'
       }
     }
   }
