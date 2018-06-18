@@ -44,12 +44,14 @@ export const mutations = {
 export const actions = {
   async getProducts ({ commit, state, rootState }, { params, page }) {
     try {
-      if (!(state.searchVal instanceof Object)) {
+      if ((state.searchVal === '')) {
         commit('SET_SEARCHVAL', Cookies.getJSON('key2publish').product.searchVal)
       }
       let searchVal = state.searchVal
-      let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toUpperCase() : ''
-
+      console.log('changed?')
+      console.log(searchVal)
+      // let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toUpperCase() : ''
+      let search = searchVal
       let searchFilters = state.searchFilters
       let query = {
         search: search,
@@ -74,7 +76,7 @@ export const actions = {
       if (!(rootState.authUser instanceof Object)) {
         commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
       }
-      if (!(state.searchVal instanceof Object)) {
+      if ((state.searchVal === '')) {
         commit('SET_SEARCHVAL', Cookies.getJSON('key2publish').product.searchVal)
       }
       this.$axios.setToken(rootState.authUser.jwt, 'Bearer')

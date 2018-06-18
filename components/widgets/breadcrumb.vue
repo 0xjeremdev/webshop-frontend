@@ -16,7 +16,10 @@
 </template>
 
 <script>
+  import search from '~/components/widgets/search.vue'
+
   export default {
+    components: { search },
     data () {
       return {
         breadcrumb: ['Home'],

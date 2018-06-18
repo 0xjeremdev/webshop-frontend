@@ -28,37 +28,6 @@ export const mutations = {
   },
   SET_COOKIEACCEPT: function (state, value) {
     state.cookieAccepted = value
-  },
-  SET_CART: function (state, cart) {
-    // used to restore the cart from cookie
-    // console.log('test')
-    // console.log(cart)
-    state.cartContents = cart
-  },
-  ADD_TO_CART: function (state, cart) {
-    // simpler function to add to the cart
-    let mycart = state.cartContents
-    // console.log(typeof mycart)
-    let found = false
-    for (let key in mycart) {
-      if (mycart[key]['id'] === cart['id']) {
-        // cart.amount++
-        mycart[key] = cart
-        found = true
-      }
-    }
-    if (!found) {
-      mycart.push(cart)
-    }
-    state.cartContents = []
-    state.cartContents = mycart
-  },
-  REMOVE_FROM_CART: function (state, index) {
-    // simpler function to remove from the cart
-    // console.log('index:' + index)
-    let mycart = state.cartContents
-    mycart.splice(index, 1)
-    state.cartContents = mycart
   }
 }
 export const actions = {

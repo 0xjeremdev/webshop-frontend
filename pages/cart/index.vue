@@ -15,11 +15,11 @@
         checkable
         :checked-rows.sync="checkedRows">
         <template slot-scope="props">
-          <b-table-column field="id" label="ID" width="40" numeric>
+          <b-table-column field="id" label="Art. No." width="40" numeric>
             {{ props.row.id }}
           </b-table-column>
 
-          <b-table-column field="name" label="Name">
+          <b-table-column field="name" label="Product Description">
             {{ props.row.name }}
           </b-table-column>
 
@@ -29,7 +29,7 @@
             </b-field>
           </b-table-column>
 
-          <b-table-column field="price" label="Price" numeric width="120">
+          <b-table-column field="price" label="Price *" numeric width="120">
             € {{ (parseFloat(props.row.price ) * Number(props.row.amount)).toFixed(2) }}
           </b-table-column>
 
@@ -39,9 +39,9 @@
         </template>
 
         <template slot="footer" v-if="getCartContents[0]">
-          <th>{{ test }}</th>
           <th></th>
           <th></th>
+          <th>{{ text }}</th>
           <th>
             <div class="th-wrap is-numeric">Total:</div>
           </th>
@@ -75,6 +75,7 @@
           <nuxt-link to="/order"><button class="button is-success">Order</button></nuxt-link>
         </div>
       </div>
+      <br />
     </div>
   </section>
 </template>
@@ -90,7 +91,7 @@
     data () {
       return {
         checkedRows: [],
-        test: ''
+        text: '* price is excluding shipping and handling costs and tax'
       }
     },
     created () {
@@ -109,6 +110,9 @@
       ])
     },
     methods: {
+      async getData () {
+
+      },
       calcTotal: function () {
         let total = 0
         for (let key in this.getCartContents) {

@@ -8,24 +8,38 @@
 
       </div>
     </div>
-    <hr class="navbar-divider my_div">
+    <!-- <hr class="navbar-divider my_div"> -->
     <div class="container">
       <div class="columns">
-        <div class="column is-one-fifth">
-          <p class="title"> € {{ Number(product.basic['Price LabNed']).toFixed(2) }}</p>
-          <p class="control">
-            <button class="button is-orange" style="width: 150px;" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
-            <button class="button is-info" style="width: 150px;" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
-          </p>
+        <div class="column is-one-third">
+          <div class="sticky">
+          <p class="title my-img"> € {{ Number(product.basic['Price LabNed']).toFixed(2) }}</p>
+          <div class="columns is-mobile">
+            <div class="column">
+              <button class="button is-orange my-img" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+            </div>
+            <div class="column">
+              <button class="button is-info my-img" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
+            </div>
+          </div>
           <br />
-          <Banner></Banner>
+          <div class="columns is-mobile">
+            <div class="column">
+              <img class="my-img" src="https://wikiki.github.io/images/merry-christmas.jpg" />
+            </div>
+            <div class="column">
+              <img class="my-img" src="https://wikiki.github.io/images/singer.jpg" />
+            </div>
+          </div>
+          </div>
         </div>
         <div class="column">
           <h2 class="subtitle">{{ product.basic.name }} - {{ product.basic.vat }}</h2>
+
           <b-collapse class="card" v-for="(value, tabKey) in fields" :key="tabKey" :open="(tabKey === 'Product Information')">
             <div slot="trigger" slot-scope="props" class="card-header">
                 <p class="card-header-title">
-                    {{ tabKey }}
+                    {{ tabKey }} <p v-if="tabKey === 'Product Information'" class="control"><button class="button is-danger" style="width: 150px;" @click="showPDF(product.basic.vat)"><b-icon icon="file-pdf"></b-icon><span>PDF Datasheet</span></button></p>
                 </p>
                 <a class="card-header-icon">
                     <b-icon
@@ -75,9 +89,9 @@
         product: {},
         fields: {
           'Product Information': {
-            'code': {
+            'vat': {
               'inputType': 'input',
-              'label': 'ITK artikelnummer',
+              'label': 'Article number',
               'disabled': true
             },
             'name': {
@@ -87,18 +101,6 @@
             'description': {
               'inputType': 'input',
               'label': 'Alternative names'
-            },
-            'picture': {
-              'inputType': 'imageUpload',
-              'label': 'Image 1'
-            },
-            'price': {
-              'inputType': 'imageUpload',
-              'label': 'Image 2'
-            },
-            'vat': {
-              'inputType': 'input',
-              'label': 'LabNed artikel nummer'
             },
             'Size': {
               'inputType': 'input'
@@ -337,6 +339,9 @@
           message: 'Product added to <nuxt-link to="/cart">Cart</nuxt-link>',
           type: 'is-success'
         })
+      },
+      showPDF (id) {
+
       }
     }
   }
@@ -356,4 +361,18 @@
   .my-margin-top {
     padding-top: 1rem;
   }
+
+  .my-img {
+    width: 200px;
+  }
+
+.sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+}
+
+.sticky-top {
+  top: 50px;
+}
 </style>

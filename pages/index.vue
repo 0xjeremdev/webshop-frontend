@@ -1,13 +1,12 @@
 <template>
   <section>
-    <div class="columns is-mobile">
+    <div class="columns">
       <div class="column">
         <br/>
       <Banner></Banner>
       </div>
-      <div class="column is-one-third is-primary">
-        <br />
-        Other widgets
+      <div class="column">
+        <search :expanded="true"></search>
       </div>
     </div>
   </section>

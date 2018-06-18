@@ -11,14 +11,16 @@
       <b-autocomplete
         v-model.lazy="productName"
         icon="microscope"
-        :data="productData"
+        :data="autocomplete"
         placeholder="Search for products ... e.g. CD3"
-        field="name"
         :loading="isFetching"
         @select="option => selectProduct(option)"
         v-on:keyup.13.native="doSubmit()"
-        expanded
+        :expanded="expanded"
         >
+        <!-- <template slot="header">
+          <span style="font-weight:bold;font-style:italic">Suggestions:</span>
+        </template> -->
         <template slot="empty">{{ message }}</template>
       </b-autocomplete>
     </b-field>
@@ -30,6 +32,9 @@
   import _ from 'lodash'
 
   export default {
+    props: {
+      expanded: Boolean
+    },
     data () {
       return {
         productName: '',
@@ -52,17 +57,32 @@
       let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
       this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
       if (route === '/search') {
-        if (!(this.$store.state.product.searchVal instanceof Object)) {
-          this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
+        if ((this.$store.state.product.searchVal === '')) {
+          // this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
         }
 
         let searchVal = this.$store.state.product.searchVal
-        this.productName = searchVal.name
-        if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
+        console.log(searchVal)
+        this.productName = searchVal
+        /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
           this.productName = searchVal.name
-        }
+        } */
       } else {
         this.$store.commit('product/SET_SEARCHVAL', '')
+      }
+    },
+    computed: {
+      autocomplete () {
+        let names = []
+        for (let prod in this.productData) {
+          let searchNames = this.productData[prod].description.split(',')
+          for (let name in searchNames) {
+            if (!names.includes(searchNames[name].trim())) {
+              names.push(searchNames[name].trim())
+            }
+          }
+        }
+        return names
       }
     },
     methods: {
@@ -78,10 +98,11 @@
           let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
           this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
           let page = 1
-          let option = { name: '', description: '' }
+          let option = ''
           if (typeof this.productName !== 'undefined') {
-            option = { name: this.productName.replace(/[^a-zA-Z0-9]+/gmi, ''), description: this.productName.replace(/[^a-zA-Z0-9]+/gmi, '') }
+            option = this.productName.replace(/[^a-zA-Z0-9]+/gmi, '')
           }
+          // console.log(option)
           this.$store.commit('product/SET_SEARCHVAL', option)
           let params = { search: '' }
           if (this.$route.path === '/search') {

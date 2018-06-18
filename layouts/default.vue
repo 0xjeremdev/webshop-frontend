@@ -1,57 +1,14 @@
 <template>
   <div id="#labned" class="container">
-    <section>
-      <div class="columns">
-        <div class="column is-one-quarter">
-
-      <nuxt-link to="/">
-        <img src="http://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="LabNed.com" width="auto" height="74px">
-      </nuxt-link>
-    </div>
-    <div class="column">
-      <search>
-      </search>
-    </div>
-  </div>
-    </section>
-    <nav class="navbar is-info rounded" role="navigation" aria-label="main navigation">
-      <div class="navbar-item">
-        <!-- <nuxt-link class="navbar-item" to="/">
-          <img src="http://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="ITK Diagnostics B.V." width="auto" height="28px">
-        </nuxt-link> -->
-        <button v-on:click="collapse" class="button navbar-burger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-
-      <div id="navBarAdmin" class="navbar-menu" :class="{ 'is-active': showNav }">
-        <div class="navbar-start">
-          <nuxt-link class="navbar-item" to="/search">
-            Products
-          </nuxt-link>
-          <nuxt-link class="navbar-item" to="/protocols">
-            Protocols
-          </nuxt-link>
-          <nuxt-link class="navbar-item" to="/about-us">
-            About Us
-          </nuxt-link>
-          <nuxt-link class="navbar-item" to="/downloads">
-            Downloads
-          </nuxt-link>
-          <nuxt-link class="navbar-item" to="/distributors">
-            Distributors
-          </nuxt-link>
-          <nuxt-link class="navbar-item" to="/contact">
-            Contact Us
+    <nav class="is-flex-mobile">
+      <div class="columns is-mobile">
+        <div class="column">
+          <nuxt-link to="/">
+            <img src="http://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="LabNed.com" width="auto" height="74px">
           </nuxt-link>
         </div>
-      </div>
-
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="field is-grouped">
+        <div class="column is-one-quarter">
+          <div class="field is-grouped is-pulled-right my-margins">
             <cartWidgets></cartWidgets>
             <b-dropdown hoverable position="is-bottom-left" v-if="getAuth">
               <button class="button is-info" style="border: 1px solid white;" slot="trigger">
@@ -73,14 +30,64 @@
         </div>
       </div>
     </nav>
+    <nav class="navbar rounded is-info" role="navigation" aria-label="main navigation">
+      <div class="navbar-item">
+        <button v-on:click="collapse" class="button navbar-burger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <div id="navbarFront" class="navbar-menu" :class="{ 'is-active': showNav }">
+        <div class="navbar-start">
+          <nuxt-link class="navbar-item" to="/search">
+            Products
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/protocols">
+            Protocols
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/about-us">
+            About Us
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/downloads">
+            Downloads
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/distributors">
+            Distributors
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/contact">
+            Contact Us
+          </nuxt-link>
+        </div>
+      </div>
+    </nav>
     <main role="main">
       <cookiewall></cookiewall>
+      <search v-if="$route.path !== '/'" :expanded="true"></search>
       <nuxt/>
     </main>
     <footer class="footer">
       <div class="container">
-        <div class="content has-text-centered">
-          <p>Footer</p>
+        <div class="columns">
+          <div class="column">
+            Social Media links here
+          </div>
+          <div class="column is-2">
+            Payment Logos here
+          </div>
+          <div class="column is-2">
+            <h3 class="subtitle">Help &amp; Support</h3>
+            <p v-for="value in supportLinks">
+              <nuxt-link :to="value.link">{{ value.name }}</nuxt-link>
+            </p>
+          </div>
+          <div class="column is-2">
+            <h3 class="subtitle">Company</h3>
+            <p v-for="value in companyLinks">
+              <nuxt-link :to="value.link">{{ value.name }}</nuxt-link>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
@@ -89,18 +96,28 @@
 
 <script>
   import cartWidgets from '~/components/widgets/cart.vue'
-  import breadCrumb from '~/components/widgets/breadcrumb.vue'
-  import search from '~/components/widgets/search.vue'
   import cookiewall from '~/components/widgets/cookiewall.vue'
+  import search from '~/components/widgets/search.vue'
 
   export default {
     created () {
       // this.$store.dispatch('connectDB')
     },
-    components: { cartWidgets, breadCrumb, search, cookiewall },
+    components: { cartWidgets, cookiewall, search },
     data () {
       return {
-        showNav: false
+        showNav: false,
+        supportLinks: [
+          { 'name': 'Terms & Conditions', 'link': '/cms/terms-conditions' },
+          { 'name': 'Cookie Statement', 'link': '/cms/cookie-statement' },
+          { 'name': 'Privacy Statement', 'link': '/cms/privacy-statement' },
+          { 'name': 'Disclaimer', 'link': '/cms/disclaimer' }
+        ],
+        companyLinks: [
+          { 'name': 'Protocols', 'link': '/protocols' },
+          { 'name': 'Technical Faqs', 'link': '/cms/technical-faqs' },
+          { 'name': 'LabNews', 'link': '/blog' }
+        ]
       }
     },
     head () {
@@ -139,6 +156,15 @@
 </script>
 
 <style>
+  .my-margins {
+    margin: 1.5rem;
+    float: right;
+  }
+
+  .my-paddings {
+    padding: 2rem;
+  }
+
   .button.is-primary {
     background-color: #ee7600;
   }

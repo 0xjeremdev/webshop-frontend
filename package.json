@@ -26,7 +26,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.0.1",
     "axios": "^0.17.1",
-    "buefy": "^0.6.5",
+    "buefy": "^0.6.6",
     "bulma": "^0.6.2",
     "bulma-extensions": "^1.0.14",
     "bulma-steps-component": "^0.5.3",

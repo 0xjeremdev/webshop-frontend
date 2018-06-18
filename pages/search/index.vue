@@ -7,10 +7,9 @@
             <breadCrumb></breadCrumb>
         </div>
         <div class="column">
-
         </div>
       </div>
-      <hr class="navbar-divider my_div">
+      <!-- <hr class="navbar-divider my_div"> -->
       <!-- <search></search> -->
       <!-- <div class="columns">
         <div class="column is-one-quarter">
@@ -143,12 +142,11 @@
 </template>
 
 <script>
-  import search from '~/components/widgets/search.vue'
   import FilterSearch from '~/components/widgets/filter.vue'
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
 
   export default {
-    components: { search, FilterSearch, breadCrumb },
+    components: { FilterSearch, breadCrumb },
     head () {
       return {
         title: 'Search Products | LabNed.com - Exploring Possibilities'
