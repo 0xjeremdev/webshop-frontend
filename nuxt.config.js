@@ -1,6 +1,9 @@
 const webpack = require('webpack')
 
 module.exports = {
+  env: {
+    apiUrl: process.env.API_URL || 'http://localhost:25678'
+  },
   /*
   ** Headers of the page
   */
@@ -16,9 +19,6 @@ module.exports = {
       { rel: 'stylesheet', type: 'text/css', href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css' },
       { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto+Slab' }
     ]
-  },
-  env: {
-    apiUrl: process.env.API_URL || 'http://206.189.14.79:3000'
   },
   mode: 'spa',
 

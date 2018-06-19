@@ -42,13 +42,12 @@ export const mutations = {
 }
 
 export const actions = {
-  async getProducts ({ commit, state, rootState }, { params, page }) {
+  async getProducts ({ context, commit, state, rootState }, { params, page }) {
     try {
       if ((state.searchVal === '')) {
         commit('SET_SEARCHVAL', Cookies.getJSON('key2publish').product.searchVal)
       }
       let searchVal = state.searchVal
-      console.log('changed?')
       console.log(searchVal)
       // let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toUpperCase() : ''
       let search = searchVal

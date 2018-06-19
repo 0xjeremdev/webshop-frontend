@@ -1,6 +1,6 @@
 <template>
   <div id="#labned" class="container">
-    <nav class="is-flex-mobile">
+    <div class="is-flex-mobile">
       <div class="columns is-mobile">
         <div class="column">
           <nuxt-link to="/">
@@ -29,8 +29,8 @@
           </div>
         </div>
       </div>
-    </nav>
-    <nav class="navbar rounded is-info" role="navigation" aria-label="main navigation">
+    </div>
+    <nav class="navbar rounded is-info my-zindex" role="navigation" aria-label="main navigation">
       <div class="navbar-item">
         <button v-on:click="collapse" class="button navbar-burger">
           <span></span>
@@ -163,6 +163,10 @@
 
   .my-paddings {
     padding: 2rem;
+  }
+
+  .my-zindex {
+    z-index: 1
   }
 
   .button.is-primary {
