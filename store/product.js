@@ -78,14 +78,14 @@ export const actions = {
       if ((state.searchVal === '')) {
         commit('SET_SEARCHVAL', Cookies.getJSON('key2publish').product.searchVal)
       }
-      this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
+      // this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
       // console.log(params.search)
       let searchVal = state.searchVal
       // console.log(searchVal)
-      let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toLowerCase() : ''
+      let search = (searchVal !== '' && searchVal !== undefined) ? searchVal.toLowerCase() : ''
       search = (params.search !== '' && params.search !== undefined) ? params.search.toLowerCase() : search
       let searchFilters = state.searchFilters
-      let filterString = ''
+      /* let filterString = ''
       for (var key in searchFilters) {
         if (Object.keys(searchFilters[key]).length > 0) {
           let valueString = []
@@ -126,11 +126,13 @@ export const actions = {
             search.trim() + '4, -prefix:' + search.trim() + '5, -prefix:' + search.trim() + '6, -prefix:' + search.trim() + '7, -prefix:' + search.trim() + '8, -prefix:' + search.trim() + '9') : ''
           }
         }
-      }
+      } */
       // console.log(query)
-      let mydata = await this.$axios.$post(rootState.productUrl + '/_api/cursor', query)
+      let postData = { searchVal: search, searchFilters: searchFilters, field: field }
+      let mydata = await this.$axios.$post(rootState.apiUrl + '/filter', postData)
       let val = {}
-      val[field] = mydata.result
+      console.log(mydata)
+      val[field] = mydata.result['_result']
       // console.log(val)
       // console.log(mydata.extra.stats.fullCount)
       commit('SET_FILTERS', val)

@@ -42,52 +42,58 @@
             <div class="columns my-margin-bottom">
               <div class="column">
                 <h2 class="subtitle"><nuxt-link :to="'/' + slugify(val.name + '-' + val.artno)">{{ val.name }} - {{ val.artno }}</nuxt-link></h2>
-                <div v-if="val.reactivity !== '' || val.reactivity !== null" class="art-line">
-                  <div class="art-label">
-                    Reactivity
+                <div class="columns">
+                  <div class="column">
+                    <div v-if="val.reactivity !== '' || val.reactivity !== null" class="art-line">
+                      <div class="art-label">
+                        Reactivity
+                      </div>
+                      <div class="art-value">
+                        {{ val.reactivity }}
+                      </div>
+                    </div>
+                    <div v-if="val.host !== '' && val.host !== null" class="art-line">
+                      <div class="art-label">
+                        Host
+                      </div>
+                      <div class="art-value">
+                        {{ val.host }}
+                      </div>
+                    </div>
+                    <div v-if="val.applications !== '' && val.applications !== null" class="art-line">
+                      <div class="art-label">
+                        Applications
+                      </div>
+                      <div class="art-value">
+                        {{ val.applications }}
+                      </div>
+                    </div>
                   </div>
-                  <div class="art-value">
-                    {{ val.reactivity }}
-                  </div>
-                </div>
-                <div v-if="val.host !== '' && val.host !== null" class="art-line">
-                  <div class="art-label">
-                    Host
-                  </div>
-                  <div class="art-value">
-                    {{ val.host }}
-                  </div>
-                </div>
-                <div v-if="val.clone !== '' && val.clone !== null" class="art-line">
-                  <div class="art-label">
-                    Clone
-                  </div>
-                  <div class="art-value">
-                    {{ val.clone }}
-                  </div>
-                </div>
-                <div v-if="val.applications !== '' && val.applications !== null" class="art-line">
-                  <div class="art-label">
-                    Applications
-                  </div>
-                  <div class="art-value">
-                    {{ val.applications }}
-                  </div>
-                </div>
-                <div v-if="val.conjugate !== '' && val.conjugate !== null" class="art-line">
-                  <div class="art-label">
-                    Conjugate
-                  </div>
-                  <div class="art-value">
-                    {{ val.conjugate }}
-                  </div>
-                </div>
-                <div v-if="val.size !== '' && val.size !== null" class="art-line">
-                  <div class="art-label">
-                    Size
-                  </div>
-                  <div class="art-value">
-                    {{ val.size }}
+                  <div class="column">
+                    <div v-if="val.clone !== '' && val.clone !== null" class="art-line">
+                      <div class="art-label">
+                        Clone
+                      </div>
+                      <div class="art-value">
+                        {{ val.clone }}
+                      </div>
+                    </div>
+                    <div v-if="val.conjugate !== '' && val.conjugate !== null" class="art-line">
+                      <div class="art-label">
+                        Conjugate
+                      </div>
+                      <div class="art-value">
+                        {{ val.conjugate }}
+                      </div>
+                    </div>
+                    <div v-if="val.size !== '' && val.size !== null" class="art-line">
+                      <div class="art-label">
+                        Size
+                      </div>
+                      <div class="art-value">
+                        {{ val.size }}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -293,6 +299,7 @@
     margin-right: 5px;
     min-width: 6em;
     clear: both;
+    font-weight: bold;
   }
 
   .art-value {

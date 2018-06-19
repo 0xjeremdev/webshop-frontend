@@ -86,12 +86,12 @@
         myVal[type][value[type]] = !checked
         this.$store.commit('product/SET_SEARCH_FILTERS', myVal)
         this.getProductData()
-        this.getData('Product category LabNed')
+        /* this.getData('Product category LabNed')
         this.getData('Reactivity')
         this.getData('Host')
         this.getData('Clone')
         this.getData('Applications')
-        this.getData('Conjugate')
+        this.getData('Conjugate') */
       },
       async getProductData () {
         let params = this.$route.query

@@ -36,6 +36,14 @@
             <b-checkbox v-model="newsletter">Signup for the monthly newsletter</b-checkbox>
           </b-field>
           <button type="submit" class="button is-primary">Change</button>
+          <hr>
+          <b-field>
+            <p class="control">
+              <nuxt-link to="/account/delete"><button type="button" class="button is-danger is-small">
+                Request removal of my account
+              </button></nuxt-link>
+            </p>
+          </b-field>
           </form>
         </div>
       </div>
