@@ -1,17 +1,17 @@
 <template>
   <div id="#labned" class="container">
     <div class="is-flex-mobile">
-      <div class="columns is-mobile">
+      <div class="columns">
         <div class="column">
           <nuxt-link to="/">
             <img src="https://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="LabNed.com" width="auto" height="74px">
           </nuxt-link>
         </div>
-        <div class="column is-one-quarter">
+        <div class="column">
           <div class="field is-grouped is-pulled-right my-margins">
             <cartWidgets></cartWidgets>
             <b-dropdown hoverable position="is-bottom-left" v-if="getAuth">
-              <button class="button is-info" style="border: 1px solid white;" slot="trigger">
+              <button class="button is-info" @click="account()" style="border: 1px solid white;" slot="trigger">
                 <b-icon icon="account-circle"></b-icon>
                 <span>Account</span>
               </button>

@@ -10,8 +10,12 @@
           <b-field grouped>
             <b-field label="Title">
                 <b-select placeholder="Title">
-                    <option value="M">Mr.</option>
-                    <option value="F">Ms.</option>
+                  <option
+                      v-for="option in data.title"
+                      :value="option"
+                      :key="option">
+                      {{ option }}
+                  </option>
                 </b-select>
             </b-field>
               <b-field label="Lastname" expanded>
@@ -20,6 +24,16 @@
               <b-field label="Firstname" expanded>
                   <b-input placeholder="Firstname"></b-input>
               </b-field>
+          </b-field>
+          <b-field label="Area of Interest">
+              <b-select expanded placeholder="Select an Area of Interest">
+                  <option
+                      v-for="option in data.areaofinterest"
+                      :value="option"
+                      :key="option">
+                      {{ option }}
+                  </option>
+              </b-select>
           </b-field>
           <b-field grouped>
             <b-field label="Company" expanded>
@@ -56,6 +70,10 @@
     components: { accountMenu },
     data () {
       return {
+        data: {
+          areaofinterest: ['Research Immunology', 'Cell Biology', 'Molecular Biology', 'Pathology'],
+          title: ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.']
+        },
         newsletter: false
       }
     },
