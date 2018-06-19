@@ -17,6 +17,9 @@ module.exports = {
       { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto+Slab' }
     ]
   },
+  env: {
+    apiUrl: process.env.API_URL || 'http://206.189.14.79:3000'
+  },
   mode: 'spa',
 
   // include buefy js on startup
