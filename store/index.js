@@ -13,7 +13,7 @@ export const state = () => ({
   dbUrl: 'http://localhost:8529', // dev only
   productUrl: 'http://localhost:8529/_db/key2publish/', // dev only
   shopUrl: 'http://localhost:8529/_db/k2p_webshop/', // dev only
-  apiUrl: process.env.API_URL,
+  apiUrl: process.env.apiUrl,
   cartContents: [],
   cookieAccepted: false
 })

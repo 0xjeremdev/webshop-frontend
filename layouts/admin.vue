@@ -3,7 +3,7 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <nuxt-link class="navbar-item" to="/">
-          <img src="http://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="ITK Diagnostics B.V. - Admin Page" width="auto" height="28px">
+          <img src="https://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="ITK Diagnostics B.V. - Admin Page" width="auto" height="28px">
         </nuxt-link>
         <button v-on:click="collapse" class="button navbar-burger">
           <span></span>

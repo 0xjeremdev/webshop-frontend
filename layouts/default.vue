@@ -4,7 +4,7 @@
       <div class="columns is-mobile">
         <div class="column">
           <nuxt-link to="/">
-            <img src="http://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="LabNed.com" width="auto" height="74px">
+            <img src="https://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="LabNed.com" width="auto" height="74px">
           </nuxt-link>
         </div>
         <div class="column is-one-quarter">
