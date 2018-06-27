@@ -23,8 +23,8 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['lastname', 'firstname', 'company', 'phone', 'mobile', 'email'],
-        gridLabels: ['Lastname', 'Firstname', 'Company', 'Phone', 'Mobile', 'Email'],
+        gridColumns: ['lastname', 'firstname', 'company', 'phone', 'email'],
+        gridLabels: ['Lastname', 'Firstname', 'Company', 'Phone', 'Email'],
         gridTypes: { 'lastname': 'string', 'firstname': 'string', 'company': 'string', 'phone': 'string', 'mobile': 'string', 'email': 'string' },
         gridData: [],
         apiUrl: this.$store.state.apiUrl,

@@ -1,8 +1,7 @@
 import Cookies from 'js-cookie'
 
 export const state = () => ({
-  data: {},
-  countryList: {}
+  cartContents: []
 })
 
 export const mutations = {
@@ -10,12 +9,12 @@ export const mutations = {
     // used to restore the cart from cookie
     // console.log('test')
     // console.log(cart)
+    // console.log(Cookies.getJSON('key2publish'))
     state.cartContents = cart
   },
   ADD_TO_CART: function (state, cart) {
     // simpler function to add to the cart
     let mycart = state.cartContents
-    // console.log(typeof mycart)
     let found = false
     for (let key in mycart) {
       if (mycart[key]['id'] === cart['id']) {
@@ -27,7 +26,7 @@ export const mutations = {
     if (!found) {
       mycart.push(cart)
     }
-    state.cartContents = []
+    // state.cartContents = [] // hack to trigger vue the variable has changed there should be a better way so might need to rework in future
     state.cartContents = mycart
   },
   REMOVE_FROM_CART: function (state, index) {
@@ -40,27 +39,24 @@ export const mutations = {
 }
 
 export const actions = {
-  async addToCart ({ commit, state, rootState }, { params, page }) {
+  async getProductForCart ({ commit, state, rootState }, { cart }) {
     try {
       if (!(rootState.authUser instanceof Object)) {
         commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
       }
-
-      this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
-
-      let aql = 'FOR c in Country SORT c.name ASC RETURN { code: c.alpha2Code, name: c.name}'
-
-      let query = {
-        'options': {
-          'fullCount': true
-        },
-        'count': true,
-        'query': aql
+      if (cart === undefined || cart.length <= 0) return cart
+      let mydata = await this.$axios.$post(rootState.apiUrl + '/product/cart/', { cart: cart })
+      let data = mydata['result']['_result']
+      for (let c in cart) {
+        for (let d in data) {
+          if (data[d].id === cart[c].id) {
+            data[d].amount = cart[c].amount
+          }
+        }
       }
-      console.log(query)
-      let mydata = await this.$axios.$post(rootState.shopUrl + '/_api/cursor', query)
-      console.log(mydata)
-      return mydata
+      // return data['result']['_result']
+      console.log('Got Triggered here')
+      commit('SET_CART', data)
     } catch (e) {
       console.log(e)
       return e

@@ -38,7 +38,7 @@
           </b-table-column>
         </template>
 
-        <template slot="footer" v-if="getCartContents[0]">
+        <template slot="footer" v-if="getCartContents.length > 0">
           <th></th>
           <th></th>
           <th>{{ text }}</th>
@@ -65,7 +65,7 @@
           </section>
         </template>
       </b-table>
-      <div class="columns">
+      <div v-if="getCartContents.length > 0" class="columns">
         <div class="column">
         </div>
         <div class="column is-one-fifth">
@@ -84,7 +84,7 @@
   import Cookies from 'js-cookie'
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
   import search from '~/components/widgets/search.vue'
-  import { mapGetters } from 'vuex'
+  // import { mapGetters } from 'vuex'
 
   export default {
     components: { search, breadCrumb },
@@ -94,24 +94,25 @@
         text: '* price is excluding shipping and handling costs and tax'
       }
     },
-    created () {
+    async created () {
       let cookie = Cookies.getJSON('key2publish')
-      console.log(cookie)
       if (!(this.$store.state.authUser instanceof Object)) {
         this.$store.commit('SET_USER', cookie.authUser)
       }
-      if (!(this.$store.state.cartContents[0] instanceof Object)) {
-        this.$store.commit('SET_CART', cookie.cartContents)
+      if (!(this.$store.state.cart.cartContents instanceof Object)) {
+        this.$store.commit('cart/SET_CART', cookie.cart.cartContents)
       }
+      await this.getData()
     },
     computed: {
-      ...mapGetters([
-        'getCartContents'
-      ])
+      getCartContents () {
+        return this.$store.state.cart.cartContents
+      }
     },
     methods: {
       async getData () {
-
+        let cart = this.$store.state.cart.cartContents
+        await this.$store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
       },
       calcTotal: function () {
         let total = 0
@@ -121,13 +122,13 @@
         return total
       },
       doDeleteCart: function (index) {
-        this.$store.commit('REMOVE_FROM_CART', index)
+        this.$store.commit('cart/REMOVE_FROM_CART', index)
         this.$toast.open('Product removed from cart!')
       },
       addToCart (amount, row) {
-        let contents = {'amount': amount, 'id': row.id, 'price': row.price}
+        let contents = {'amount': amount, 'id': row.id}
         console.log(contents)
-        this.$store.commit('ADD_TO_CART', contents)
+        this.$store.commit('cart/ADD_TO_CART', contents)
       },
       doReset (value, row) {
         this.addToCart(1, row)

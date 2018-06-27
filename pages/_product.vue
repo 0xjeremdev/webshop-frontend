@@ -332,13 +332,19 @@
         })
     },
     methods: {
-      addToCart (id, name, price) {
-        let contents = {'amount': 1, 'id': id, 'name': name, 'price': price}
-        this.$store.commit('ADD_TO_CART', contents)
-        this.$toast.open({
-          message: 'Product added to <nuxt-link to="/cart">Cart</nuxt-link>',
-          type: 'is-success'
-        })
+      async addToCart (id, name, price) {
+        try {
+          let contents = {'amount': 1, 'id': id}
+          this.$store.commit('ADD_TO_CART', contents)
+          let cart = this.$store.state.cart.cartContents
+          await this.$store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
+          this.$toast.open({
+            message: 'Product added to <nuxt-link to="/cart">Cart</nuxt-link>',
+            type: 'is-success'
+          })
+        } catch (e) {
+          console.log(e)
+        }
       },
       showPDF (id) {
 

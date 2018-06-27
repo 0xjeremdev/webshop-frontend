@@ -1,9 +1,10 @@
 <template>
   <section>
-    <b-collapse class="card" v-for="( val, key ) in searchColumns" :key="key" :open="(val === 'Product Type')">
+    <p class="control"><button class="button" @click="doReset()">Reset</button></p>
+    <b-collapse class="card" v-for="( val, key ) in searchColumns" :key="key" :open="(val === 'Product category LabNed')">
         <div slot="trigger" slot-scope="props" class="card-header">
             <p class="card-header-title">
-                {{ val }} [{{getFilters[val].length}}]
+                {{ searchLabels[key] }} [{{getFilters[val].length}}]
             </p>
             <a class="card-header-icon">
                 <b-icon
@@ -31,18 +32,19 @@
     data () {
       return {
         searchColumns: [ 'Product category LabNed', 'Reactivity', 'Host', 'Clone', 'Applications', 'Conjugate' ],
+        searchLabels: [ 'Product Type', 'Reactivity', 'Host', 'Clone', 'Application', 'Conjugate' ],
+        /* sort: {
+          'Product category LabNed': [ { 'Product category LabNed': 'Primary Antibodies' }, { 'Product category LabNed': 'Secondary Antibodies' }, { 'Product category LabNed': 'Immunoassays' }, { 'Product category LabNed': 'Peptides & (rec.) Proteins' }, { 'Product category LabNed': 'Controls' }, { 'Product category LabNed': 'Slides & Lysates' }, { 'Product category LabNed': 'Consumables & Misc.' } ]
+        }, */
         // searchValues: { 'Product Type': [], 'Reactivity': [], 'Host': [], 'Clone': [], 'Application': [], Conjugate: [] },
         isFetching: false
       }
     },
     created () {
       this.isFetching = true
-      this.getData('Product category LabNed')
-      this.getData('Reactivity')
-      this.getData('Host')
-      this.getData('Clone')
-      this.getData('Applications')
-      this.getData('Conjugate')
+      for (let v in this.searchColumns) {
+        this.getData(this.searchColumns[v])
+      }
       if (!(this.$store.state.product.searchFilters instanceof Object)) {
         this.$store.commit('product/SET_SEARCH_FILTERS', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchFilters : '')
       }
@@ -54,22 +56,16 @@
       }
     },
     methods: {
+      doReset () {
+        this.$store.commit('product/SET_SEARCH_FILTERS', { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} })
+        this.$store.commit('product/SET_SEARCHVAL', '')
+        this.getProductData()
+        for (let v in this.searchColumns) {
+          this.getData(this.searchColumns[v])
+        }
+      },
       getSearchFilters (type, key, value) {
         let mySearchFiltersState = this.$store.state.product.searchFilters
-        // let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (typeof mySearchFiltersState[type][key] !== 'undefined') ? (typeof mySearchFiltersState[type][key]['checked'] !== 'undefined') ? mySearchFiltersState[type][key]['checked'] : false : false : false : false
-        // return checked
-        /* if (typeof mySearchFiltersState !== 'undefined') {
-          if (typeof mySearchFiltersState[type] !== 'undefined') {
-            if (typeof mySearchFiltersState[type][value] !== 'undefined') {
-              console.log('benhier')
-              if () {
-                console.log(mySearchFiltersState[type][value])
-                return true
-              }
-            }
-          }
-        }
-        return false */
         let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][value[type]] !== '') ? mySearchFiltersState[type][value[type]] : false : false : false
         // console.log(checked)
         return checked
@@ -86,12 +82,9 @@
         myVal[type][value[type]] = !checked
         this.$store.commit('product/SET_SEARCH_FILTERS', myVal)
         this.getProductData()
-        /* this.getData('Product category LabNed')
-        this.getData('Reactivity')
-        this.getData('Host')
-        this.getData('Clone')
-        this.getData('Applications')
-        this.getData('Conjugate') */
+        for (let v in this.searchColumns) {
+          if (this.searchColumns[v] !== type) this.getData(this.searchColumns[v])
+        }
       },
       async getProductData () {
         let params = this.$route.query

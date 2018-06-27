@@ -1,8 +1,25 @@
 const webpack = require('webpack')
 
+/* const resolve = require('path').resolve
+
+const isVueRule = (rule) => {
+  return rule.test.toString() === '/\\.vue$/'
+}
+const isSASSRule = (rule) => {
+  return ['/\\.sass$/', '/\\.scss$/'].indexOf(rule.test.toString()) !== -1
+}
+const sassResourcesLoader = {
+  loader: 'sass-resources-loader',
+  options: {
+    resources: [
+      resolve(__dirname, 'node_modules/bulma/bulma.sass')
+    ]
+  }
+} */
+
 module.exports = {
   env: {
-    apiUrl: process.env.API_URL || 'http://localhost:25678'
+    apiUrl: process.env.API_URL || 'https://itk-api.blt.ovh/'
   },
   /*
   ** Headers of the page
@@ -32,7 +49,8 @@ module.exports = {
 
   // include your own css
   css: [
-    '~/assets/main.css'
+    '~/assets/custom.sass',
+    '~/assets/main.css',
   ],
   modules: [
     '@nuxtjs/axios',
@@ -66,6 +84,15 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
+      /* config.module.rules.forEach((rule) => {
+        if (isVueRule(rule)) {
+          rule.options.loaders.sass.push(sassResourcesLoader)
+          rule.options.loaders.scss.push(sassResourcesLoader)
+        }
+        if (isSASSRule(rule)) {
+          rule.use.push(sassResourcesLoader)
+        }
+      }) */
     },
     // fix for bulma (part of buefy) to ignore warnings using poscss-custom-properties
     postcss: {

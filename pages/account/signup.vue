@@ -43,7 +43,7 @@
                 </b-input>
             </b-field>
             <b-field>
-              <b-checkbox v-model="formNewsletter">Signup for the newsletter</b-checkbox>
+              <b-checkbox v-model="formNewsletter">Signup for the monthly newsletter</b-checkbox>
             </b-field>
             <button type="submit" class="button is-primary">Submit</button>
           </form>

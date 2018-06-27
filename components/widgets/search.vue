@@ -49,14 +49,39 @@
       productName: _.debounce(function (e) {
         // Do something with search term after it debounced
         this.getProducts()
-      }, 500)
+      }, 500),
+      $route: function () {
+        let route = this.$route.path
+        this.productName = ''
+        let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
+        this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
+        console.log(route)
+        if (route === '/search') {
+          console.log('benhier')
+          if ((this.$store.state.product.searchVal === '')) {
+            // this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
+          }
+
+          let searchVal = this.$store.state.product.searchVal
+          console.log(searchVal)
+          this.productName = searchVal
+          /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
+            this.productName = searchVal.name
+          } */
+        } else {
+          this.$store.commit('product/SET_SEARCHVAL', '')
+        }
+      }
+
     },
     mounted () {
       let route = this.$route.path
       this.productName = ''
       let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
       this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
+      console.log(route)
       if (route === '/search') {
+        console.log('benhier')
         if ((this.$store.state.product.searchVal === '')) {
           // this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
         }

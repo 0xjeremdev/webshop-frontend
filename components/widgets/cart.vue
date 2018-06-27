@@ -40,28 +40,36 @@
 </template>
 
 <script>
+  import cookie from 'js-cookie'
+
   export default {
     data () {
       return {
         cartContents: []
       }
     },
+    mounted () {
+      if (!(this.$store.state.cart.cartContents instanceof Object)) {
+        this.$store.commit('cart/SET_CART', cookie.cart.cartContents)
+      }
+    },
     computed: {
       getCartContents: function () {
-        return this.$store.state.cartContents
+        return this.$store.state.cart.cartContents
       },
       calcTotal: function () {
         let total = 0
-        for (let key in this.getCartContents) {
+        let cartContents = this.$store.state.cart.cartContents
+        for (let key in cartContents) {
           // console.log(key)
-          total += parseFloat(this.getCartContents[key].price) * Number(this.getCartContents[key].amount)
+          total += parseFloat(cartContents[key].price) * Number(cartContents[key].amount)
         }
         return total
       }
     },
     methods: {
       doDeleteCart: function (index) {
-        this.$store.commit('REMOVE_FROM_CART', index)
+        this.$store.commit('cart/REMOVE_FROM_CART', index)
       }
     }
   }

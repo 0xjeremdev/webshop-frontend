@@ -10,17 +10,9 @@ require('whatwg-fetch')
 
 export const state = () => ({
   authUser: null,
-  dbUrl: 'http://localhost:8529', // dev only
-  productUrl: 'http://localhost:8529/_db/key2publish/', // dev only
-  shopUrl: 'http://localhost:8529/_db/k2p_webshop/', // dev only
-  apiUrl: process.env.apiUrl,
-  cartContents: [],
+  apiUrl: 'https://itk-api.blt.ovh', // process.env.apiUrl,
   cookieAccepted: false
 })
-
-export const getters = {
-  getCartContents: state => state.cartContents
-}
 
 export const mutations = {
   SET_USER: function (state, user) {
@@ -28,37 +20,6 @@ export const mutations = {
   },
   SET_COOKIEACCEPT: function (state, value) {
     state.cookieAccepted = value
-  },
-  SET_CART: function (state, cart) {
-    // used to restore the cart from cookie
-    // console.log('test')
-    // console.log(cart)
-    state.cartContents = cart
-  },
-  ADD_TO_CART: function (state, cart) {
-    // simpler function to add to the cart
-    let mycart = state.cartContents
-    // console.log(typeof mycart)
-    let found = false
-    for (let key in mycart) {
-      if (mycart[key]['id'] === cart['id']) {
-        // cart.amount++
-        mycart[key] = cart
-        found = true
-      }
-    }
-    if (!found) {
-      mycart.push(cart)
-    }
-    state.cartContents = []
-    state.cartContents = mycart
-  },
-  REMOVE_FROM_CART: function (state, index) {
-    // simpler function to remove from the cart
-    // console.log('index:' + index)
-    let mycart = state.cartContents
-    mycart.splice(index, 1)
-    state.cartContents = mycart
   }
 }
 export const actions = {
@@ -87,7 +48,7 @@ export const actions = {
   async login ({ commit, state }, { username, password }) {
     try {
       // console.log(state)
-      const { data } = await axios.post('http://localhost:8529/_open/auth', { username, password })
+      const { data } = await axios.post('http://localhost:25678/auth/admin/login', { username, password })
       commit('SET_USER', data)
     } catch (error) {
       if (error.response && error.response.status === 401) {

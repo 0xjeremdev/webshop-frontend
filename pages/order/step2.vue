@@ -5,60 +5,69 @@
       <orderMenu :step="step"></orderMenu>
       <!-- step 2: if logged in show dropdown boxes with billing and delivery address go to step 4 -->
       <div v-if="loggedIn" class="container">
-        <div v-if="!isFetching" v-for="(value, tabKey) in fields" :key="tabKey">
-          <!-- <b-field horizontal>
-            <p class="control">
-              <button class="button is-primary" @click="saveData">
-                <b-icon icon="content-save"></b-icon>
-                <span> Bewaren</span>
-              </button>
-              <button class="button is-outlined" @click="goBack">
-                <b-icon icon="arrow-left"></b-icon>
-                <span> Terug</span>
-              </button>
-            </p>
+        <br />
+        <b-field>
+          <b-checkbox v-model="deliverySame" :native-value="!deliverySame" class.native="is-success">
+            <!--<b-icon :icon="(deliverySame) ? 'check' :'close'"></b-icon>-->
+            <span>Billing address is the same as Delivery Address</span>
+          </b-checkbox>
+        </b-field>
+        <b-field grouped>
+          <b-field label="Street" expanded :type="(typeof message.formStreet !== 'undefined' && message.formStreet !== '') ? 'is-danger' : ''" :message="message.formStreet">
+              <b-input v-model="formStreet" autocomplete="street" placeholder="Street" @blur="validate($event.srcElement.value, 'formStreet', 'field')"></b-input>
           </b-field>
-          <hr> -->
-          <br />
-          <b-field v-for="(val, fieldKey) in value"
-            v-if="fieldKey !== 'icon'"
-            horizontal
-            :data="val"
-            :key="fieldKey"
-            :label="getLabel(val, fieldKey)">
-            <b-input v-if="val.inputType === 'input'" :value="getValue(val, fieldKey, tabKey)" :placeholder="getLabel(val, fieldKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
-            <imageControl v-else-if="val.inputType === 'imageUpload'" image="/images/Accus-Siezenis.png"></imageControl>
-            <b-taginput v-else-if="val.inputType === 'tagInput'"
-              :placeholder="getLabel(val, fieldKey)"
-              maxtags="5"
-              :value="[]">
-            </b-taginput>
-            <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
-            <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
-            <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon>{{ val.text }}</b-checkbox-button>
-            <div v-else-if="val.inputType === 'radio'">
-              <b-radio v-for="ro in val.options"
-                :key="ro"
-                :native-value="ro"
-                :value="getValue(val, fieldKey, tabKey)"
-                @input="setModel($event, fieldKey, tabKey)">
-                {{ ro }}
-              </b-radio>
-            </div>
-            <b-datepicker v-else-if="val.inputType === 'date'"
-                placeholder="Type or select a date..."
-                icon="calendar-today"
-                v-model="productData[fieldKey]"
-                :readonly="false">
-            </b-datepicker>
-            <b-field v-else-if="val.inputType === 'dropdown'"
-                type="is-danger"
-                message="Please select your country">
-                <b-select placeholder="Select your country">
-                    <option v-for="(val, fieldKey) in countryList" :value="val.code">{{ val.name }}</option>
-                </b-select>
+          <b-field label="House No." :type="(typeof message.formHouseNo !== 'undefined' && message.formHouseNo !== '') ? 'is-danger' : ''" :message="message.formHouseNo">
+              <b-input v-model="formHouseNo" autocomplete="houseno" placeholder="House No." @blur="validate($event.srcElement.value, 'formHouseNo', 'field')"></b-input>
+          </b-field>
+        </b-field>
+        <b-field grouped>
+          <b-field label="Postcode" :type="(typeof message.formPostcode !== 'undefined' && message.formPostcode !== '') ? 'is-danger' : ''" :message="message.formPostcode">
+              <b-input v-model="formPostcode" autocomplete="postcode" placeholder="Postcode" @blur="validate($event.srcElement.value, 'formPostcode', 'field')"></b-input>
+          </b-field>
+          <b-field label="City" expanded :type="(typeof message.formCity !== 'undefined' && message.formCity !== '') ? 'is-danger' : ''" :message="message.formCity">
+              <b-input v-model="formCity" autocomplete="city" placeholder="City" @blur="validate($event.srcElement.value, 'formCity', 'field')"></b-input>
+          </b-field>
+        </b-field>
+        <b-field label="Country" :type="(typeof message.formCountry !== 'undefined' && message.formCountry !== '') ? 'is-danger' : ''" :message="message.formCountry">
+          <b-select expanded placeholder="Select your Country">
+            <option
+              v-for="option in countryList"
+              :value="option.name"
+              :key="option.code"
+              v-model="formCountry">
+              {{ option.name }}
+            </option>
+          </b-select>
+        </b-field>
+        <div v-if="!deliverySame">
+          <hr/>
+          <h1 class="title">Delivery Address</h1>
+          <b-field grouped>
+            <b-field label="Street" expanded :type="(typeof message.formDeliveryStreet !== 'undefined' && message.formDeliveryStreet !== '') ? 'is-danger' : ''" :message="message.formDeliveryStreet">
+                <b-input v-model="formDeliveryStreet" autocomplete="street" placeholder="Street" @blur="validate($event.srcElement.value, 'formDeliveryStreet', 'field')"></b-input>
             </b-field>
-            <b-input v-else value="Could not load this type"></b-input>
+            <b-field label="House No." :type="(typeof message.formDeliveryHouseNo !== 'undefined' && message.formDeliveryHouseNo !== '') ? 'is-danger' : ''" :message="message.formDeliveryHouseNo">
+                <b-input v-model="formDeliveryHouseNo" autocomplete="houseno" placeholder="House No." @blur="validate($event.srcElement.value, 'formDeliveryHouseNo', 'field')"></b-input>
+            </b-field>
+          </b-field>
+          <b-field grouped>
+            <b-field label="Postcode" :type="(typeof message.formDeliveryPostcode !== 'undefined' && message.formDeliveryPostcode !== '') ? 'is-danger' : ''" :message="message.formDeliveryPostcode">
+                <b-input v-model="formDeliveryPostcode" autocomplete="postcode" placeholder="Postcode" @blur="validate($event.srcElement.value, 'formDeliveryPostcode', 'field')"></b-input>
+            </b-field>
+            <b-field label="City" expanded :type="(typeof message.formDeliveryCity !== 'undefined' && message.formDeliveryCity !== '') ? 'is-danger' : ''" :message="message.formDeliveryCity">
+                <b-input v-model="formDeliveryCity" autocomplete="city" placeholder="City" @blur="validate($event.srcElement.value, 'formDeliveryCity', 'field')"></b-input>
+            </b-field>
+          </b-field>
+          <b-field label="Country" :type="(typeof message.formCountry !== 'undefined' && message.formCountry !== '') ? 'is-danger' : ''" :message="message.formCountry">
+            <b-select expanded placeholder="Select your Country">
+              <option
+                v-for="option in countryList"
+                :value="option.name"
+                :key="option.code"
+                v-model="formCountry">
+                {{ option.name }}
+              </option>
+            </b-select>
           </b-field>
         </div>
       </div>
@@ -99,85 +108,50 @@
         isFetching: false,
         step: '2',
         loggedIn: true,
-        productData: { deliverySame: true },
+        deliverySame: true,
+        formStreet: '',
+        formHouseNo: '',
+        formPostcode: '',
+        formCity: '',
+        formCountry: '',
+        formDeliveryStreet: '',
+        formDeliveryHouseNo: '',
+        formDeliveryPostcode: '',
+        formDeliveryCity: '',
+        formDeliveryCountry: '',
         countryList: {},
-        fields: {
-          'Billing': {
-            'deliverySame': {
-              'inputType': 'checkbox',
-              'text': 'Billing Address is the same as Delivery Address'
-            },
-            'Street': {
-              'inputType': 'input',
-              'label': 'Street'
-            },
-            'HouseNo': {
-              'inputType': 'input',
-              'label': 'House No'
-            },
-            'Postcode': {
-              'inputType': 'input',
-              'label': 'Postcode'
-            },
-            'City': {
-              'inputType': 'input',
-              'label': 'City'
-            },
-            'country': {
-              'inputType': 'dropdown',
-              'label': 'Company'
-            }
-          }
-        }
+        message: {}
       }
     },
     methods: {
+      async validate (value, fld, type) {
+        let messages = this.message
+        switch (type) {
+          case 'email':
+            messages[fld] = await this.$store.dispatch('validation/validateMail', { value: value })
+            break
+          case 'password':
+            messages[fld] = await this.$store.dispatch('validation/validatePassword', { value: value })
+            break
+          case 'repeatPassword':
+            messages[fld] = await this.$store.dispatch('validation/validateRepeatPassword', { value: value, repeat: this.formPassword })
+            break
+          case 'select':
+            messages[fld] = await this.$store.dispatch('validation/validateSelect', { value: value })
+            break
+          default:
+            messages[fld] = await this.$store.dispatch('validation/validateField', { value: value })
+            break
+        }
+
+        this.message = '' // hack to let two way binding work if a key in an object has changed
+        this.message = messages
+        this[fld] = value
+      },
       async getCountryList () {
         let countryList = await this.$store.dispatch('order/getCountryList', {}, { root: true })
-        console.log(countryList)
-        this.countryList = countryList['result']
-      },
-      setModel (val, fieldKey, tabKey, inputType) {
-        console.log(val)
-        if (inputType === 'date') {
-          val = ''
-        }
-        this.productData[fieldKey] = val
-      },
-      getLabel (val, fieldKey) {
-        if (val.label) {
-          return val.label
-        }
-        if (val.inputType === 'checkbox') {
-          return ''
-        }
-        return fieldKey
-      },
-      getValue (val, fieldKey, tabKey, inputType) {
-        if (this.productData instanceof Object) {
-          if (inputType === 'checkbox') {
-            if (this.productData[fieldKey] === 'true') { console.log('true') }
-            return this.productData[fieldKey]
-          } else if (inputType === 'date') {
-            let d = new Date(this.productData[fieldKey])
-            return d
-          }
-          return this.productData[fieldKey]
-        }
-        return ''
-      },
-      setCheckbox (val, fieldKey, tabKey) {
-        this.productData[fieldKey] = !val
-      },
-      setDate (val, fieldKey, tabKey) {
-        try {
-          let d = new Date(val)
-          console.log(d)
-          // let date = d.getFullYear() + '-' + (d.getMonth() - 1) + '-' + d.getDate()
-          this.productData[fieldKey] = d
-        } catch (e) {
-          console.log(e)
-        }
+        // console.log(countryList)
+        this.countryList = countryList
       }
     }
   }

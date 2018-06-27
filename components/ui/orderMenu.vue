@@ -48,8 +48,3 @@
     props: ['step']
   }
 </script>
-
-<style lang="scss">
-  @import "./node_modules/bulma-steps-component/bulma/bulma.sass";
-  @import "./node_modules/bulma-steps-component/bulma-steps.sass";
-</style>

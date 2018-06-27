@@ -2,7 +2,7 @@
   <div>
     <br />
     <h1 class="title">Users</h1>
-    <datagrid :data="gridData" :columns="gridColumns" :types="gridTypes" :tableName="tableName" :postUrl="postUrl" :queryOptions="queryOptions" :type="type" :customSortField="customSortField"></datagrid>
+    <datagrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :tableName="tableName" :apiUrl="apiUrl" :type="type" :customSortField="customSortField"></datagrid>
 </div>
 </template>
 
@@ -23,11 +23,11 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['lastname', 'firstname', 'company', 'phone', 'mobile', 'email'],
+        gridColumns: ['lastname', 'firstname', 'company', 'mobile', 'email'],
+        gridLabels: ['Lastname', 'Firstname', 'Company', 'Mobile', 'Email'],
         gridTypes: { 'lastname': 'string', 'firstname': 'string', 'company': 'string', 'phone': 'string', 'mobile': 'string', 'email': 'string' },
         gridData: [],
-        queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
-        postUrl: this.$store.state.shopUrl,
+        apiUrl: this.$store.state.apiUrl,
         tableName: 'User',
         type: 'user',
         customSortField: 'lastname'

@@ -29,14 +29,18 @@ export const mutations = {
     // state.filters = { ...state.filters, value }
   },
   SET_SEARCH_FILTERS: function (state, value) {
-    for (let key in value) {
-      if (value[key].length > 0) {
-        for (let filter in value[key]) {
-          state.searchFilters[key][filter] = value[key][filter]
+    if (Object.keys(value).length > 0) {
+      for (let key in value) {
+        if (Object.keys(value[key]).length > 0) {
+          for (let filter in value[key]) {
+            state.searchFilters[key][filter] = value[key][filter]
+          }
+        } else {
+          state.searchFilters[key] = value[key]
         }
-      } else {
-        state.searchFilters[key] = value[key]
       }
+    } else {
+      state.searchFilters = value
     }
   }
 }
@@ -85,48 +89,6 @@ export const actions = {
       let search = (searchVal !== '' && searchVal !== undefined) ? searchVal.toLowerCase() : ''
       search = (params.search !== '' && params.search !== undefined) ? params.search.toLowerCase() : search
       let searchFilters = state.searchFilters
-      /* let filterString = ''
-      for (var key in searchFilters) {
-        if (Object.keys(searchFilters[key]).length > 0) {
-          let valueString = []
-          let found = false
-          for (var filter in searchFilters[key]) {
-            if (typeof searchFilters[key][filter] !== 'undefined') {
-              if (searchFilters[key][filter] === true) {
-                valueString.push(filter)
-                found = true
-              }
-            }
-          }
-
-          if (found) {
-            filterString += ' AND p.basic["' + key + '"] IN ' + JSON.stringify(valueString)
-          }
-        }
-      }
-
-      let query = {
-        'options': {
-          'fullCount': true
-        },
-        'count': true,
-        'query': 'FOR p IN k2p_product FILTER p.basic[\'' + field + '\'] != "" AND p.basic[\'' + field + '\'] != null ' + filterString + ' LIMIT 0, 1000 COLLECT field = p.basic[\'' + field + '\'] RETURN { \'' + field + '\': field }'
-      }
-      if (search.trim()) {
-      // console.log(search)
-        query = {
-          'options': {
-            'fullCount': true
-          },
-          'count': true,
-          // 'query': 'FOR p in k2p_product FILTER LOWER(p.basic.name) LIKE @search OR LOWER(p.basic.description) LIKE @search FILTER p.basic[\'' + field + '\'] != "" AND p.basic[\'' + field + '\'] != null COLLECT field = p.basic[\'' + field + '\'] LIMIT 0,100 RETURN { \'' + field + '\': field }',
-          'query': 'FOR p in FULLTEXT(k2p_product, "searchNames", @search) FILTER p.basic[\'' + field + '\'] != "" AND p.basic[\'' + field + '\'] != null ' + filterString + ' LIMIT 0, 1000 COLLECT field = p.basic[\'' + field + '\'] RETURN { \'' + field + '\': field }',
-          'bindVars': {
-            'search': (search.trim() !== '') ? ('prefix:' + search.trim() + ', -prefix:' + search.trim() + '0, -prefix:' + search.trim() + '1, -prefix:' + search.trim() + '2, -prefix:' + search.trim() + '3, -prefix:' +
-            search.trim() + '4, -prefix:' + search.trim() + '5, -prefix:' + search.trim() + '6, -prefix:' + search.trim() + '7, -prefix:' + search.trim() + '8, -prefix:' + search.trim() + '9') : ''
-          }
-        }
-      } */
       // console.log(query)
       let postData = { searchVal: search, searchFilters: searchFilters, field: field }
       let mydata = await this.$axios.$post(rootState.apiUrl + '/filter', postData)

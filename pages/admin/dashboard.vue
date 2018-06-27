@@ -37,11 +37,6 @@ import lastQuotes from '~/components/widgets/lastQuotes'
 
 export default {
   layout: 'admin',
-  components: { lastCustomers, lastOrders, lastQuotes },
-  methods: {
-    testMethod: function () {
-      console.log(this.$route.path().startsWith('/admin'))
-    }
-  }
+  components: { lastCustomers, lastOrders, lastQuotes }
 }
 </script>

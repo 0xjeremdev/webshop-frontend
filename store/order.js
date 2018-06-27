@@ -17,25 +17,15 @@ export const mutations = {
 export const actions = {
   async getCountryList ({ commit, state, rootState }, { params, page }) {
     try {
-      if (!(rootState.authUser instanceof Object)) {
-        commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
+      if (!(rootState.account.token instanceof Object)) {
+        commit('account/SET_TOKEN', Cookies.getJSON('key2publish').account.token, { root: true })
       }
 
-      this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
+      // this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
 
-      let aql = 'FOR c in Country SORT c.name ASC RETURN { code: c.alpha2Code, name: c.name}'
-
-      let query = {
-        'options': {
-          'fullCount': true
-        },
-        'count': true,
-        'query': aql
-      }
-      console.log(query)
-      let mydata = await this.$axios.$post(rootState.shopUrl + '/_api/cursor', query)
-      console.log(mydata)
-      return mydata
+      let mydata = await this.$axios.$get(rootState.apiUrl + '/country')
+      // console.log(mydata['result']['_result'])
+      return mydata['result']['_result']
     } catch (e) {
       console.log(e)
       return e
