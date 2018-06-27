@@ -57,7 +57,6 @@
         this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
         console.log(route)
         if (route === '/search') {
-          console.log('benhier')
           if ((this.$store.state.product.searchVal === '')) {
             // this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
           }

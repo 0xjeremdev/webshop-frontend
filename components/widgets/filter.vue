@@ -58,7 +58,7 @@
     methods: {
       doReset () {
         this.$store.commit('product/SET_SEARCH_FILTERS', { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} })
-        this.$store.commit('product/SET_SEARCHVAL', '')
+        // this.$store.commit('product/SET_SEARCHVAL', '')
         this.getProductData()
         for (let v in this.searchColumns) {
           this.getData(this.searchColumns[v])
