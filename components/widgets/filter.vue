@@ -4,6 +4,7 @@
     <b-collapse class="card" v-for="( val, key ) in searchColumns" :key="key" :open="(val === 'Product category LabNed')">
         <div slot="trigger" slot-scope="props" class="card-header">
             <p class="card-header-title">
+
                 {{ searchLabels[key] }} [{{getFilters[val].length}}]
             </p>
             <a class="card-header-icon">
@@ -17,11 +18,11 @@
               <!--<b-field >
                 <b-checkbox :value="getSearchFilters(val, svKey, svVal)" @input.lazy="setSearch(val, svKey, svVal)">{{ svVal[val] }}</b-checkbox>
               </b-field> -->
-              <input type="checkbox" :name="svVal[val]" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)">{{ svVal[val] }}
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
         </div>
     </b-collapse>
-    <b-loading :is-full-page="true" :active.sync="isFetching" :canCancel="true"></b-loading>
+    <b-loading :is-full-page="true" :active.sync="isFetching" :canCancel="false"></b-loading>
   </section>
 </template>
 
@@ -66,20 +67,17 @@
       },
       getSearchFilters (type, key, value) {
         let mySearchFiltersState = this.$store.state.product.searchFilters
-        let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][value[type]] !== '') ? mySearchFiltersState[type][value[type]] : false : false : false
+        let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][value] !== '') ? mySearchFiltersState[type][value] : false : false : false
         // console.log(checked)
         return checked
       },
       setSearch (type, key, value) {
-        console.log(type)
-        console.log(key)
-        console.log(value[type])
         let mySearchFiltersState = this.$store.state.product.searchFilters
-        let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][value[type]] !== '') ? mySearchFiltersState[type][value[type]] : false : false : false
+        let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][value] !== '') ? mySearchFiltersState[type][value] : false : false : false
         // console.log(checked)
         let myVal = []
         myVal[type] = {}
-        myVal[type][value[type]] = !checked
+        myVal[type][value] = !checked
         this.$store.commit('product/SET_SEARCH_FILTERS', myVal)
         this.getProductData()
         for (let v in this.searchColumns) {

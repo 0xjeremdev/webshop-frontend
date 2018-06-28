@@ -10,7 +10,7 @@ require('whatwg-fetch')
 
 export const state = () => ({
   authUser: null,
-  apiUrl: 'https://itk-api.blt.ovh', // process.env.apiUrl,
+  apiUrl: 'http://localhost:25678', // process.env.apiUrl,
   cookieAccepted: false
 })
 
@@ -48,7 +48,7 @@ export const actions = {
   async login ({ commit, state }, { username, password }) {
     try {
       // console.log(state)
-      const { data } = await axios.post('http://localhost:25678/auth/admin/login', { username, password })
+      const { data } = await axios.post(state.apiUrl + '/auth/admin/login', { username, password })
       commit('SET_USER', data)
     } catch (error) {
       if (error.response && error.response.status === 401) {

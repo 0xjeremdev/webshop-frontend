@@ -119,7 +119,7 @@
           if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
           }
-          let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
+          let searchFiltersReset = { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
           this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
           let page = 1
           let option = ''
@@ -133,7 +133,7 @@
             params = this.$route.query
 
             await this.$store.dispatch('product/getFilters', {
-              field: 'Product Type',
+              field: 'Product category LabNed',
               params: params
             },
             {
