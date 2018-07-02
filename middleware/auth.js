@@ -1,19 +1,19 @@
-export default function ({ store, route, redirect, axios, error }) {
+export default function ({ store, route, redirect }) {
   let isAdminRoute = route.path
   isAdminRoute = isAdminRoute.startsWith('admin', 1)
+  let isAdminLogin = (route.path !== '/admin')
   if (!store.state.authUser) {
-    if ((isAdminRoute) && (route.path !== '/admin')) {
+    if ((isAdminRoute) && (isAdminLogin)) {
       return redirect('/admin')
     }
   }
-  if (store.state.authUser) {
-    return axios.get(store.state.apiUrl + '/admin/checktoken/')
-      .then((res) => {
-      })
-      .catch((e) => {
-        if ((isAdminRoute) && (route.path !== '/admin')) {
-          return redirect('/admin')
-        }
-      })
+  try {
+    store.dispatch('checkAuth').then(function (data) {
+      if ((isAdminRoute) && (isAdminLogin) && (!data)) {
+        return redirect('/admin')
+      }
+    })
+  } catch (e) {
+    console.log(e)
   }
 }

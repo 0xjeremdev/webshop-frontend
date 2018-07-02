@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Cookies from 'js-cookie'
 
 export const state = () => ({
   token: null,
@@ -37,6 +38,26 @@ export const actions = {
       commit('SET_TOKEN', '')
     } catch (error) {
       throw new Error('help')
+    }
+  },
+
+  checkAuth ({ commit, state, rootState }) {
+    if (!state.token) commit('SET_TOKEN', Cookies.getJSON('key2publish').account.token)
+    // this.$axios.setToken(state.authUser.jwt, 'Bearer')
+    if ((state.token !== null) && (typeof state.token === 'object')) {
+      if (state.token.hasOwnProperty('jwt')) {
+        return axios.get(rootState.apiUrl + '/checktoken', { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+          .then((res) => {
+            console.log(res)
+            if (Object.keys(res.data['result']).length > 0) {
+              return true
+            }
+            return false
+          })
+          .catch((e) => {
+            return false
+          })
+      }
     }
   },
 

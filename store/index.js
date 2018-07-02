@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import jwt from 'jsonwebtoken'
+import Cookies from 'js-cookie'
 
 Vue.use(Vuex)
 
@@ -49,7 +49,7 @@ export const actions = {
     try {
       // console.log(state)
       const { data } = await axios.post(state.apiUrl + '/auth/admin/login', { username, password })
-      commit('SET_USER', data)
+      commit('SET_USER', data.result)
     } catch (error) {
       if (error.response && error.response.status === 401) {
         throw new Error('Bad credentials')
@@ -58,21 +58,23 @@ export const actions = {
     }
   },
 
-  checkJWT (token) {
-    jwt.verify(token, function (err, decoded) {
-      if (err) {
-        console.log(err)
-        /*
-          err = {
-            name: 'TokenExpiredError',
-            message: 'jwt expired',
-            expiredAt: 1408621000
-          }
-        */
+  checkAuth ({ commit, state, redirect }) {
+    if (!state.authUser) commit('SET_USER', Cookies.getJSON('key2publish').authUser)
+    // this.$axios.setToken(state.authUser.jwt, 'Bearer')
+    if ((state.authUser !== null) && (typeof state.authUser === 'object')) {
+      if (state.authUser.hasOwnProperty('jwt')) {
+        return axios.get(state.apiUrl + '/admin/checktoken', { headers: { Authorization: `Bearer ${state.authUser.jwt}` } })
+          .then((res) => {
+            if (Object.keys(res.data['result']).length > 0) {
+              return true
+            }
+            return false
+          })
+          .catch((e) => {
+            return false
+          })
       }
-      console.log(decoded)
-      return decoded
-    })
+    }
   },
 
   async logout ({ commit }) {

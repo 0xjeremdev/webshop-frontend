@@ -53,6 +53,12 @@
               <nuxt-link class="navbar-item" to="/admin/settings/user">
                 Users
               </nuxt-link>
+              <nuxt-link class="navbar-item" to="/admin/settings/temperatures">
+                Shipping Temperatures
+              </nuxt-link>
+              <nuxt-link class="navbar-item" to="/admin/settings/zones">
+                Shipping Zones
+              </nuxt-link>
               <nuxt-link class="navbar-item" to="/admin/settings/config">
                 Configuration
               </nuxt-link>

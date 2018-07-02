@@ -7,11 +7,10 @@
             {{ this.formError }}
           </b-message>
           <form v-on:submit.prevent>
-            <b-field label="Email"
-                :type="email_type"
+            <b-field label="Username"
                 :message="email_message">
-                <b-input placeholder="Email"
-                    icon="email"
+                <b-input placeholder="Username"
+                    icon="account"
                     :value="email"
                     v-model="formUsername">
                 </b-input>

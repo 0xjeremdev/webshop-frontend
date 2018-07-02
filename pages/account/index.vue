@@ -55,6 +55,7 @@
   import accountMenu from '~/components/ui/accountMenu.vue'
 
   export default {
+    middleware: 'authCustomer',
     components: { accountMenu },
     data () {
       return {
