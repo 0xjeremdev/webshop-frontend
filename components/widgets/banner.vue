@@ -1,36 +1,38 @@
 <template>
   <section id="banner" class="hero">
-    <carousel :perPage="1"
+    <no-ssr placeholder="Loading...">
+    <Carousel :perPage="1"
       :loop="true"
       :autoplay="true"
       :autoplayTimeout="5000"
       :navigationEnabled="false"
       :paginationEnabled="true">
-      <slide>
+      <Slide>
         <div class="my-overlay">
           <img src="https://wikiki.github.io/images/merry-christmas.jpg" alt="" />
           <div class="my-overlay-text title">Merry Christmas</div>
         </div>
-      </slide>
-      <slide>
+      </Slide>
+      <Slide>
         <div class="my-overlay">
           <img src="https://wikiki.github.io/images/singer.jpg" alt="" />
           <div class="my-overlay-text title">Original Gift: Offer a song with <a href="https://lasongbox.com" target="_blank">La Song Box</a></div>
         </div>
-      </slide>
-      <slide>
+      </Slide>
+      <Slide>
         <div class="my-overlay">
           <img class="is-background" src="https://wikiki.github.io/images/sushi.jpg" alt="" />
           <div class="my-overlay-text title">Sushi time</div>
         </div>
-      </slide>
-      <slide>
+      </Slide>
+      <Slide>
         <div class="my-overlay">
           <img src="https://wikiki.github.io/images/life.jpg" alt="" />
           <div class="my-overlay-text title">Life</div>
         </div>
-      </slide>
-    </carousel>
+      </Slide>
+    </Carousel>
+    </no-ssr>
   </section>
 </template>
 

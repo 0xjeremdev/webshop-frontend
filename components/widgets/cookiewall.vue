@@ -19,13 +19,16 @@
         return !this.$store.state.cookieAccepted
       }
     },
+    created () {
+      this.$store.commit('SET_COOKIEACCEPT', this.$cookies.get('key2publish').cookieAccepted)
+    },
     methods: {
       doAccept () {
         this.$store.commit('SET_COOKIEACCEPT', true)
       },
       doClose () {
         this.$store.commit('SET_COOKIEACCEPT', false)
-        this.$router.push('cookie_not_accepted')
+        // this.$router.push('cookie_not_accepted')
         // throw error({'statusCode': 200, 'message': 'Cannot Continue Cookies Not Accepted'})
       }
     }

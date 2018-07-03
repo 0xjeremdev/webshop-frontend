@@ -11,7 +11,8 @@ require('whatwg-fetch')
 export const state = () => ({
   authUser: null,
   apiUrl: 'http://localhost:25678', // process.env.apiUrl,
-  cookieAccepted: false
+  cookieAccepted: false,
+  isLoading: false
 })
 
 export const mutations = {
@@ -20,6 +21,9 @@ export const mutations = {
   },
   SET_COOKIEACCEPT: function (state, value) {
     state.cookieAccepted = value
+  },
+  SET_ISLOADING: function (state, value) {
+    state.isLoading = value
   }
 }
 export const actions = {

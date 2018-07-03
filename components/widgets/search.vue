@@ -82,12 +82,12 @@
       if (route === '/search') {
         console.log('benhier')
         if ((this.$store.state.product.searchVal === '')) {
-          // this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
+          this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
         }
 
         let searchVal = this.$store.state.product.searchVal
-        console.log(searchVal)
-        this.productName = searchVal
+        // console.log(searchVal)
+        if (searchVal !== null) this.productName = searchVal
         /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
           this.productName = searchVal.name
         } */
@@ -123,7 +123,7 @@
           this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
           let page = 1
           let option = ''
-          if (typeof this.productName !== 'undefined') {
+          if (typeof this.productName !== 'undefined' && this.productName !== null) {
             option = this.productName.replace(/[^a-zA-Z0-9]+/gmi, '')
           }
           // console.log(option)

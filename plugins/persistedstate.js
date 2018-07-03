@@ -1,7 +1,7 @@
 import createPersistedState from 'vuex-persistedstate'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
-export default ({store, isHMR}) => {
+export default ({store, isHMR, app}) => {
   // In case of HMR, mutation occurs before nuxReady, so previously saved state
   // gets replaced with original state received from server. So, we've to skip HMR.
   // Also nuxtReady event fires for HMR as well, which results multiple registration of
@@ -18,11 +18,11 @@ export default ({store, isHMR}) => {
         product: { searchVal: state.product.searchVal, searchFilters: state.product.searchFilters, page: state.product.page, total: state.product.total }
       }),
       storage: {
-        getItem: key => Cookies.get(key),
+        getItem: key => app.$cookies.get(key),
         setItem: (key, value) => {
-          Cookies.set(key, value)
+          app.$cookies.set(key, value)
         },
-        removeItem: key => Cookies.remove(key)
+        removeItem: key => app.$cookies.remove(key)
       }
     })(store) // vuex plugins can be connected to store, even after creation
   })

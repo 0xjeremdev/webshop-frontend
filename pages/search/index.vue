@@ -160,7 +160,7 @@
     },
     data () {
       return {
-        isFetching: false,
+        isFetching: true,
         current: 1,
         perPage: 10,
         productName: ''
@@ -184,6 +184,9 @@
       },
       getTotalData () {
         return this.$store.state.product.total
+      },
+      isLoading () {
+        return this.$store.state.isLoading
       }
     },
     methods: {

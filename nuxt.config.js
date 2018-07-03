@@ -37,11 +37,11 @@ module.exports = {
       { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto+Slab' }
     ]
   },
-  mode: 'spa',
+  mode: 'universal',
 
   // include buefy js on startup
   plugins: [
-    { src: '~plugins/buefy', ssr: false },
+    { src: '~plugins/buefy', ssr: true },
     { src: '~plugins/persistedstate.js', ssr: false }
     //'~plugins/bootstrap.js'
     //{ src: '~/plugins/vue-notifications.js', ssr: false }
@@ -54,6 +54,7 @@ module.exports = {
   ],
   modules: [
     '@nuxtjs/axios',
+    'cookie-universal-nuxt',
   ],
 
   axios: {
