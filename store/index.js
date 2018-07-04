@@ -10,7 +10,7 @@ require('whatwg-fetch')
 
 export const state = () => ({
   authUser: null,
-  apiUrl: 'http://localhost:25678', // process.env.apiUrl,
+  apiUrl: 'https://itk-api.blt.ovh', // process.env.apiUrl,
   cookieAccepted: false,
   isLoading: false
 })
