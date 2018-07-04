@@ -15,7 +15,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async getCountryList ({ commit, state, rootState }, { params, page }) {
+  async getCountryList ({ commit, state, rootState }) {
     try {
       if (!(rootState.account.token instanceof Object)) {
         commit('account/SET_TOKEN', Cookies.getJSON('key2publish').account.token, { root: true })
@@ -24,7 +24,7 @@ export const actions = {
       // this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
 
       let mydata = await this.$axios.$get(rootState.apiUrl + '/country')
-      // console.log(mydata['result']['_result'])
+      console.log(mydata)
       return mydata['result']['_result']
     } catch (e) {
       console.log(e)

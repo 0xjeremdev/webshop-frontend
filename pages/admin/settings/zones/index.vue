@@ -1,7 +1,7 @@
 <template>
   <div>
     <br />
-    <h1 class="title">Users</h1>
+    <h1 class="title">Zones</h1>
     <datagrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :tableName="tableName" :apiUrl="apiUrl" :type="type" :customSortField="customSortField"></datagrid>
 </div>
 </template>

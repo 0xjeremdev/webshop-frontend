@@ -43,6 +43,9 @@
               <b-select v-else-if="val.inputType === 'dropdown'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
                     <option v-for="option in val.options" :key="option" :value="option">{{ option }}</option>
               </b-select>
+              <b-select multiple v-else-if="val.inputType === 'dropdownmulti'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
+                    <option v-for="option in val.options" :key="option.code" :value="option.code">{{ option.name }}</option>
+              </b-select>
               <div v-else-if="val.inputType === 'radio'">
                 <b-radio v-for="ro in val.options"
                   :key="ro"
@@ -102,7 +105,7 @@
         showError: false,
         formError: 'There are errors, please correct them to save',
         fields: {
-          'User': {
+          'Zones': {
             'zoneName': {
               'inputType': 'input',
               'label': 'Zone Name'
@@ -120,8 +123,9 @@
               'label': 'Sort'
             },
             'countryList': {
-              'inputType': 'input',
-              'label': 'Country List'
+              'inputType': 'dropdownmulti',
+              'label': 'Select your Country',
+              'options': []
             },
             'active': {
               'inputType': 'checkbox',
@@ -133,6 +137,7 @@
       }
     },
     async created () {
+      await this.getCountryList()
       await this.getData()
     },
     validate ({ params }) {
@@ -152,17 +157,27 @@
       getValue (val, fieldKey, tabKey, inputType) {
         if (this.productData instanceof Object) {
           if (inputType === 'checkbox') {
-            console.log(fieldKey + ': ' + this.productData[fieldKey])
-            if (this.productData[fieldKey] === 'true') { console.log('true') }
             return !this.productData[fieldKey]
           }
+          if ((inputType === 'dropdownmulti')) return []
           return this.productData[fieldKey]
         }
+        if (fieldKey === 'countryList') return []
         return ''
       },
       setCheckbox (val, fieldKey, tabKey) {
         this.productData[fieldKey] = !val
       },
+      async getCountryList () {
+        try {
+          let countryList = await this.$store.dispatch('order/getCountryList')
+          this.fields.Zones.countryList.options = countryList
+        } catch (e) {
+          console.log(e)
+          this.$toast.open('Could not load country list data')
+        }
+      },
+
       async getData () {
         try {
           this.isLoading = true

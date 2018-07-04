@@ -143,7 +143,7 @@
         </div>
       </div>
     </div>
-    <b-loading :is-full-page="true" :active.sync="isFetching" :canCancel="false"></b-loading>
+    <b-loading :is-full-page="true" :active.sync="isLoading" :canCancel="false"></b-loading>
   </section>
 </template>
 

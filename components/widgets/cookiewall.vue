@@ -20,7 +20,7 @@
       }
     },
     created () {
-      this.$store.commit('SET_COOKIEACCEPT', this.$cookies.get('key2publish').cookieAccepted)
+      if (this.$cookies.get('key2publish') !== undefined) this.$store.commit('SET_COOKIEACCEPT', this.$cookies.get('key2publish').cookieAccepted)
     },
     methods: {
       doAccept () {

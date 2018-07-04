@@ -58,11 +58,12 @@
         console.log(route)
         if (route === '/search') {
           if ((this.$store.state.product.searchVal === '')) {
-            // this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
+            this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
           }
 
           let searchVal = this.$store.state.product.searchVal
           console.log(searchVal)
+          if (searchVal === null) searchVal = ''
           this.productName = searchVal
           /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
             this.productName = searchVal.name
@@ -87,7 +88,8 @@
 
         let searchVal = this.$store.state.product.searchVal
         // console.log(searchVal)
-        if (searchVal !== null) this.productName = searchVal
+        if (searchVal === null) searchVal = ''
+        this.productName = searchVal
         /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
           this.productName = searchVal.name
         } */
@@ -116,6 +118,7 @@
       async getProducts () {
         try {
           this.isFetching = true
+          this.$store.commit('SET_ISLOADING', true)
           if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
           }
@@ -187,10 +190,12 @@
           this.productData = this.$store.state.product.data
           this.message = ''
           this.isFetching = false
+          this.$store.commit('SET_ISLOADING', false)
         } catch (e) {
           console.log(e)
           this.$toast.open('Could not load data')
           this.isFetching = false
+          this.$store.commit('SET_ISLOADING', false)
         }
       },
       selectProduct (option) {
