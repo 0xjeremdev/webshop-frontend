@@ -1,12 +1,13 @@
-import Cookies from 'js-cookie'
-
-export default function ({ store }) {
+export default function ({ store, app }) {
   try {
-    if (Cookies.getJSON('key2publish').authUser instanceof Object) {
-      store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
+    if (app.$cookies.get('key2publish').authUser instanceof Object) {
+      store.commit('SET_USER', app.$cookies.get('key2publish').authUser)
     }
-    if (Cookies.getJSON('key2publish').cartContents instanceof Array && Cookies.getJSON('key2publish').cartContents[0] instanceof Object) {
-      store.commit('SET_CART', Cookies.getJSON('key2publish').cartContents)
+    if (app.$cookies.get('key2publish').account.token instanceof Object) {
+      store.commit('account/SET_TOKEN', app.$cookies.get('key2publish').account.token)
+    }
+    if (app.$cookies.get('key2publish').cart.cartContents[0] instanceof Object) {
+      store.commit('cart/SET_CART', app.$cookies.get('key2publish').cart.cartContents)
     }
   } catch (e) {
     console.log(e)

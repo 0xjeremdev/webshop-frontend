@@ -31,10 +31,10 @@
               maxtags="5"
               :value="[]">
             </b-taginput>
-            <quill-editor v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
-                :value="getValue(val, fieldKey, tabKey)"
-                @input="setModel($event, fieldKey, tabKey)"
-                :config="editorConfig"></quill-editor>
+            <div class="quill-editor" v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
+              :value="getValue(val, fieldKey, tabKey)"
+              @input="setModel($event, fieldKey, tabKey)"
+              v-quill:myQuillEditor="editorConfig"></div>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
             <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="!getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon :icon="getIcon(val, fieldKey, tabKey)"></b-icon></b-checkbox-button>
@@ -85,11 +85,10 @@
   // import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
-  import { quillEditor } from 'vue-quill-editor'
 
   export default {
     layout: 'admin',
-    components: { imageControl, quillEditor },
+    components: { imageControl },
     data () {
       return {
         editorConfig: {},
@@ -308,7 +307,3 @@
     }
   }
 </script>
-
-<style lang="stylus">
-   @import "~quill/assets/snow"
-</style>

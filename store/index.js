@@ -10,9 +10,10 @@ require('whatwg-fetch')
 
 export const state = () => ({
   authUser: null,
-  apiUrl: 'https://itk-api.blt.ovh', // process.env.apiUrl,
+  apiUrl: 'http://localhost:25678', // process.env.apiUrl,
   cookieAccepted: false,
-  isLoading: false
+  isLoading: false,
+  settings: {}
 })
 
 export const mutations = {
@@ -24,6 +25,9 @@ export const mutations = {
   },
   SET_ISLOADING: function (state, value) {
     state.isLoading = value
+  },
+  SET_SETTINGS: function (state, value) {
+    state.settings = value
   }
 }
 export const actions = {
@@ -34,6 +38,7 @@ export const actions = {
       // commit('SET_USER', req.session.authUser)
     }
   },
+  // deprecated
   async connectDB ({ commit, state }) {
     try {
       // console.log('connectDB')
@@ -49,6 +54,28 @@ export const actions = {
       throw error
     }
   },
+
+  async getSettings ({ commit, state, error }) {
+    try {
+      let config = await axios.get(state.apiUrl + '/admin/config')
+      if (config.data instanceof Object) {
+        if (config.data.result instanceof Object) {
+          if (config.data.result['_result'] instanceof Array) {
+            commit('SET_SETTINGS', config.data.result['_result'][0])
+          } else {
+            error({statusCode: '404', message: 'Page not found'})
+          }
+        } else {
+          error({statusCode: '404', message: 'Page not found'})
+        }
+      } else {
+        error({statusCode: '404', message: 'Page not found'})
+      }
+    } catch (e) {
+      throw e
+    }
+  },
+
   async login ({ commit, state }, { username, password }) {
     try {
       // console.log(state)

@@ -4,7 +4,7 @@
         <b-icon icon="cart-outline"></b-icon>
         <span>Cart</span>
       </button>
-      <b-dropdown-item v-if="getCartContents[0]">
+      <b-dropdown-item v-show="getCartContents[0]">
         <h1 class="subtitle">Cart</h1>
         <table class="table">
           <thead>
@@ -31,26 +31,19 @@
             </tr>
           </tfoot>
         </table>
-        <nuxt-link to="/cart"><button class="button is-danger">Go To Cart</button></nuxt-link>
+        <!-- <nuxt-link to="/cart"><button class="button is-danger">Go To Cart</button></nuxt-link> -->
       </b-dropdown-item>
-      <b-dropdown-item v-else>
+      <b-dropdown-item v-show="!getCartContents[0]">
         Cart is empty
       </b-dropdown-item>
   </b-dropdown>
 </template>
 
 <script>
-  import cookie from 'js-cookie'
-
   export default {
     data () {
       return {
         cartContents: []
-      }
-    },
-    mounted () {
-      if (!(this.$store.state.cart.cartContents instanceof Object)) {
-        this.$store.commit('cart/SET_CART', cookie.cart.cartContents)
       }
     },
     computed: {

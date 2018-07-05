@@ -31,12 +31,11 @@
               maxtags="5"
               :value="[]">
             </b-taginput>
-            <quill-editor v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
-                :value="getValue(val, fieldKey, tabKey)"
-                @input="setModel($event, fieldKey, tabKey)"
-                :config="editorConfig">
-            </quill-editor>
-            <b-switch v-else-if="val.inputType === 'switch'" v-model="configData[fieldKey]"></b-switch>
+            <div class="quill-editor" v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
+              :value="getValue(val, fieldKey, tabKey)"
+              @input="setModel($event, fieldKey, tabKey)"
+              v-quill:myQuillEditor="editorConfig"></div>
+            <b-switch v-else-if="val.inputType === 'switch'" v-model="productData[fieldKey]"></b-switch>
             <b-input v-else-if="val.inputType === 'email'" type="email" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
@@ -67,17 +66,36 @@
 </template>
 
 <script>
-  import Cookies from 'js-cookie'
-  import { quillEditor } from 'vue-quill-editor'
+  import imageControl from '~/components/ui/Imagecontrol'
 
   export default {
     layout: 'admin',
-    components: { quillEditor },
+    components: { imageControl },
     data () {
       return {
         editorConfig: {},
-        isSwitchedMaintenance: 'No',
+        options: {
+          theme: 'snow',
+          modules: {
+            toolbar: [
+              ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+              ['blockquote', 'code-block'],
+              [{ 'header': 1 }, { 'header': 2 }], // custom button values
+              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+              [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
+              [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
+              [{ 'direction': 'rtl' }], // text direction
+              [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
+              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+              [{ 'color': [] }, { 'background': [] }], // dropdown with defaults from theme
+              [{ 'font': [] }],
+              [{ 'align': [] }],
+              ['clean'] // remove formatting button
+            ]
+          }
+        },
         isLoading: false,
+        productData: {},
         fields: {
           'Webshop Configuration': {
             'maintenance': {
@@ -100,6 +118,14 @@
               'inputType': 'texteditor',
               'label': 'Cookie Wall Text'
             },
+            'facebook_link': {
+              'inputType': 'input',
+              'label': 'Facebook'
+            },
+            'linkedin_link': {
+              'inputType': 'input',
+              'label': 'LinkedIn'
+            },
             icon: 'file-document'
           }
         }
@@ -110,7 +136,7 @@
     },
     methods: {
       setModel (val, fieldKey, tabKey) {
-        this.configData[fieldKey] = val
+        this.productData[fieldKey] = val
       },
       getLabel (val, fieldKey) {
         if (val.label) {
@@ -119,57 +145,31 @@
         return fieldKey
       },
       getValue (val, fieldKey, tabKey, inputType) {
-        if (this.configData instanceof Object) {
+        if (this.productData instanceof Object) {
           if (inputType === 'checkbox') {
-            console.log(fieldKey + ': ' + this.configData[fieldKey])
-            if (this.configData[fieldKey] === 'true') { console.log('true') }
-            return !this.configData[fieldKey]
+            console.log(fieldKey + ': ' + this.productData[fieldKey])
+            if (this.productData[fieldKey] === 'true') { console.log('true') }
+            return !this.productData[fieldKey]
           }
-          return this.configData[fieldKey]
+          return this.productData[fieldKey]
         }
         return ''
       },
       setCheckbox (val, fieldKey, tabKey) {
-        this.configData[fieldKey] = !val
+        this.productData[fieldKey] = !val
       },
       async getData () {
         try {
           this.isLoading = true
-          let routeParams = this.$route.params
-          // console.log(routeParams)
-          if (routeParams instanceof Object && routeParams.key !== 'new') {
-            if (!(this.$store.state.authUser instanceof Object)) {
-              this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
-            }
-            this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            let query = {
-              'options': {
-                'fullCount': true
-              },
-              'count': true,
-              'query': 'FOR p in Config FILTER p._key == @key RETURN p',
-              bindVars: {
-                'key': '16226189'
-              }
-            }
-            let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
-            console.log(data)
-            this.configData = data['result'][0]
-            this.isNew = false
-            this.isLoading = false
-          } else {
-            this.isNew = true
-            this.configData = {}
-            if (this.configData instanceof Object) {
-              for (var tabKey in this.fields) {
-                for (var fieldKey in this.fields[tabKey]) {
-                  this.configData[fieldKey] = ''
-                }
-              }
-            }
-            console.log(this.configData)
-            this.isLoading = false
+          if (!(this.$store.state.authUser instanceof Object)) {
+            console.log(this)
+            this.$store.commit('SET_USER', this.$cookies.get('key2publish').authUser)
           }
+
+          let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/config')
+          this.productData = data['result']['_result'][0]
+          this.isNew = false
+          this.isLoading = false
         } catch (e) {
           this.$toast.open('Could not load data')
           this.isLoading = false
@@ -179,45 +179,19 @@
         try {
           this.isLoading = true
           if (!(this.$store.state.authUser instanceof Object)) {
-            this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
+            this.$store.commit('SET_USER', this.$cookies.get('key2publish').authUser)
           }
-          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-          // let query = {'options': {'fullCount': true}, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == \'' + this.$route.params.code + '\' RETURN p'}
-          // console.log(this.productData)
-          // TODO: CHECK IF this.productData complies with fields before saving (this is necessary when isNew is True)
-          console.log(this.configData)
-          let query = {
-            'options': {
-              'fullCount': true
-            },
-            'count': true,
-            'query': 'INSERT { maintenance: @maintenance, order_email: @order_email, contact_email: @contact_email, cookie_wall: @cookie_wall, cookie_wall_text: @cookie_wall_text } INTO Config',
-            'bindVars': {
-              'maintenance': this.configData.maintenance,
-              'order_email': this.configData.order_email,
-              'contact_email': this.configData.contact_email,
-              'cookie_wall': this.configData.cookie_wall,
-              'cookie_wall_text': this.configData.cookie_wall_text
-            }
+          let postData = {
+            key: this.productData['_key'],
+            maintenance: (this.productData.maintenance !== undefined) ? this.productData.maintenance : '',
+            contact_email: (this.productData.contact_email !== undefined) ? this.productData.contact_email : '',
+            order_email: (this.productData.order_email !== undefined) ? this.productData.order_email : new Date(),
+            cookiewall: (this.productData.cookie_wall !== undefined) ? this.productData.cookie_wall : false,
+            cookiewall_text: (this.productData.cookie_wall_text !== undefined) ? this.productData.cookie_wall_text : '',
+            facebook_link: (this.productData.facebook_link !== undefined) ? this.productData.facebook_link : '',
+            linkedin_link: (this.productData.linkedin_link !== undefined) ? this.productData.linkedin_link : ''
           }
-          if (!this.isNew) {
-            query = {
-              'options': {
-                'fullCount': true
-              },
-              'count': true,
-              'query': 'UPDATE { _key: \'' + this.configData['_key'] + '\' } WITH { maintenance: @maintenance, order_email: @order_email, contact_email: @contact_email, cookie_wall: @cookie_wall, cookie_wall_text: @cookie_wall_text } IN Config',
-              'bindVars': {
-                'maintenance': this.configData.maintenance,
-                'order_email': this.configData.order_email,
-                'contact_email': this.configData.contact_email,
-                'cookie_wall': this.configData.cookie_wall,
-                'cookie_wall_text': this.configData.cookie_wall_text
-              }
-            }
-            console.log(query)
-          }
-          let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
+          let data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/config', postData)
           console.log(data)
           this.isLoading = false
           this.$toast.open('Saved')
@@ -234,7 +208,3 @@
     }
   }
 </script>
-
-<style lang="stylus">
-   @import "~quill/assets/snow"
-</style>

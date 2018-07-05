@@ -42,6 +42,7 @@ module.exports = {
   // include buefy js on startup
   plugins: [
     { src: '~plugins/buefy', ssr: true },
+    { src: '~plugins/quillEditor', ssr: false },
     { src: '~plugins/persistedstate.js', ssr: false }
     //'~plugins/bootstrap.js'
     //{ src: '~/plugins/vue-notifications.js', ssr: false }
@@ -51,6 +52,7 @@ module.exports = {
   css: [
     '~/assets/custom.sass',
     '~/assets/main.css',
+    'quill/dist/quill.snow.css',
   ],
   modules: [
     '@nuxtjs/axios',

@@ -55,14 +55,14 @@
         this.productName = ''
         let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
         this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
-        console.log(route)
+        // console.log(route)
         if (route === '/search') {
           if ((this.$store.state.product.searchVal === '')) {
             this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
           }
 
           let searchVal = this.$store.state.product.searchVal
-          console.log(searchVal)
+          // console.log(searchVal)
           if (searchVal === null) searchVal = ''
           this.productName = searchVal
           /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
@@ -79,9 +79,9 @@
       this.productName = ''
       let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
       this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
-      console.log(route)
+      // console.log(route)
       if (route === '/search') {
-        console.log('benhier')
+        // console.log('benhier')
         if ((this.$store.state.product.searchVal === '')) {
           this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
         }

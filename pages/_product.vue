@@ -324,7 +324,7 @@
     asyncData ({ store, params, error, app: { $axios } }) {
       return $axios.get(store.state.apiUrl + '/product/' + params.product)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           return { product: res.data.result['_result'][0] }
         })
         .catch((e) => {
@@ -335,7 +335,7 @@
       async addToCart (id, name, price) {
         try {
           let contents = {'amount': 1, 'id': id}
-          this.$store.commit('ADD_TO_CART', contents)
+          this.$store.commit('cart/ADD_TO_CART', contents)
           let cart = this.$store.state.cart.cartContents
           await this.$store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
           this.$toast.open({

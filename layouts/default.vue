@@ -71,10 +71,12 @@
       <div class="container">
         <div class="columns">
           <div class="column">
-            Social Media links here
+            <h3 class="subtitle">Social Media</h3>
+            <social></social>
           </div>
           <div class="column is-2">
-            Payment Logos here
+            <h3 class="subtitle">Payment Options</h3>
+
           </div>
           <div class="column is-2">
             <h3 class="subtitle">Help &amp; Support</h3>
@@ -98,12 +100,14 @@
   import cartWidgets from '~/components/widgets/cart.vue'
   import cookiewall from '~/components/widgets/cookiewall.vue'
   import search from '~/components/widgets/search.vue'
+  import social from '~/components/widgets/social.vue'
 
   export default {
     created () {
-      // this.$store.dispatch('connectDB')
+      this.$store.dispatch('getSettings')
     },
-    components: { cartWidgets, cookiewall, search },
+    middleware: [ 'reloadCookie' ],
+    components: { cartWidgets, cookiewall, search, social },
     data () {
       return {
         showNav: false,

@@ -1,7 +1,7 @@
 <template>
   <div>
     <br />
-    <h1 class="title">Users</h1>
+    <h1 class="title">Temperature</h1>
     <datagrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :tableName="tableName" :apiUrl="apiUrl" :type="type" :customSortField="customSortField"></datagrid>
 </div>
 </template>
@@ -23,14 +23,14 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['lastname', 'firstname', 'company', 'mobile', 'email'],
-        gridLabels: ['Lastname', 'Firstname', 'Company', 'Mobile', 'Email'],
-        gridTypes: { 'lastname': 'string', 'firstname': 'string', 'company': 'string', 'phone': 'string', 'mobile': 'string', 'email': 'string' },
+        gridColumns: ['temperatureName', 'temperatureDescription', 'price', 'mysort'],
+        gridLabels: ['Temperature Name', 'Description', 'Price', 'Sort'],
+        gridTypes: { 'temperatureName': 'string', 'temperatureDescription': 'string', 'price': 'string', 'mysort': 'string' },
         gridData: [],
         apiUrl: this.$store.state.apiUrl,
-        tableName: 'User',
-        type: 'user',
-        customSortField: 'lastname'
+        tableName: 'Temperature',
+        type: 'temperature',
+        customSortField: 'mysort'
       }
     }
   }

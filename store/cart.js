@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 export const state = () => ({
   cartContents: []
@@ -7,8 +7,6 @@ export const state = () => ({
 export const mutations = {
   SET_CART: function (state, cart) {
     // used to restore the cart from cookie
-    // console.log('test')
-    // console.log(cart)
     // console.log(Cookies.getJSON('key2publish'))
     state.cartContents = cart
   },
@@ -42,8 +40,9 @@ export const actions = {
   async getProductForCart ({ commit, state, rootState }, { cart }) {
     try {
       if (!(rootState.authUser instanceof Object)) {
-        commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
+        commit('SET_USER', this.$cookies.get('key2publish').authUser, { root: true })
       }
+      console.log(cart)
       if (cart === undefined || cart.length <= 0) return cart
       let mydata = await this.$axios.$post(rootState.apiUrl + '/product/cart/', { cart: cart })
       let data = mydata['result']['_result']

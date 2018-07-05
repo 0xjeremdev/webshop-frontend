@@ -29,7 +29,7 @@ export const mutations = {
     // state.filters = { ...state.filters, value }
   },
   SET_SEARCH_FILTERS: function (state, value) {
-    console.log(value)
+    // console.log(value)
     if (Object.keys(value).length > 0) {
       for (let key in value) {
         if (Object.keys(value[key]).length > 0) {
@@ -63,7 +63,7 @@ export const actions = {
         searchFilters: searchFilters
       }
       let mydata = await this.$axios.$post(rootState.apiUrl + '/product/search', query)
-      console.log(mydata)
+      // console.log(mydata)
       commit('SET_TOTAL', mydata.result.extra.stats.fullCount)
       commit('SET_DATA', mydata.result._result)
       return mydata
@@ -77,7 +77,7 @@ export const actions = {
 
   async getFilters ({ state, rootState, commit }, { field, params }) {
     try {
-      console.log(field)
+      // console.log(field)
       if (!(rootState.authUser instanceof Object)) {
         commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
       }
