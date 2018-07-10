@@ -3,7 +3,7 @@
     <div class="container">
       <div class="columns">
         <div class="column is-one-quarter">
-          <accountMenu link="delivery"></accountMenu>
+          <accountMenu link="quotes"></accountMenu>
         </div>
         <div class="column">
           <h1 class="title">Delivery</h1>

@@ -24,7 +24,6 @@ export const actions = {
       // this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
 
       let mydata = await this.$axios.$get(rootState.apiUrl + '/country')
-      console.log(mydata)
       return mydata['result']['_result']
     } catch (e) {
       console.log(e)

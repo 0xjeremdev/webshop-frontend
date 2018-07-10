@@ -159,10 +159,10 @@
       },
       deleteProduct: function (row) {
         this.$dialog.confirm({
-          title: 'Verwijder ' + this.type,
-          message: 'Weet u zeker dat u het product wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
-          confirmText: 'Verwijder ' + this.type,
-          cancelText: 'Annuleren',
+          title: 'Delete ' + this.type,
+          message: 'Are you sure you wish to <b>delete<b/> this ' + this.type + '? This action cannot be undone',
+          confirmText: 'Delete ' + this.type,
+          cancelText: 'Cancel',
           type: 'is-danger',
           hasIcon: true,
           onConfirm: () => this.doDelete(false, row)
@@ -190,7 +190,7 @@
           let data
           if (withCheckbox) {
             console.log(this.apiUrl + '/' + this.type + '/delete')
-            data = await this.$axios.$post(this.apiUrl + '/' + this.type + '/delete', {id: codes}, { headers: { Authorization: `Bearer ${this.$store.account.state.token.jwt}` } })
+            data = await this.$axios.$post(this.apiUrl + '/' + this.type + '/delete', {id: codes}, { headers: { Authorization: `Bearer ${this.$store.state.account.token.jwt}` } })
           } else {
             console.log(this.apiUrl + '/' + this.type + '/' + row._key)
             data = await this.$axios.$delete(this.apiUrl + '/' + this.type + '/' + row._key, { headers: { Authorization: `Bearer ${this.$store.state.account.token.jwt}` } })
@@ -261,7 +261,7 @@
             queryString += searchFilter
 
             console.log(this.apiUrl + '/' + this.type + queryString)
-            let data = await this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString, { headers: { Authorization: `Bearer ${this.$store.state.account.token.jwt}` } })
+            let data = await this.$axios.$get(this.apiUrl + '/' + this.type + queryString, { headers: { Authorization: `Bearer ${this.$store.state.account.token.jwt}` } })
             console.log(data)
             if (data['result']['_result'][0] instanceof Object) {
               this.data = data['result']['_result']
@@ -311,10 +311,10 @@
           case 'deleteSelected':
             if (this.checkedRows.length > 0) {
               this.$dialog.confirm({
-                title: 'Verwijder ' + this.type,
-                message: 'Weet u zeker dat u de ' + this.type + ' wilt <b>verwijderen</b>? Deze actie kan niet worden ongedaan',
-                confirmText: 'Verwijder ' + this.type,
-                cancelText: 'Annuleren',
+                title: 'Delete ' + this.type,
+                message: 'Are you sure you wish to <b>delete<b/> this ' + this.type + '? This action cannot be undone',
+                confirmText: 'Delete ' + this.type,
+                cancelText: 'Cancel',
                 type: 'is-danger',
                 hasIcon: true,
                 onConfirm: () => this.doDelete(true),

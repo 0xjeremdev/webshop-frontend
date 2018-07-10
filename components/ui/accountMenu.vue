@@ -7,8 +7,8 @@
       <li><nuxt-link to="/account" :class="(link === 'account') ? 'is-active' : ''">Account</nuxt-link></li>
       <li><nuxt-link to="/account/personal" :class="(link === 'personal') ? 'is-active' : ''">Personal Info</nuxt-link></li>
       <li><nuxt-link to="/account/delivery" :class="(link === 'delivery') ? 'is-active' : ''">Delivery Address</nuxt-link></li>
-      <li><nuxt-link to="/account/orders" :class="(link === 'orders') ? 'is-active' : ''">Orders</nuxt-link></li>
-      <li><nuxt-link to="/account/quotes" :class="(link === 'quotes') ? 'is-active' : ''">Quotes</nuxt-link></li>
+      <li><nuxt-link to="/account/order" :class="(link === 'orders') ? 'is-active' : ''">Orders</nuxt-link></li>
+      <li><nuxt-link to="/account/quote" :class="(link === 'quotes') ? 'is-active' : ''">Quotes</nuxt-link></li>
     </ul>
   </aside>
 </template>

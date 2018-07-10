@@ -13,7 +13,8 @@ export const state = () => ({
   apiUrl: 'http://localhost:25678', // process.env.apiUrl,
   cookieAccepted: false,
   isLoading: false,
-  settings: {}
+  settings: {},
+  rememberLink: ''
 })
 
 export const mutations = {
@@ -28,6 +29,9 @@ export const mutations = {
   },
   SET_SETTINGS: function (state, value) {
     state.settings = value
+  },
+  SET_REMEMBERLINK: function (state, value) {
+    state.rememberLink = value
   }
 }
 export const actions = {

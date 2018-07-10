@@ -106,6 +106,30 @@ export const actions = {
     }
   },
 
+  async getAddresses ({ state, rootState }, { id }) {
+    try {
+      return await axios.get(rootState.apiUrl + '/address/' + id, { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  },
+
+  async saveAddress ({ state, rootState }, { address }) {
+    try {
+      console.log(address)
+      if (address._key !== undefined) {
+        // update if key is set
+        return await axios.put(rootState.apiUrl + '/address', address, { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+      }
+      // insert if key is not set
+      return await axios.post(rootState.apiUrl + '/address', address, { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  },
+
   async register ({ commit, rootState }, { regData }) {
     try {
       console.log(regData)

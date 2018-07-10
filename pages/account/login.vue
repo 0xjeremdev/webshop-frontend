@@ -1,11 +1,12 @@
 <template>
     <section class="section">
+      <b-message type="is-danger" has-icon title="An error has occured" :active.sync="showError">
+        {{ this.formError }}
+      </b-message>
       <div class="columns">
         <div class="column"></div>
         <div class="column is-one-third">
-          <b-message type="is-danger" has-icon title="An error has occured" :active.sync="showError">
-            {{ this.formError }}
-          </b-message>
+          <h1 class="title">Login</h1>
           <form v-on:submit.prevent>
             <b-field label="Email"
                 :type="email_type"
@@ -46,6 +47,17 @@
           </form>
         </div>
         <div class="column"></div>
+        <div class="column vl"></div>
+        <div class="column"></div>
+        <div class="column is-one-third">
+          <h1 class="title">Register</h1>
+          <b-field>
+            <nuxt-link to="/account/signup">
+              <button type="button" class="button is-info">Create an account</button>
+            </nuxt-link>
+          </b-field>
+        </div>
+        <div class="column"></div>
       </div>
     </section>
 </template>
@@ -78,7 +90,8 @@
           this.formError = null
           this.showError = false
           if (this.$store.state.account.token) {
-            this.$router.replace({ path: '/' })
+            const link = (this.$store.state.rememberLink !== undefined || this.$store.state.rememberLink !== '') ? this.$store.state.rememberLink : '/'
+            this.$router.replace({ path: link })
           } else {
             this.formError = 'Could not login'
             this.showError = true
@@ -102,3 +115,10 @@
     }
   }
 </script>
+
+<style lang="scss">
+  .vl {
+      border-right: 1px solid #dbdbdb;
+      height: 300px;
+  }
+</style>
