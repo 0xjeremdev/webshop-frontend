@@ -42,22 +42,67 @@ export const actions = {
   },
 
   checkAuth ({ commit, state, rootState }) {
+    try {
+      if (!state.token) commit('SET_TOKEN', Cookies.getJSON('key2publish').account.token)
+      // this.$axios.setToken(state.authUser.jwt, 'Bearer')
+      if ((state.token !== null) && (typeof state.token === 'object')) {
+        if (state.token.hasOwnProperty('jwt')) {
+          return axios.get(rootState.apiUrl + '/checktoken', { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+            .then((res) => {
+              console.log(res)
+              if (Object.keys(res.data['result']).length > 0) {
+                return true
+              }
+              return false
+            })
+            .catch((e) => {
+              return false
+            })
+        }
+      }
+      return false
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  },
+
+  async getAuth ({ commit, state, rootState }) {
     if (!state.token) commit('SET_TOKEN', Cookies.getJSON('key2publish').account.token)
     // this.$axios.setToken(state.authUser.jwt, 'Bearer')
     if ((state.token !== null) && (typeof state.token === 'object')) {
       if (state.token.hasOwnProperty('jwt')) {
         return axios.get(rootState.apiUrl + '/checktoken', { headers: { Authorization: `Bearer ${state.token.jwt}` } })
-          .then((res) => {
-            console.log(res)
-            if (Object.keys(res.data['result']).length > 0) {
-              return true
-            }
-            return false
-          })
-          .catch((e) => {
-            return false
-          })
       }
+    }
+    return false
+  },
+
+  async getCustomer ({ commit, state, rootState }, { id }) {
+    try {
+      const key = id.replace('Customer/', '')
+      return await axios.get(rootState.apiUrl + '/customer/' + key, { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  },
+
+  async saveCustomer ({ commit, state, rootState }, { customer }) {
+    try {
+      return await axios.put(rootState.apiUrl + '/customer/', customer, { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  },
+
+  async changePassword ({ commit, state, rootState }, { customer }) {
+    try {
+      return await axios.put(rootState.apiUrl + '/customer/changepassword', customer, { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+    } catch (e) {
+      console.log(e)
+      return false
     }
   },
 

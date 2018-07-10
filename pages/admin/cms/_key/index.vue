@@ -293,11 +293,11 @@
           }
           console.log(data)
           this.isLoading = false
-          this.$toast.open('Saved')
+          this.$toast.open({ message: 'Saved', type: 'is-success' })
           this.$router.push('/admin/cms')
         } catch (e) {
           console.log(e)
-          this.$toast.open('Could not save data, please try again')
+          this.$toast.open({ message: 'Could not save data, please try again', type: 'is-danger' })
           this.isLoading = false
         }
       },

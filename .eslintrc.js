@@ -11,6 +11,8 @@ module.exports = {
     'html'
   ],
   // add your custom rules here
-  rules: {},
+  rules: {
+    'no-control-regex': 'off'
+  },
   globals: {}
 }
