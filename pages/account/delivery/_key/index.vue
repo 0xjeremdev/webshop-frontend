@@ -76,8 +76,8 @@
           houseno: '',
           postcode: '',
           city: '',
-          country: '',
-          isBilling: ''
+          country: null,
+          isBilling: false
         },
         message: {
           name: ''
@@ -96,7 +96,7 @@
     async asyncData ({ store, params }) {
       let data = params
       if (data.key !== undefined) {
-        const address = await store.dispatch('account/getAddresses', { id: data.key })
+        const address = await store.dispatch('account/getAddress', { id: data.key })
         // console.log(address)
         if (address.data.result._result.length > 0) {
           return { address: address.data.result._result[0] }

@@ -10,18 +10,10 @@
           <span v-else class="steps-marker">1</span>
         </li>
         <li :class="(step === '2') ? 'steps-segment is-active' : 'steps-segment'">
-          <nuxt-link v-if="(Number(step) > 2)" to="/order/shipping"><span class="steps-marker">2</span></nuxt-link>
+          <nuxt-link v-if="(Number(step) > 2)" to="/order/overview"><span class="steps-marker">2</span></nuxt-link>
           <span v-else class="steps-marker">2</span>
         </li>
         <li :class="(step === '3') ? 'steps-segment is-active' : 'steps-segment'">
-          <nuxt-link v-if="(Number(step) > 3)" to="/order/payment"><span class="steps-marker">3</span></nuxt-link>
-          <span v-else class="steps-marker">3</span>
-        </li>
-        <li :class="(step === '4') ? 'steps-segment is-active' : 'steps-segment'">
-          <nuxt-link v-if="(Number(step) > 4)" to="/order/overview"><span class="steps-marker">4</span></nuxt-link>
-          <span v-else class="steps-marker">4</span>
-        </li>
-        <li :class="(step === '5') ? 'steps-segment is-active' : 'steps-segment'">
           <nuxt-link v-if="(Number(step) > 5)" to="/order/done">
             <span class="steps-marker">
               <span class="icon">

@@ -2,6 +2,9 @@ import Cookies from 'js-cookie'
 
 export const state = () => ({
   data: {},
+  customer: {},
+  address: {},
+  billing: {},
   countryList: {}
 })
 
@@ -11,6 +14,15 @@ export const mutations = {
   },
   SET_DATA: function (state, value) {
     state.data = value
+  },
+  SET_CUSTOMER: function (state, value) {
+    state.customer = value
+  },
+  SET_ADDRESS: function (state, value) {
+    state.address = value
+  },
+  SET_BILLING: function (state, value) {
+    state.billing = value
   }
 }
 

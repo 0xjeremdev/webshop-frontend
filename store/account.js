@@ -106,9 +106,18 @@ export const actions = {
     }
   },
 
-  async getAddresses ({ state, rootState }, { id }) {
+  async getAddress ({ state, rootState }, { id }) {
     try {
       return await axios.get(rootState.apiUrl + '/address/' + id, { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  },
+
+  async getAddresses ({ state, rootState }) {
+    try {
+      return await axios.get(rootState.apiUrl + '/address?perPage=100&currentPage=1&mysort=name&sortOrder=asc', { headers: { Authorization: `Bearer ${state.token.jwt}` } })
     } catch (e) {
       console.log(e)
       return false
