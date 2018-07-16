@@ -1,10 +1,15 @@
 <template>
   <section class="section">
     <div class="container">
+      <breadCrumb></breadCrumb>
       <div class="columns">
+        <div class="column"></div>
         <div class="column">
           <h1 class="title">Contact Us</h1>
-          <form v-on:submit.prevent="sendContact()">
+          <b-message :type="(wasSend) ? 'is-success' : 'is-danger'" has-icon :title="(wasSend) ? 'Success' : 'An error has occured'" :active.sync="showError">
+            {{ formError }}
+          </b-message>
+          <form v-if="!wasSend" v-on:submit.prevent="sendContact()">
             <b-field grouped>
               <b-field label="Title" :type="(typeof message.formTitle !== 'undefined' && message.formTitle !== '') ? 'is-danger' : ''" :message="message.formTitle">
                 <b-select placeholder="Title" v-model="formTitle">
@@ -24,6 +29,11 @@
             <b-field label="Message" :type="(typeof message.formMessage !== 'undefined' && message.formMessage !== '') ? 'is-danger' : ''" :message="message.formMessage">
               <b-input type="textarea" :value="formMessage" autocomplete="message" @blur="validate($event.srcElement.value, 'formMessage', 'field')" placeholder="Type your question/message"></b-input>
             </b-field>
+            <vue-recaptcha ref="recaptcha"
+              @verify="onVerify"
+              sitekey="6Lf0WGQUAAAAAIuDsIZZ1yfdTduM1YcX5nglDyjZ">
+            </vue-recaptcha>
+            <br />
             <button type="submit" class="button is-primary">Submit</button>
           </form>
         </div>
@@ -36,18 +46,43 @@
 </template>
 
 <script>
+  import VueRecaptcha from 'vue-recaptcha'
+  import breadCrumb from '~/components/widgets/breadcrumb.vue'
   export default {
+    components: { VueRecaptcha, breadCrumb },
     data () {
       return {
+        wasSend: false,
         formMessage: '',
         formEmail: '',
         formFirstname: '',
         formLastname: '',
         formTitle: null,
         message: {},
-        formError: '',
+        formError: 'There are errors, please correct them to contact us',
         showError: false,
+        isLoading: false,
+        recaptchaToken: null,
         titles: ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.']
+      }
+    },
+    computed: {
+      checkErrors: {
+        cache: false,
+        get () {
+          try {
+            let messages = this.message
+            for (var mes in messages) {
+              // console.log(mes + ' - ' + this.message[mes])
+              if (this.message[mes] !== '') {
+                return true
+              }
+            }
+            return false
+          } catch (e) {
+            console.log(e)
+          }
+        }
       }
     },
     methods: {
@@ -76,12 +111,50 @@
         this[fld] = value
       },
       async sendContact () {
+        this.isLoading = true
         this.validate(this.formTitle, 'formTitle', 'select')
         this.validate(this.formLastname, 'formLastname', 'field')
         this.validate(this.formFirstname, 'formFirstname', 'field')
         this.validate(this.formEmail, 'formEmail', 'email')
-        this.validate(this.formPassword, 'formMessage', 'field')
-        console.log(this.message)
+        this.validate(this.formMessage, 'formMessage', 'field')
+        if (this.checkErrors) {
+          this.formError = 'There are errors, please correct them to contact us'
+          this.showError = true
+          this.isLoading = false
+          return
+        }
+        if (this.recaptchaToken === null) {
+          this.formError = 'Please verify your are a human by pressing the I am not a Robot checkbox'
+          this.showError = true
+          this.isLoading = false
+          return
+        }
+
+        // this.showError = false
+        // this.isLoading = false
+        try {
+          const data = {
+            title: (this.formTitle !== undefined) ? this.formTitle : '',
+            firstname: (this.formFirstname !== undefined) ? this.formFirstname : '',
+            lastname: (this.formLastname !== undefined) ? this.formLastname : '',
+            email: (this.formEmail !== undefined) ? this.formEmail : '',
+            message: (this.formMessage !== undefined) ? this.formMessage : '',
+            recaptchaToken: (this.recaptchaToken !== undefined) ? this.recaptchaToken : ''
+          }
+          await this.$axios.$post(this.$store.state.apiUrl + '/contact', data)
+          this.wasSend = true
+          this.formError = 'We have received your contact form successfully, it may take up to two working days before your receive an answer'
+          this.isLoading = false
+          this.showError = true
+          console.log('Success')
+        } catch (e) {
+          this.formError = 'Unexpected Error occured'
+          this.showError = true
+          this.isLoading = false
+        }
+      },
+      onVerify (response) {
+        this.recaptchaToken = response
       }
     }
   }

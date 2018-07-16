@@ -4,7 +4,7 @@
       <div class="columns">
         <div class="column">
           <nuxt-link to="/">
-            <img src="https://www.labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.lNHYz6ertB.webp" alt="LabNed.com" width="auto" height="74px">
+            <img src="http://labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.1gJ-QNfrLx.png" alt="LabNed.com" width="auto" height="74px">
           </nuxt-link>
         </div>
         <div class="column">
@@ -55,6 +55,9 @@
           </nuxt-link>
           <nuxt-link class="navbar-item" to="/distributors">
             Distributors
+          </nuxt-link>
+          <nuxt-link class="navbar-item" to="/blog">
+            Our Blog
           </nuxt-link>
           <nuxt-link class="navbar-item" to="/contact">
             Contact Us
