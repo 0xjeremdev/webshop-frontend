@@ -14,8 +14,9 @@ export default ({store, isHMR, app}) => {
         authUser: state.authUser,
         cookieAccepted: state.cookieAccepted,
         account: { token: state.account.token },
-        order: state.order,
-        product: { searchVal: state.product.searchVal, searchFilters: state.product.searchFilters, page: state.product.page, total: state.product.total }
+        order: { address: state.order.address, billing: state.order.billing, customer: state.order.customer },
+        product: { searchVal: state.product.searchVal, searchFilters: state.product.searchFilters, page: state.product.page, total: state.product.total },
+        settings: state.settings
       }),
       storage: {
         getItem: key => app.$cookies.get(key),

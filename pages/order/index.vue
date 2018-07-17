@@ -218,10 +218,9 @@
     },
     methods: {
       doNext () {
-        //
         this.$store.commit('order/SET_CUSTOMER', this.customer)
-        this.$store.commit('order/SET_ADDRESS', this.selectedAddress)
-        if (this.differentAsDelivery) { this.$store.commit('order/SET_BILLING', this.selectedBilling) } else { this.$store.commit('order/SET_BILLING', this.selectedAddress) }
+        this.$store.commit('order/SET_ADDRESS', this.selectedAddress.country)
+        if (this.differentAsDelivery) { this.$store.commit('order/SET_BILLING', this.selectedBilling.country) } else { this.$store.commit('order/SET_BILLING', this.selectedAddress.country) }
         this.$router.push('/order/overview')
       },
       doChange () {

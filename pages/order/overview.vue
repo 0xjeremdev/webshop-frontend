@@ -2,15 +2,48 @@
   <section class="section">
     <div class="container">
       <h1 class="title">Overview and Payment</h1>
+      <orderMenu :step="step"></orderMenu>
+      <b-message type="is-danger" has-icon title="An error has occured" :active.sync="showError">
+        {{ formError }}
+      </b-message>
       <div class="columns">
         <div class="column">
           <table class="table">
             <thead>
-              <th class="th-wrap">ID</th>
-              <th class="th-wrap">Name</th>
-              <th class="th-wrap has-text-right">Amount</th>
-              <th class="th-wrap has-text-right">Price</th>
+              <tr>
+                <th class="th-wrap">ID</th>
+                <th class="th-wrap">Name</th>
+                <th class="th-wrap has-text-right">Amount</th>
+                <th class="th-wrap has-text-right">Price</th>
+              </tr>
             </thead>
+            <tfoot>
+              <tr>
+                <td class="th-wrap">&nbsp;</td>
+                <td colspan="2" class="th-wrap has-text-right">Subtotal (ex. VAT):</td>
+                <td class="th-wrap has-text-right">€ {{ parseFloat(subtotal).toFixed(2) }}</td>
+              </tr>
+              <tr>
+                <td class="th-wrap">&nbsp;</td>
+                <td colspan="2" class="th-wrap has-text-right">Shipping Costs (ex. VAT):</td>
+                <td class="th-wrap has-text-right">€ {{ parseFloat(shippingcosts).toFixed(2) }}</td>
+              </tr>
+              <tr>
+                <td class="th-wrap">&nbsp;</td>
+                <td colspan="2" class="th-wrap has-text-right">Total (ex. VAT):</td>
+                <td class="th-wrap has-text-right">€ {{ parseFloat(shippingtotal).toFixed(2) }}</td>
+              </tr>
+              <tr>
+                <td class="th-wrap">&nbsp;</td>
+                <td colspan="2" class="th-wrap has-text-right">VAT ({{ vat }}%):</td>
+                <td class="th-wrap has-text-right">€ {{ parseFloat(vat).toFixed(2) }}</td>
+              </tr>
+              <tr>
+                <td class="th-wrap">&nbsp;</td>
+                <td colspan="2" class="th-wrap has-text-right">Total (inc. VAT):</td>
+                <td class="th-wrap has-text-right">€ {{ parseFloat(total).toFixed(2) }}</td>
+              </tr>
+            </tfoot>
             <tbody>
               <tr v-for="(value) in cartContents">
                 <td>{{ value.id }}</td>
@@ -19,14 +52,6 @@
                 <td class="has-text-right">€ {{ (parseFloat(value.price ) * Number(value.amount)).toFixed(2) }}</td>
               </tr>
             </tbody>
-            <tfoot>
-              <tr>
-                <td class="th-wrap">&nbsp;</td>
-                <td class="th-wrap">&nbsp;</td>
-                <td class="th-wrap has-text-right">Total:</td>
-                <td class="th-wrap has-text-right">€ {{ parseFloat(calcTotal()).toFixed(2) }}</td>
-              </tr>
-            </tfoot>
           </table>
           <br/>
         </div>
@@ -50,17 +75,29 @@
 </template>
 
 <script>
+  import orderMenu from '~/components/ui/orderMenu.vue'
+
   export default {
+    components: { orderMenu },
     data () {
       return {
+        step: '2',
+        showError: false,
+        formError: 'Please agree with our Terms and Conditions including our Privacy Policy',
         cartContents: [],
-        paymentMethod: null,
+        paymentMethod: 'cct',
         agreement: false,
+        shippingcosts: 0,
+        shippingtotal: 0,
+        subtotal: 0,
+        vatamount: 0,
+        total: 0,
+        vat: this.$store.state.settings.VAT,
         paymentMethods: [
           {
             code: 'cct',
             name: 'Credit Card Test',
-            price: '10'
+            price: '0'
           },
           {
             code: 'ideal',
@@ -70,31 +107,57 @@
           {
             code: 'bank',
             name: 'Bank',
-            price: '5'
+            price: '0'
           }
         ]
       }
     },
-    asyncData ({ store }) {
-      return { cartContents: store.state.cart.cartContents }
-    },
-    async created () {
-      await this.getData()
-      this.cartContents = this.$store.state.cart.cartContents
+    async asyncData ({ store, error, app: { $cookies } }) {
+      if (!(store.state.order.address instanceof Object)) {
+        store.commit('order/SET_ADDRESS', $cookies.get('key2publish').order.address)
+        store.commit('order/SET_BILLING', $cookies.get('key2publish').order.billing)
+        store.commit('order/SET_CUSTOMER', $cookies.get('key2publish').order.customer)
+        store.commit('SET_SETTINGS', $cookies.get('key2publish').settings)
+      }
+      let cart = store.state.cart.cartContents
+      await store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
+      let condition = 'RT'
+      cart = store.state.cart.cartContents
+      for (let v = 0; v < cart.length; v++) {
+        if (cart[v]['shipping'] === 'DRY ICE') {
+          condition = cart[v]['shipping']
+          break
+        }
+        if (cart[v]['shipping'] === 'ICE') {
+          condition = cart[v]['shipping']
+        }
+      }
+      let costs = await store.dispatch('order/getShippingCosts', { condition: condition }, { root: true })
+      let zonecosts = await store.dispatch('order/getZoneCosts', { cc: store.state.order.address }, { root: true })
+      console.log(zonecosts['result']['_result'])
+      zonecosts = zonecosts['result']['_result'][0]
+      // if (zonecosts['result'] !== undefined && zonecosts['result']['_result'].length > 0) zonecosts = zonecosts['result']['_result'][0]
+      // if (zonecosts['result'] === undefined || zonecosts['result']['_result'].length <= 0) error({ 'statusCode': 500, 'message': 'An unexpected error occured' })
+      var subtotal = 0
+      for (let key in cart) {
+        subtotal += parseFloat(cart[key].price) * Number(cart[key].amount)
+      }
+      let shippingcosts = parseFloat(zonecosts.price) + parseFloat(costs.price)
+      let shippingtotal = subtotal + shippingcosts
+      let vatamount = (store.state.settings.VAT / 100) * shippingtotal
+      let total = shippingtotal + vatamount
+      return { cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total }
     },
     methods: {
-      async getData () {
-        let cart = this.$store.state.cart.cartContents
-        await this.$store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
-      },
-      calcTotal: function () {
-        let total = 0
-        for (let key in this.cartContents) {
-          total += parseFloat(this.cartContents[key].price) * Number(this.cartContents[key].amount)
-        }
-        return total
-      },
       placeOrder () {
+        if (!this.agreement) {
+          this.showError = true
+          return false
+        }
+
+        this.showError = false
+        // place order in database should be changed
+        this.$store.dispatch('order/placeorder')
         this.$router.push('/order/done')
       }
     }

@@ -42,7 +42,7 @@ export const actions = {
       if (!(rootState.authUser instanceof Object)) {
         commit('SET_USER', this.$cookies.get('key2publish').authUser, { root: true })
       }
-      console.log(cart)
+      // console.log(cart)
       if (cart === undefined || cart.length <= 0) return cart
       let mydata = await this.$axios.$post(rootState.apiUrl + '/product/cart/', { cart: cart })
       let data = mydata['result']['_result']
@@ -53,8 +53,9 @@ export const actions = {
           }
         }
       }
-      // return data['result']['_result']
-      console.log('Got Triggered here')
+      console.log(data)
+      // console.log('Got Triggered here')
+
       commit('SET_CART', data)
     } catch (e) {
       console.log(e)

@@ -197,10 +197,15 @@
             if (this.productData instanceof Object) {
               for (var tabKey in this.fields) {
                 for (var fieldKey in this.fields[tabKey]) {
+                  if (fieldKey === 'countryList') {
+                    this.productData[fieldKey] = []
+                    continue
+                  }
                   this.productData[fieldKey] = ''
                 }
               }
             }
+
             console.log(this.productData)
             this.isLoading = false
           }

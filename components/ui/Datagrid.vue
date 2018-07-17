@@ -261,7 +261,7 @@
             queryString += searchFilter
 
             console.log(this.apiUrl + '/' + this.type + queryString)
-            let data = await this.$axios.$get(this.apiUrl + '/' + this.type + queryString)
+            let data = await this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString)
             console.log(data)
             if (data['result']['_result'][0] instanceof Object) {
               this.data = data['result']['_result']
