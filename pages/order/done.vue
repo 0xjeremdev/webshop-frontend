@@ -5,3 +5,9 @@
     </div>
   </section>
 </template>
+
+<script>
+  export default {
+    middleware: 'authCustomer'
+  }
+</script>

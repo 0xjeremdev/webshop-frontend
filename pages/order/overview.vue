@@ -20,8 +20,8 @@
             <tfoot>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
-                <td colspan="2" class="th-wrap has-text-right">Subtotal (ex. VAT):</td>
-                <td class="th-wrap has-text-right">€ {{ parseFloat(subtotal).toFixed(2) }}</td>
+                <td colspan="2" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
+                <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(subtotal).toFixed(2) }}</strong></td>
               </tr>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
@@ -30,18 +30,18 @@
               </tr>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
-                <td colspan="2" class="th-wrap has-text-right">Total (ex. VAT):</td>
-                <td class="th-wrap has-text-right">€ {{ parseFloat(shippingtotal).toFixed(2) }}</td>
+                <td colspan="2" class="th-wrap has-text-right"><strong>Total (ex. VAT):</strong></td>
+                <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(shippingtotal).toFixed(2) }}</strong></td>
               </tr>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
                 <td colspan="2" class="th-wrap has-text-right">VAT ({{ vat }}%):</td>
-                <td class="th-wrap has-text-right">€ {{ parseFloat(vat).toFixed(2) }}</td>
+                <td class="th-wrap has-text-right">€ {{ parseFloat(vatamount).toFixed(2) }}</td>
               </tr>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
-                <td colspan="2" class="th-wrap has-text-right">Total (inc. VAT):</td>
-                <td class="th-wrap has-text-right">€ {{ parseFloat(total).toFixed(2) }}</td>
+                <td colspan="2" class="th-wrap has-text-right"><strong>Total (inc. VAT):</strong></td>
+                <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(total).toFixed(2) }}</strong></td>
               </tr>
             </tfoot>
             <tbody>
@@ -70,6 +70,17 @@
           <button class="button is-primary" @click="placeOrder()">Place Order</button>
         </div>
       </div>
+      <div class="columns">
+        <div class="column is-one-fifth has-text-right">
+          <nuxt-link to="/order"><button class="button is-orange">Previous</button></nuxt-link>
+        </div>
+        <div class="column">
+        </div>
+        <div class="column is-one-fifth">
+
+        </div>
+      </div>
+      <b-loading :active.sync="isFetching" :canCancel="true"></b-loading>
     </div>
   </section>
 </template>
@@ -78,9 +89,11 @@
   import orderMenu from '~/components/ui/orderMenu.vue'
 
   export default {
+    middleware: 'authCustomer',
     components: { orderMenu },
     data () {
       return {
+        isFetching: false,
         step: '2',
         showError: false,
         formError: 'Please agree with our Terms and Conditions including our Privacy Policy',
@@ -133,7 +146,7 @@
         }
       }
       let costs = await store.dispatch('order/getShippingCosts', { condition: condition }, { root: true })
-      let zonecosts = await store.dispatch('order/getZoneCosts', { cc: store.state.order.address }, { root: true })
+      let zonecosts = await store.dispatch('order/getZoneCosts', { cc: store.state.order.address.country }, { root: true })
       console.log(zonecosts['result']['_result'])
       zonecosts = zonecosts['result']['_result'][0]
       // if (zonecosts['result'] !== undefined && zonecosts['result']['_result'].length > 0) zonecosts = zonecosts['result']['_result'][0]
@@ -157,8 +170,9 @@
 
         this.showError = false
         // place order in database should be changed
-        this.$store.dispatch('order/placeorder')
-        this.$router.push('/order/done')
+        this.$store.dispatch('order/placeOrder', { status: 'Payment Received' }, { root: true })
+        this.$store.commit('cart/SET_CART', [])
+        this.$router.replace({path: '/order/done', replace: true})
       }
     }
   }

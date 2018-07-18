@@ -5,6 +5,7 @@ export const state = () => ({
   customer: {},
   address: '',
   billing: '',
+  fromQuote: false,
   countryList: {}
 })
 
@@ -23,6 +24,9 @@ export const mutations = {
   },
   SET_BILLING: function (state, value) {
     state.billing = value
+  },
+  SET_FROMQUOTE: function (state, value) {
+    state.fromQuote = value
   }
 }
 
@@ -42,15 +46,34 @@ export const actions = {
       return e
     }
   },
-  async placeOrder ({ commit, state, rootState }) {
+  async placeOrder ({ commit, state, rootState }, { status }) {
     try {
       let postData = {
-        address: state.address,
+        delivery: state.address,
         billing: state.billing,
         customer: state.customer,
-        cart: rootState.cart.cartContents
+        items: rootState.cart.cartContents,
+        from_quote: (state.fromQuote) ? state.fromQuote : false,
+        status: status
       }
-      await this.$axios.$post(rootState.apiUrl + '/order', postData)
+      await this.$axios.$post(rootState.apiUrl + '/order', postData, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
+      return true
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  },
+  async placeQuote ({ commit, state, rootState }, { status, email }) {
+    try {
+      let postData = {
+        // delivery: state.address,
+        // billing: state.billing,
+        quot_by: state.customer,
+        items: rootState.cart.cartContents,
+        from_quote: true,
+        status: status
+      }
+      await this.$axios.$post(rootState.apiUrl + '/quote', postData, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
       return true
     } catch (e) {
       console.log(e)
