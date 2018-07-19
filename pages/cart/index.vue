@@ -96,8 +96,8 @@
     },
     async created () {
       let cookie = Cookies.getJSON('key2publish')
-      if (!(this.$store.state.authUser instanceof Object)) {
-        this.$store.commit('SET_USER', cookie.authUser)
+      if (!(this.$store.state.account.token instanceof Object)) {
+        this.$store.commit('SET_USER', cookie.account.token)
       }
       if (!(this.$store.state.cart.cartContents instanceof Object)) {
         this.$store.commit('cart/SET_CART', cookie.cart.cartContents)

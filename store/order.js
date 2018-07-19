@@ -68,11 +68,13 @@ export const actions = {
       let postData = {
         // delivery: state.address,
         // billing: state.billing,
-        quot_by: state.customer,
+        quote_by: state.customer,
+        quote_email: email,
         items: rootState.cart.cartContents,
         from_quote: true,
         status: status
       }
+      console.log(postData)
       await this.$axios.$post(rootState.apiUrl + '/quote', postData, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
       return true
     } catch (e) {

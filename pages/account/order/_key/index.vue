@@ -3,57 +3,102 @@
     <div class="container">
       <div class="columns">
         <div class="column is-one-quarter">
-          <accountMenu link="delivery"></accountMenu>
+          <accountMenu link="order"></accountMenu>
         </div>
         <div class="column">
-          <h1 class="title"><span v-if="isNew">Add </span><span v-else>Edit </span>Delivery Address</h1>
-          <form @submit.prevent="saveDelivery()">
-            <b-field expanded label="Name"
-            :type="(typeof message['name'] !== 'undefined' && message['name'] !== '') ? 'is-danger' : ''"
-            :message="message['name']">
-              <b-input v-model="address.name" autocomplete='name' placeholder="Name"></b-input>
-            </b-field>
-            <b-field grouped>
-              <b-field expanded label="Street"
-              :type="(typeof message['street'] !== 'undefined' && message['street'] !== '') ? 'is-danger' : ''"
-              :message="message['street']">
-                <b-input v-model="address.street" autocomplete='street' placeholder="Street"></b-input>
-              </b-field>
-              <b-field label="House No."
-              :type="(typeof message['houseno'] !== 'undefined' && message['houseno'] !== '') ? 'is-danger' : ''"
-              :message="message['houseno']">
-                <b-input v-model="address.houseno" autocomplete='houseno' placeholder="House No."></b-input>
-              </b-field>
-            </b-field>
-            <b-field grouped>
-              <b-field label="Postcode"
-              :type="(typeof message['postcode'] !== 'undefined' && message['postcode'] !== '') ? 'is-danger' : ''"
-              :message="message['postcode']">
-                <b-input v-model="address.postcode" autocomplete='postcode' placeholder="Postcode"></b-input>
-              </b-field>
-              <b-field expanded label="City"
-              :type="(typeof message['city'] !== 'undefined' && message['city'] !== '') ? 'is-danger' : ''"
-              :message="message['city']">
-                <b-input v-model="address.city" autocomplete='city' placeholder="City"></b-input>
-              </b-field>
-            </b-field>
-            <b-field label="Country"
-              :type="(typeof message['country'] !== 'undefined' && message['country'] !== '') ? 'is-danger' : ''"
-              :message="message['country']">
-                <b-select v-model="address.country" expanded placeholder="Select a Country">
-                    <option
-                        v-for="option in countryList"
-                        :value="option.code"
-                        :key="option.code">
-                        {{ option.name }}
-                    </option>
-                </b-select>
-            </b-field>
-            <b-field>
-              <b-checkbox v-model="address.isBilling">This address is my primary address</b-checkbox>
-            </b-field>
-            <button type="submit" class="button is-primary">Save</button>
-          </form>
+          <h1 class="title">Order No: {{ order.order_no }}</h1>
+          <div>Order Date: {{ order_date }}</div>
+          <br />
+          <div class="columns">
+            <div class="column is-one-third">
+              <h2 class="subtitle">Order send by</h2>
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <th class="th-wrap">Name:</th>
+                    <td>{{ order.customer.title }} {{ order.customer.firstname }} {{ order.customer.lastname}}</td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Gender:</th>
+                    <td>{{ order.customer.gender }}</td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Company:</th>
+                    <td>{{ order.customer.company }}</td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Phone:</th>
+                    <td>{{ order.customer.phone }} </td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Mobile:</th>
+                    <td>{{ order.customer.mobile }}</td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Fax:</th>
+                    <td>{{ order.customer.fax }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="column">
+              <h2 class="subtitle">Products</h2>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="th-wrap">ID</th>
+                    <th class="th-wrap">Name</th>
+                    <th class="th-wrap">Amount</th>
+                    <th class="th-wrap">Price</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <td class="th-wrap"></td>
+                    <td colspan="2" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
+                    <td class="th-wrap"><strong>€ {{ parseFloat(subtotal).toFixed(2) }}</strong></td>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <tr v-for="(value, index) in order.items">
+                    <td>{{ value.id }}</td>
+                    <td>{{ value.name }}</td>
+                    <td>{{ value.amount }}</td>
+                    <td>€ {{ (parseFloat(value.price) * Number(value.amount)).toFixed(2) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <h2 class="subtitle">Your billing address details:</h2>
+              <table class="table">
+                <tbody>
+                  <tr><td>Name:</td><td>{{ order.billing_address.name }}</td></tr>
+                  <tr><td>Street: </td><td>{{ order.billing_address.street }}</td></tr>
+                  <tr><td>House No.: </td><td>{{ order.billing_address.houseno }}</td></tr>
+                  <tr><td>Postcode: </td><td>{{ order.billing_address.postcode }}</td></tr>
+                  <tr><td>City: </td><td>{{ order.billing_address.city }}</td></tr>
+                  <tr><td>Country: </td><td>{{ order.billing_address.country }}</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="column">
+              <h2 class="subtitle">Your delivery address details:</h2>
+              <table class="table">
+                <tbody>
+                  <tr><td>Name:</td><td>{{ order.delivery_address.name }}</td></tr>
+                  <tr><td>Street: </td><td>{{ order.delivery_address.street }}</td></tr>
+                  <tr><td>House No.: </td><td>{{ order.delivery_address.houseno }}</td></tr>
+                  <tr><td>Postcode: </td><td>{{ order.delivery_address.postcode }}</td></tr>
+                  <tr><td>City: </td><td>{{ order.delivery_address.city }}</td></tr>
+                  <tr><td>Country: </td><td>{{ order.delivery_address.country }}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <button class="button is-orange" @click="doReOrder()">Reorder</button>
         </div>
       </div>
     </div>
@@ -69,137 +114,40 @@
     components: { accountMenu },
     data () {
       return {
-        countryList: {},
-        address: {
-          name: '',
-          street: '',
-          houseno: '',
-          postcode: '',
-          city: '',
-          country: '',
-          isBilling: ''
-        },
-        message: {
-          name: ''
-        }, // filled in one key so it also works when any of the values are untouched
-        showError: false,
-        formError: 'There are errors, please correct them to save',
-        isNew: true,
+        quote: {},
         isLoading: false
       }
     },
-    created () {
-      const routeParams = this.$route.params
-      this.isNew = (routeParams.key === 'new')
-      this.getCountryList()
-    },
-    async asyncData ({ store, params }) {
-      let data = params
-      if (data.key !== undefined) {
-        const address = await store.dispatch('account/getAddresses', { id: data.key })
-        // console.log(address)
-        if (address.data.result._result.length > 0) {
-          return { address: address.data.result._result[0] }
+    async asyncData ({ store, params, app: { $axios, $cookies } }) {
+      if (params.key !== undefined) {
+        let order = await $axios.$get(store.state.apiUrl + '/order/' + params.key)
+        let orderResult = order.result._result[0]
+        var subtotal = 0
+        for (let v = 0; v < orderResult.items.length; v++) {
+          subtotal += (parseFloat(orderResult.items[v].price) * Number(orderResult.items[v].amount))
         }
-        return {
-          address: {
-            name: '',
-            street: '',
-            houseno: '',
-            postcode: '',
-            city: '',
-            country: '',
-            isBilling: ''
-          }
-        }
+        let orderDate = new Date(orderResult.order_date)
+        var monthNums = [
+          '01', '02', '03',
+          '04', '05', '06', '07',
+          '08', '09', '10',
+          '11', '12'
+        ]
+
+        var day = orderDate.getDate()
+        var monthIndex = monthNums[orderDate.getMonth()]
+        var year = orderDate.getFullYear()
+        orderDate = year + '-' + monthIndex + '-' + day
+
+        return { order: order.result._result[0], subtotal: subtotal, order_date: orderDate }
       }
-      return {
-        address: {
-          name: '',
-          street: '',
-          houseno: '',
-          postcode: '',
-          city: '',
-          country: '',
-          isBilling: ''
-        }
-      }
-    },
-    computed: {
-      checkErrors: {
-        cache: false,
-        get () {
-          try {
-            let messages = this.message
-            for (var mes in messages) {
-              // console.log(mes + ' - ' + this.message[mes])
-              if (this.message[mes] !== '') {
-                return true
-              }
-            }
-            return false
-          } catch (e) {
-            console.log(e)
-          }
-        }
-      }
+
+      return { order: {}, subtotal: 0 }
     },
     methods: {
-      async validate (value, fld, type) {
-        let messages = this.message
-        switch (type) {
-          case 'email':
-            messages[fld] = await this.$store.dispatch('validation/validateMail', { value: value })
-            break
-          case 'password':
-            if (value === undefined) value = ''
-            messages[fld] = await this.$store.dispatch('validation/validatePassword', { value: value })
-            break
-          case 'repeatPassword':
-            if (value === undefined) value = ''
-            messages[fld] = await this.$store.dispatch('validation/validateRepeatPassword', { value: value, repeat: this.customer.newPassword })
-            break
-          default:
-            messages[fld] = await this.$store.dispatch('validation/validateField', { value: value })
-            break
-        }
-
-        this.message = '' // hack to let two way binding work if a key in an object has changed
-        this.message = messages
-        this.address[fld] = value
-      },
-      async saveDelivery () {
-        try {
-          this.isLoading = true
-          // validate fields here
-          await this.validate(this.address.name, 'name')
-          await this.validate(this.address.street, 'street')
-          await this.validate(this.address.houseno, 'houseno')
-          await this.validate(this.address.postcode, 'postcode')
-          await this.validate(this.address.city, 'city')
-          await this.validate(this.address.country, 'country', 'select')
-
-          if (this.checkErrors) {
-            this.showError = true
-            this.isLoading = false
-          }
-          if (!this.checkErrors) {
-            await this.$store.dispatch('account/saveAddress', { address: this.address })
-            this.isLoading = false
-            this.showError = false
-            this.$toast.open({ message: 'Saved', type: 'is-success' })
-            this.$router.push('/account/delivery')
-          }
-        } catch (e) {
-          console.log(e)
-          this.showError = true
-          this.isLoading = false
-          this.$toast.open({ message: 'Could not save data, please try again', type: 'is-danger' })
-        }
-      },
-      async getCountryList () {
-        let countryList = await this.$store.dispatch('order/getCountryList', {}, { root: true })
-        this.countryList = countryList
+      doReOrder () {
+        this.$store.commit('cart/SET_CART', this.order.items)
+        this.$router.push('/cart')
       }
     }
   }

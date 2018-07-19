@@ -88,7 +88,7 @@
     <footer class="footer">
       <div class="container">
         <div class="content has-text-centered">
-          <p>Key2Publish Webshop made for ITK Diagnostics B.V. </p>
+          <p>Key2Publish Webshop made for LabNed.com </p>
         </div>
       </div>
     </footer>

@@ -36,26 +36,6 @@
                 <td colspan="2" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
                 <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(subtotal).toFixed(2) }}</strong></td>
               </tr>
-              <tr>
-                <td class="th-wrap">&nbsp;</td>
-                <td colspan="2" class="th-wrap has-text-right">Shipping Costs (ex. VAT):</td>
-                <td class="th-wrap has-text-right">€ {{ parseFloat(shippingcosts).toFixed(2) }}</td>
-              </tr>
-              <tr>
-                <td class="th-wrap">&nbsp;</td>
-                <td colspan="2" class="th-wrap has-text-right"><strong>Total (ex. VAT):</strong></td>
-                <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(shippingtotal).toFixed(2) }}</strong></td>
-              </tr>
-              <tr>
-                <td class="th-wrap">&nbsp;</td>
-                <td colspan="2" class="th-wrap has-text-right">VAT ({{ vat }}%):</td>
-                <td class="th-wrap has-text-right">€ {{ parseFloat(vatamount).toFixed(2) }}</td>
-              </tr>
-              <tr>
-                <td class="th-wrap">&nbsp;</td>
-                <td colspan="2" class="th-wrap has-text-right"><strong>Total (inc. VAT):</strong></td>
-                <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(total).toFixed(2) }}</strong></td>
-              </tr>
             </tfoot>
             <tbody>
               <tr v-for="(value) in cartContents">
@@ -88,40 +68,29 @@
       }
     },
     async asyncData ({ store, error, app: { $cookies } }) {
-      if (!(store.state.order.address instanceof Object)) {
-        store.commit('order/SET_ADDRESS', $cookies.get('key2publish').order.address)
-        store.commit('order/SET_BILLING', $cookies.get('key2publish').order.billing)
+      console.log(store.account)
+      // if (!(Object.keys(store.account.token).length === 0 && store.account.token.constructor === Object)) {
+      // store.commit('account/SET_TOKEN', $cookies.get('key2publish').account.token)
+      // }
+      let data = await store.dispatch('account/getAuth')
+      if (data.data.result.id !== undefined) {
+        const customer = await store.dispatch('account/getCustomer', { id: data.data.result.id })
+        store.commit('order/SET_CUSTOMER', customer.data.result._result[0])
+      }
+      if (Object.keys(store.state.order.customer).length === 0 && store.state.order.customer.constructor === Object) {
         store.commit('order/SET_CUSTOMER', $cookies.get('key2publish').order.customer)
         store.commit('SET_SETTINGS', $cookies.get('key2publish').settings)
       }
       let cart = store.state.cart.cartContents
       await store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
-      let condition = 'RT'
       cart = store.state.cart.cartContents
-      for (let v = 0; v < cart.length; v++) {
-        if (cart[v]['shipping'] === 'DRY ICE') {
-          condition = cart[v]['shipping']
-          break
-        }
-        if (cart[v]['shipping'] === 'ICE') {
-          condition = cart[v]['shipping']
-        }
-      }
-      let costs = await store.dispatch('order/getShippingCosts', { condition: condition }, { root: true })
-      let zonecosts = await store.dispatch('order/getZoneCosts', { cc: store.state.order.address.country }, { root: true })
-      console.log(zonecosts['result']['_result'])
-      zonecosts = zonecosts['result']['_result'][0]
-      // if (zonecosts['result'] !== undefined && zonecosts['result']['_result'].length > 0) zonecosts = zonecosts['result']['_result'][0]
-      // if (zonecosts['result'] === undefined || zonecosts['result']['_result'].length <= 0) error({ 'statusCode': 500, 'message': 'An unexpected error occured' })
+
       var subtotal = 0
       for (let key in cart) {
         subtotal += parseFloat(cart[key].price) * Number(cart[key].amount)
       }
-      let shippingcosts = parseFloat(zonecosts.price) + parseFloat(costs.price)
-      let shippingtotal = subtotal + shippingcosts
-      let vatamount = (store.state.settings.VAT / 100) * shippingtotal
-      let total = shippingtotal + vatamount
-      return { cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total }
+
+      return { cartContents: cart, subtotal: subtotal }
     },
     computed: {
       checkErrors: {
@@ -153,7 +122,7 @@
 
         this.message = '' // hack to let two way binding work if a key in an object has changed
         this.message = messages
-        this.customer[fld] = value
+        this[fld] = value
       },
       async sendQuote () {
         try {
@@ -170,11 +139,12 @@
             if (result) {
               this.isLoading = false
               this.showError = false
-              // this.router.replace({ path: '/order/done', replace: true})
+              this.$store.commit('cart/SET_CART', [])
+              this.$router.replace({ path: '/account/quote', replace: true })
               // this.$toast.open({ message: 'Saved', type: 'is-success' })
             }
             this.showError = true
-            this.formError = 'Could not change your login credentials, please provide either the same e-mail or an e-mail that has not been registered yet. Also check you have inserted your current password correctly'
+            this.formError = 'Could not send a quote. Server was not responding please contact us so we can assist you in another way'
             this.isLoading = false
             // this.$toast.open({ message: 'Could not save data, please try again', type: 'is-danger' })
           }

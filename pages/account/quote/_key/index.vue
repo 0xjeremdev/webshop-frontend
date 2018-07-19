@@ -6,54 +6,73 @@
           <accountMenu link="delivery"></accountMenu>
         </div>
         <div class="column">
-          <h1 class="title"><span v-if="isNew">Add </span><span v-else>Edit </span>Delivery Address</h1>
-          <form @submit.prevent="saveDelivery()">
-            <b-field expanded label="Name"
-            :type="(typeof message['name'] !== 'undefined' && message['name'] !== '') ? 'is-danger' : ''"
-            :message="message['name']">
-              <b-input v-model="address.name" autocomplete='name' placeholder="Name"></b-input>
-            </b-field>
-            <b-field grouped>
-              <b-field expanded label="Street"
-              :type="(typeof message['street'] !== 'undefined' && message['street'] !== '') ? 'is-danger' : ''"
-              :message="message['street']">
-                <b-input v-model="address.street" autocomplete='street' placeholder="Street"></b-input>
-              </b-field>
-              <b-field label="House No."
-              :type="(typeof message['houseno'] !== 'undefined' && message['houseno'] !== '') ? 'is-danger' : ''"
-              :message="message['houseno']">
-                <b-input v-model="address.houseno" autocomplete='houseno' placeholder="House No."></b-input>
-              </b-field>
-            </b-field>
-            <b-field grouped>
-              <b-field label="Postcode"
-              :type="(typeof message['postcode'] !== 'undefined' && message['postcode'] !== '') ? 'is-danger' : ''"
-              :message="message['postcode']">
-                <b-input v-model="address.postcode" autocomplete='postcode' placeholder="Postcode"></b-input>
-              </b-field>
-              <b-field expanded label="City"
-              :type="(typeof message['city'] !== 'undefined' && message['city'] !== '') ? 'is-danger' : ''"
-              :message="message['city']">
-                <b-input v-model="address.city" autocomplete='city' placeholder="City"></b-input>
-              </b-field>
-            </b-field>
-            <b-field label="Country"
-              :type="(typeof message['country'] !== 'undefined' && message['country'] !== '') ? 'is-danger' : ''"
-              :message="message['country']">
-                <b-select v-model="address.country" expanded placeholder="Select a Country">
-                    <option
-                        v-for="option in countryList"
-                        :value="option.code"
-                        :key="option.code">
-                        {{ option.name }}
-                    </option>
-                </b-select>
-            </b-field>
-            <b-field>
-              <b-checkbox v-model="address.isBilling">This address is my primary address</b-checkbox>
-            </b-field>
-            <button type="submit" class="button is-primary">Save</button>
-          </form>
+          <h1 class="title">Quote No: {{ quote.order_no }}</h1>
+          <div>Quote Date: {{ dates.quote_date }}</div>
+          <div>Quote is valid untill {{ dates.end_date }}</div>
+          <div>You have {{ dates.differenceDays }} days till this quote expires</div>
+          <br />
+          <div class="columns">
+            <div class="column is-one-third">
+              <h2 class="subtitle">Quote send by</h2>
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <th class="th-wrap">Name:</th>
+                    <td>{{ quote.quote_by.title }} {{ quote.quote_by.firstname }} {{ quote.quote_by.lastname}}</td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Gender:</th>
+                    <td>{{ quote.quote_by.gender }}</td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Company:</th>
+                    <td>{{ quote.quote_by.company }}</td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Phone:</th>
+                    <td>{{ quote.quote_by.phone }} </td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Mobile:</th>
+                    <td>{{ quote.quote_by.mobile }}</td>
+                  </tr>
+                  <tr>
+                    <th class="th-wrap">Fax:</th>
+                    <td>{{ quote.quote_by.fax }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="column">
+              <h2 class="subtitle">Products</h2>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="th-wrap">ID</th>
+                    <th class="th-wrap">Name</th>
+                    <th class="th-wrap">Amount</th>
+                    <th class="th-wrap">Price</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <td class="th-wrap"></td>
+                    <td colspan="2" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
+                    <td class="th-wrap"><strong>€ {{ parseFloat(subtotal).toFixed(2) }}</strong></td>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <tr v-for="(value, index) in quote.items">
+                    <td>{{ value.id }}</td>
+                    <td>{{ value.name }}</td>
+                    <td>{{ value.amount }}</td>
+                    <td>€ {{ (parseFloat(value.price) * Number(value.amount)).toFixed(2) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <button class="button is-primary">Order Quote</button>
         </div>
       </div>
     </div>
@@ -69,137 +88,52 @@
     components: { accountMenu },
     data () {
       return {
-        countryList: {},
-        address: {
-          name: '',
-          street: '',
-          houseno: '',
-          postcode: '',
-          city: '',
-          country: '',
-          isBilling: ''
-        },
-        message: {
-          name: ''
-        }, // filled in one key so it also works when any of the values are untouched
-        showError: false,
-        formError: 'There are errors, please correct them to save',
-        isNew: true,
+        quote: {},
         isLoading: false
       }
     },
-    created () {
-      const routeParams = this.$route.params
-      this.isNew = (routeParams.key === 'new')
-      this.getCountryList()
-    },
-    async asyncData ({ store, params }) {
-      let data = params
-      if (data.key !== undefined) {
-        const address = await store.dispatch('account/getAddresses', { id: data.key })
-        // console.log(address)
-        if (address.data.result._result.length > 0) {
-          return { address: address.data.result._result[0] }
+    async asyncData ({ store, params, app: { $axios, $cookies } }) {
+      if (params.key !== undefined) {
+        let quote = await $axios.$get(store.state.apiUrl + '/quote/' + params.key)
+        let quoteResult = quote.result._result[0]
+        var subtotal = 0
+        for (let v = 0; v < quoteResult.items.length; v++) {
+          console.log(quoteResult.items)
+          subtotal += (parseFloat(quoteResult.items[v].price) * Number(quoteResult.items[v].amount))
         }
-        return {
-          address: {
-            name: '',
-            street: '',
-            houseno: '',
-            postcode: '',
-            city: '',
-            country: '',
-            isBilling: ''
-          }
-        }
+        let quoteDate = new Date(quoteResult.quote_date)
+        var monthNums = [
+          '01', '02', '03',
+          '04', '05', '06', '07',
+          '08', '09', '10',
+          '11', '12'
+        ]
+        let endDate = new Date(quoteDate)
+        endDate.setDate(endDate.getDate() + 30)
+        var msDay = 60 * 60 * 24 * 1000
+        var differenceDays = Math.floor((endDate - quoteDate) / msDay)
+
+        var day = quoteDate.getDate()
+        var monthIndex = monthNums[quoteDate.getMonth()]
+        var year = quoteDate.getFullYear()
+        quoteDate = year + '-' + monthIndex + '-' + day
+
+        day = endDate.getDate()
+        monthIndex = monthNums[endDate.getMonth()]
+        year = endDate.getFullYear()
+        endDate = year + '-' + monthIndex + '-' + day
+
+        return { quote: quote.result._result[0], subtotal: subtotal, dates: { quote_date: quoteDate, end_date: endDate, differenceDays: differenceDays } }
       }
-      return {
-        address: {
-          name: '',
-          street: '',
-          houseno: '',
-          postcode: '',
-          city: '',
-          country: '',
-          isBilling: ''
-        }
-      }
-    },
-    computed: {
-      checkErrors: {
-        cache: false,
-        get () {
-          try {
-            let messages = this.message
-            for (var mes in messages) {
-              // console.log(mes + ' - ' + this.message[mes])
-              if (this.message[mes] !== '') {
-                return true
-              }
-            }
-            return false
-          } catch (e) {
-            console.log(e)
-          }
-        }
-      }
+
+      return { quote: {}, subtotal: 0 }
     },
     methods: {
-      async validate (value, fld, type) {
-        let messages = this.message
-        switch (type) {
-          case 'email':
-            messages[fld] = await this.$store.dispatch('validation/validateMail', { value: value })
-            break
-          case 'password':
-            if (value === undefined) value = ''
-            messages[fld] = await this.$store.dispatch('validation/validatePassword', { value: value })
-            break
-          case 'repeatPassword':
-            if (value === undefined) value = ''
-            messages[fld] = await this.$store.dispatch('validation/validateRepeatPassword', { value: value, repeat: this.customer.newPassword })
-            break
-          default:
-            messages[fld] = await this.$store.dispatch('validation/validateField', { value: value })
-            break
-        }
-
-        this.message = '' // hack to let two way binding work if a key in an object has changed
-        this.message = messages
-        this.address[fld] = value
-      },
-      async saveDelivery () {
-        try {
-          this.isLoading = true
-          // validate fields here
-          await this.validate(this.address.name, 'name')
-          await this.validate(this.address.street, 'street')
-          await this.validate(this.address.houseno, 'houseno')
-          await this.validate(this.address.postcode, 'postcode')
-          await this.validate(this.address.city, 'city')
-          await this.validate(this.address.country, 'country', 'select')
-
-          if (this.checkErrors) {
-            this.showError = true
-            this.isLoading = false
-          }
-          if (!this.checkErrors) {
-            await this.$store.dispatch('account/saveAddress', { address: this.address })
-            this.isLoading = false
-            this.showError = false
-            this.$toast.open({ message: 'Saved', type: 'is-success' })
-            this.$router.push('/account/delivery')
-          }
-        } catch (e) {
-          console.log(e)
-          this.showError = true
-          this.isLoading = false
-          this.$toast.open({ message: 'Could not save data, please try again', type: 'is-danger' })
-        }
-      },
-      async getCountryList () {
-        let countryList = await this.$store.dispatch('order/getCountryList', {}, { root: true })
-        this.countryList = countryList
+      doOrderQuote () {
+        this.$store.commit('cart/SET_CART', this.order.items)
+        this.$store.commit('order/SET_ORDERNO', this.order.orderno)
+        this.$store.commit('order/SET_FROMQUOTE', true)
+        this.$router.push('/cart')
       }
     }
   }
