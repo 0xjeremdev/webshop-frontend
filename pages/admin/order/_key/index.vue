@@ -19,7 +19,7 @@
           <hr>
           <br />
           <b-field v-for="(val, fieldKey) in value"
-            v-if="fieldKey !== 'icon'"
+            v-if="fieldKey !== 'icon' && tabKey !== 'Items'"
             horizontal
             :data="val"
             :key="fieldKey"
@@ -51,9 +51,54 @@
                 v-model="productData[fieldKey]"
                 :readonly="false">
             </b-datepicker>
+            <b-select v-else-if="val.inputType === 'dropdown'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
+                  <option v-for="option in val.options" :key="option" :value="option">{{ option }}</option>
+            </b-select>
             <span v-else-if="val.inputType === 'readonly'">{{ productData[fieldKey] }}</span>
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
+          <div v-else-if="tabKey === 'Items'" class="container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th v-for="(value, index) in val.gridColumns" class="th-wrap">{{ val.gridLabels[index] }}</th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <td class="th-wrap">&nbsp;</td>
+                  <td colspan="3" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
+                  <td class="th-wrap has-text-right"><strong>€ {{ productData.subtotal }}</strong></td>
+                </tr>
+                <tr>
+                  <td class="th-wrap">&nbsp;</td>
+                  <td colspan="3" class="th-wrap has-text-right">Shipping Costs (ex. VAT):</td>
+                  <td class="th-wrap has-text-right">€ {{ productData.shippingcosts }}</td>
+                </tr>
+                <tr>
+                  <td class="th-wrap">&nbsp;</td>
+                  <td colspan="3" class="th-wrap has-text-right"><strong>Total (ex. VAT):</strong></td>
+                  <td class="th-wrap has-text-right"><strong>€ {{ productData.shippingtotal }}</strong></td>
+                </tr>
+                <tr>
+                  <td class="th-wrap">&nbsp;</td>
+                  <td colspan="3" class="th-wrap has-text-right">VAT:</td>
+                  <td class="th-wrap has-text-right">€ {{ productData.vat }}</td>
+                </tr>
+                <tr>
+                  <td class="th-wrap">&nbsp;</td>
+                  <td colspan="3" class="th-wrap has-text-right"><strong>Total (inc. VAT):</strong></td>
+                  <td class="th-wrap has-text-right"><strong>€ {{ productData.total }}</strong></td>
+                </tr>
+              </tfoot>
+              <tbody>
+                <tr v-for="(prod, nr) in productData.items">
+                  <td v-if="value !== 'price'" v-for="(value) in val.gridColumns">{{ productData.items[nr][value] }}</td>
+                  <td v-if="value === 'price'" v-for="(value) in val.gridColumns">€ {{ (parseFloat(productData.items[nr][value]) * Number(productData.items[nr].amount)).toFixed(2) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <br />
           <hr>
           <b-field horizontal><!-- Label left empty for spacing -->
@@ -123,15 +168,145 @@
               'inputType': 'checkbox',
               'label': 'From Quote'
             },
+            'is_quote': {
+              'inputType': 'checkbox',
+              'label': 'Is Quote?'
+            },
             'quote_date': {
               'inputType': 'date',
               'label': 'Quote Date'
             },
             icon: 'file-document'
           },
+          'Customer': {
+            'title': {
+              'inputType': 'dropdown',
+              'label': 'Title',
+              'options': ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.']
+            },
+            'firstname': {
+              'inputType': 'input',
+              'label': 'Firstname'
+            },
+            'lastname': {
+              'inputType': 'input',
+              'label': 'Lastname'
+            },
+            'email': {
+              'inputType': 'input',
+              'label': 'Email'
+            },
+            'company': {
+              'inputType': 'input',
+              'label': 'Company'
+            },
+            'VAT_No': {
+              'inputType': 'input',
+              'label': 'VAT No'
+            },
+            'phone': {
+              'inputType': 'input',
+              'label': 'Phone'
+            },
+            'fax': {
+              'inputType': 'input',
+              'label': 'Fax'
+            },
+            'mobile': {
+              'inputType': 'input',
+              'label': 'Mobile'
+            }
+          },
+          'Quote By': {
+            'title': {
+              'inputType': 'dropdown',
+              'label': 'Title',
+              'options': ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.']
+            },
+            'firstname': {
+              'inputType': 'input',
+              'label': 'Firstname'
+            },
+            'lastname': {
+              'inputType': 'input',
+              'label': 'Lastname'
+            },
+            'email': {
+              'inputType': 'input',
+              'label': 'Email'
+            },
+            'company': {
+              'inputType': 'input',
+              'label': 'Company'
+            },
+            'VAT_No': {
+              'inputType': 'input',
+              'label': 'VAT No'
+            },
+            'phone': {
+              'inputType': 'input',
+              'label': 'Phone'
+            },
+            'fax': {
+              'inputType': 'input',
+              'label': 'Fax'
+            },
+            'mobile': {
+              'inputType': 'input',
+              'label': 'Mobile'
+            }
+          },
+          'Billing': {
+            'street': {
+              'inputType': 'input',
+              'label': 'Street'
+            },
+            'houseno': {
+              'inputType': 'input',
+              'label': 'House No'
+            },
+            'postcode': {
+              'inputType': 'input',
+              'label': 'Postcode'
+            },
+            'city': {
+              'inputType': 'input',
+              'label': 'City'
+            },
+            'country': {
+              'inputType': 'dropdown',
+              'label': 'Country',
+              'options': []
+            }
+          },
+          'Delivery': {
+            'street': {
+              'inputType': 'input',
+              'label': 'Street'
+            },
+            'houseno': {
+              'inputType': 'input',
+              'label': 'House No'
+            },
+            'postcode': {
+              'inputType': 'input',
+              'label': 'Postcode'
+            },
+            'city': {
+              'inputType': 'input',
+              'label': 'City'
+            },
+            'country': {
+              'inputType': 'dropdown',
+              'label': 'Country',
+              'options': []
+            }
+          },
           'Items': {
-            'items': {
-              inputType: 'table'
+            'gridOptions': {
+              'gridColumns': [ 'id', 'name', 'shipping', 'amount', 'price' ],
+              'gridLabels': [ 'LABNED ID', 'Description', 'Shipping', 'Amount', 'Price' ],
+              'gridTypes': { 'id': 'string', 'name': 'string', 'shipping': 'string', 'amount': 'string', 'price': 'string' }
             }
           }
         },
@@ -206,14 +381,60 @@
       },
       getValue (val, fieldKey, tabKey, inputType) {
         if (this.productData instanceof Object) {
-          if (inputType === 'checkbox') {
-            if (this.productData[fieldKey] === 'true') { console.log('true') }
-            return !this.productData[fieldKey]
-          } else if (inputType === 'date') {
-            let d = new Date(this.productData[fieldKey])
-            return d
+          switch (tabKey) {
+            case 'Orders':
+              if (inputType === 'checkbox') {
+                return !this.productData[fieldKey]
+              } else if (inputType === 'date') {
+                let d = new Date(this.productData[fieldKey])
+                return d
+              }
+              return this.productData[fieldKey]
+            case 'Customer':
+              if (this.productData.customer !== undefined) {
+                if (inputType === 'checkbox') {
+                  return !this.productData.customer[fieldKey]
+                } else if (inputType === 'date') {
+                  let d = new Date(this.productData.customer[fieldKey])
+                  return d
+                }
+                return this.productData.customer[fieldKey]
+              }
+              break
+            case 'Quote By':
+              if (this.productData.quote_by !== undefined) {
+                if (inputType === 'checkbox') {
+                  return !this.productData.quote_by[fieldKey]
+                } else if (inputType === 'date') {
+                  let d = new Date(this.productData.quote_by[fieldKey])
+                  return d
+                }
+                return this.productData.quote_by[fieldKey]
+              }
+              break
+            case 'Billing':
+              if (this.productData.billing_address !== undefined) {
+                if (inputType === 'checkbox') {
+                  return !this.productData.billing_address[fieldKey]
+                } else if (inputType === 'date') {
+                  let d = new Date(this.productData.billing_address[fieldKey])
+                  return d
+                }
+                return this.productData.billing_address[fieldKey]
+              }
+              break
+            case 'Delivery':
+              if (this.productData.delivery_address !== undefined) {
+                if (inputType === 'checkbox') {
+                  return !this.productData.delivery_address[fieldKey]
+                } else if (inputType === 'date') {
+                  let d = new Date(this.productData.delivery_address[fieldKey])
+                  return d
+                }
+                return this.productData.delivery_address[fieldKey]
+              }
+              break
           }
-          return this.productData[fieldKey]
         }
         return ''
       },
@@ -229,12 +450,9 @@
             if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
-            this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-            let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Order FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
-            console.log(query)
-            let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/order/' + routeParams.key)
             console.log(data)
-            this.productData = data['result'][0]
+            this.productData = data['result']['_result'][0]
             this.productData.order_date = new Date(this.productData.order_date)
             this.productData.quote_date = new Date(this.productData.quote_date)
             this.isNew = false
@@ -263,13 +481,9 @@
           if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
           }
-          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
-          // let query = {'options': {'fullCount': true}, 'count': true, 'query': 'FOR p in k2p_product FILTER p.code == \'' + this.$route.params.code + '\' RETURN p'}
-          // console.log(this.productData)
-          // TODO: CHECK IF this.productData complies with fields before saving (this is necessary when isNew is True)
-          let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'UPDATE { _key: \'' + this.productData['_key'] + '\' } WITH { title: @title, article: @article, seo: @seo } IN Order', 'bindVars': { 'title': this.productData.title, 'article': this.productData.article, 'seo': this.productData.seo } }
-          // console.log(query)
-          let data = await this.$axios.$post(this.$store.state.shopUrl + '/_api/cursor', query)
+          // validation necessary
+          let postData = this.productData
+          let data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/order', postData)
           console.log(data)
           // this.testData = data['result']
           this.isLoading = false

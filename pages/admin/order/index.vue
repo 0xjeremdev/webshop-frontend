@@ -1,47 +1,36 @@
 <template>
   <div>
     <br />
-    <h1 class="title">Orders</h1>
-    <DatagridForOrder :data="gridData"
-      :columns="gridColumns"
-      :types="gridTypes"
-      :tableName="tableName"
-      :postUrl="postUrl"
-      :queryOptions="queryOptions"
-      :type="type"
-      :customSortField="customSortField"
-      :customFilter="customFilter"
-      :customReturn="customReturn"></DatagridForOrder>
-  </div>
+    <h1 class="title">Order</h1>
+    <datagrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :apiUrl="apiUrl" :type="type" :customSortField="customSortField" :customSortDir="customSortDir"></datagrid>
+</div>
 </template>
 
 <script>
-  import DatagridForOrder from '~/components/ui/DatagridForOrder'
+  import Datagrid from '~/components/ui/Datagrid'
   // import axios from 'axios'
 
   export default {
     layout: 'admin',
     head () {
       return {
-        title: 'ITK Diagnostics - Orders',
+        title: 'ITK Diagnostics - Order',
         meta: [
           { hid: 'error description', name: 'error description', content: 'My custom error description' }
         ]
       }
     },
-    components: { DatagridForOrder },
+    components: { Datagrid },
     data () {
       return {
-        gridColumns: ['order_no', 'from_quote', 'order_date', 'fullName'],
-        gridTypes: { 'order_no': 'string', 'from_quote': 'boolean', 'order_date': 'date', 'fullName': 'combined' },
+        gridColumns: ['order_no', 'from_quote', 'order_date', 'fullName', 'status'],
+        gridLabels: ['Order No', 'From Quote', 'Order Date', 'Fullname', 'Status'],
+        gridTypes: { 'order_no': 'string', 'from_quote': 'boolean', 'order_date': 'date', 'fullName': 'combined', 'status': 'string' },
         gridData: [],
-        queryOptions: {'options': {'fullCount': true}, 'count': true}, // these are the extra options you can give
-        postUrl: this.$store.state.shopUrl,
-        tableName: 'Order',
+        apiUrl: this.$store.state.apiUrl,
         type: 'order',
-        customSortField: 'order_no',
-        customFilter: 'p.is_quote == false AND p.order_date != \'\'',
-        customReturn: ' RETURN { \'order_no\': p.order_no, \'from_quote\': p.from_quote, \'order_date\': p.order_date, \'fullName\': CONCAT(p.customer.firstname, " ", p.customer.lastname) }'
+        customSortField: 'order_date',
+        customSortDir: 'DESC'
       }
     }
   }

@@ -211,14 +211,4 @@
   .my_div {
     margin-bottom: 15px;
   }
-
-  .is-orange {
-    background-color: #ee7600;
-    color: white;
-  }
-
-  .is-orange:hover {
-    background-color: #0f77ea;
-    color: white;
-  }
 </style>

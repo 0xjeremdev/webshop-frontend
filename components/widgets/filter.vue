@@ -1,6 +1,6 @@
 <template>
   <section>
-    <p class="control"><button class="button" @click="doReset()">Reset</button></p>
+    <p class="control"><button class="button " @click="doReset()">Reset</button></p>
     <b-collapse class="card" v-for="( val, key ) in searchColumns" :key="key" :open="(val === 'Product category LabNed')">
         <div slot="trigger" slot-scope="props" class="card-header">
             <p class="card-header-title">

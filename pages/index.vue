@@ -7,6 +7,7 @@
       </div>
       <div class="column">
         <search :expanded="true"></search>
+        <contactinfo :info="info"></contactinfo>
       </div>
     </div>
   </section>
@@ -15,6 +16,7 @@
 <script>
   import Banner from '~/components/widgets/banner.vue'
   import Search from '~/components/widgets/search.vue'
+  import Contactinfo from '~/components/widgets/contactinfo.vue'
 
   export default {
     head () {
@@ -22,11 +24,15 @@
         title: 'LabNed.com - Exploring Possibilities'
       }
     },
-    components: { Banner, Search },
+    components: { Banner, Search, Contactinfo },
     data () {
       return {
 
       }
+    },
+    async asyncData () {
+      let info = ''
+      return { info: info }
     }
   }
 </script>

@@ -33,7 +33,7 @@
         <div class="column">
           <section>
             <div class="columns">
-              <div class="column my-section">
+              <div class="column my-section is-info">
                 <h2 class="subtitle" style="padding-left: 5px; color: white;">Total products found: {{ getTotalData }}</h2>
               </div>
             </div>
@@ -124,7 +124,7 @@
         <div class="column" v-if="getProductData.length > 0">
           <hr>
           <div class="columns">
-            <div class="column my-section">
+            <div class="column my-section is-info">
               <h2 class="subtitle" style="color: white;">Total products found: {{ getTotalData }}</h2>
             </div>
           </div>
@@ -135,7 +135,8 @@
                   :total="getTotalData"
                   :current.sync="current"
                   :per-page="perPage"
-                  @change="nextProduct">
+                  @change="nextProduct"
+                  class="is-info">
               </b-pagination>
               <br />
             </div>
@@ -277,7 +278,7 @@
     padding: 0.5rem;
     margin-left: 1.5rem;
     margin-top: 0.5rem;
-    background-color: #0f77ea;
+    background-color: #025689;
     color: white;
     /* text-shadow: 2px 2px 4px #000000; */
     border-bottom-left-radius: 15px;

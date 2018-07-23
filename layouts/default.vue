@@ -44,9 +44,6 @@
           <nuxt-link class="navbar-item" to="/search">
             Products
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/protocols">
-            Protocols
-          </nuxt-link>
           <nuxt-link class="navbar-item" to="/about-us">
             About Us
           </nuxt-link>
@@ -77,19 +74,13 @@
             <h3 class="subtitle">Social Media</h3>
             <social></social>
           </div>
-          <div class="column is-2">
+          <div class="column is-4">
             <h3 class="subtitle">Payment Options</h3>
 
           </div>
           <div class="column is-2">
             <h3 class="subtitle">Help &amp; Support</h3>
             <p v-for="value in supportLinks">
-              <nuxt-link :to="value.link">{{ value.name }}</nuxt-link>
-            </p>
-          </div>
-          <div class="column is-2">
-            <h3 class="subtitle">Company</h3>
-            <p v-for="value in companyLinks">
               <nuxt-link :to="value.link">{{ value.name }}</nuxt-link>
             </p>
           </div>
@@ -115,6 +106,7 @@
       return {
         showNav: false,
         supportLinks: [
+          { 'name': 'Technical Faqs', 'link': '/cms/technical-faqs' },
           { 'name': 'Terms & Conditions', 'link': '/cms/terms-conditions' },
           { 'name': 'Cookie Statement', 'link': '/cms/cookie-statement' },
           { 'name': 'Privacy Statement', 'link': '/cms/privacy-statement' },
@@ -122,7 +114,6 @@
         ],
         companyLinks: [
           { 'name': 'Protocols', 'link': '/protocols' },
-          { 'name': 'Technical Faqs', 'link': '/cms/technical-faqs' },
           { 'name': 'LabNews', 'link': '/blog' }
         ]
       }

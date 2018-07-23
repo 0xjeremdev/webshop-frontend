@@ -1,6 +1,6 @@
 <template>
   <b-dropdown hoverable position="is-bottom-left">
-      <button class="button is-danger" @click="$router.push('/cart')" style="border: 1px solid white;" slot="trigger">
+      <button class="button is-orange" @click="$router.push('/cart')" style="border: 1px solid white;" slot="trigger">
         <b-icon icon="cart-outline"></b-icon>
         <span>Cart</span>
       </button>
