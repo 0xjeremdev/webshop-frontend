@@ -4,7 +4,7 @@
         <div class="column is-1">
           <a v-if="hasFacebook !== ''" :href="hasFacebook" target="_new">
             <figure class="image is-48x48">
-              <img src="/icons/flogo_rgb_hex-brc-site-250.png"`alt="Facebook"`/>
+              <img src="/icons/flogo_rgb_hex-brc-site-250.png" alt="Facebook"/>
             </figure>
           </a>
         </div>

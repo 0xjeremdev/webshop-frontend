@@ -31,16 +31,25 @@
               maxtags="5"
               :value="[]">
             </b-taginput>
-            <div class="quill-editor" v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
+            <div v-else-if="val.inputType === 'texteditor'">
+            <div class="quill-editor"  :instanceName="val.ref" :id="val.ref" :ref="val.ref"
               :value="getValue(val, fieldKey, tabKey)"
               @input="setModel($event, fieldKey, tabKey)"
-              v-quill:myQuillEditor="editorConfig"></div>
+              v-quill="editorConfig"></div>
+              <br />
+            </div>
             <b-switch v-else-if="val.inputType === 'switch'" v-model="productData[fieldKey]"></b-switch>
             <b-input v-else-if="val.inputType === 'email'" type="email" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
             <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon></b-checkbox-button>
             <!-- <froala v-else-if="val.inputType === 'text'" :tag="'textarea'" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)" :config="config">Init text</froala> -->
+            <b-select v-else-if="val.inputType === 'dropdown'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
+              <option v-for="option in val.options" :key="option" :value="option">{{ option }}</option>
+            </b-select>
+            <b-select expanded v-else-if="val.inputType === 'dropdown_country'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
+              <option v-for="option in countryList" :key="option.code" :value="option.code">{{ option.name }}</option>
+            </b-select>
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
           <br />
@@ -97,18 +106,10 @@
         isLoading: false,
         productData: {},
         fields: {
-          'Webshop Configuration': {
+          'General': {
             'maintenance': {
               'inputType': 'switch',
               'label': 'Maintenance Mode'
-            },
-            'contact_email': {
-              'inputType': 'email',
-              'label': 'Contact E-mail'
-            },
-            'order_email': {
-              'inputType': 'email',
-              'label': 'Order E-mail'
             },
             'cookie_wall': {
               'inputType': 'switch',
@@ -116,8 +117,119 @@
             },
             'cookie_wall_text': {
               'inputType': 'texteditor',
-              'label': 'Cookie Wall Text'
+              'label': 'Cookie Wall Text',
+              'ref': 'cookie_wall_text'
             },
+            icon: 'file-document'
+          },
+          'Contact': {
+            'contact_email': {
+              'inputType': 'email',
+              'label': 'E-mail'
+            },
+            'contact_name': {
+              'inputType': 'input',
+              'label': 'Name'
+            },
+            'contact_street': {
+              'inputType': 'input',
+              'label': 'Street'
+            },
+            'contact_houseno': {
+              'inputType': 'input',
+              'label': 'House No.'
+            },
+            'contact_postcode': {
+              'inputType': 'input',
+              'label': 'Postcode'
+            },
+            'contact_city': {
+              'inputType': 'input',
+              'label': 'City'
+            },
+            'contact_country': {
+              'inputType': 'dropdown_country',
+              'label': 'Country',
+              'options': []
+            },
+            'contact_vatno': {
+              'inputType': 'input',
+              'label': 'VAT No.'
+            },
+            'contact_cocno': {
+              'inputType': 'input',
+              'label': 'COC No.'
+            },
+            'contact_bank': {
+              'inputType': 'input',
+              'label': 'Bank'
+            },
+            'contact_IBAN': {
+              'inputType': 'input',
+              'label': 'IBAN'
+            },
+            'contact_BIC': {
+              'inputType': 'input',
+              'label': 'BIC'
+            },
+            icon: 'contact-mail'
+          },
+          'Mail': {
+            'order_email_text': {
+              'inputType': 'texteditor',
+              'label': 'Order E-mail Text',
+              'ref': 'order_email_text'
+            },
+            'contact_email_text': {
+              'inputType': 'texteditor',
+              'label': 'Contact E-mail Text',
+              'ref': 'contact_email_text'
+            },
+            'register_email_text': {
+              'inputType': 'texteditor',
+              'label': 'Registration E-mail Text',
+              'ref': 'register_email_text'
+            },
+            'verify_email_text': {
+              'inputType': 'texteditor',
+              'label': 'Verify E-mail Text',
+              'ref': 'verify_email_text'
+            },
+            'delete_customer_email_text': {
+              'inputType': 'texteditor',
+              'label': 'Delete Customer E-mail Text',
+              'ref': 'delete_customer_email_text'
+            },
+            icon: 'email'
+          },
+          'Order': {
+            'order_email': {
+              'inputType': 'email',
+              'label': 'Order E-mail'
+            },
+            'VAT': {
+              'inputType': 'input',
+              'label': 'VAT (in %)'
+            },
+            'order_prefix': {
+              'inputType': 'input',
+              'label': 'Order No Prefix'
+            },
+            'order_date': {
+              'inputType': 'switch',
+              'label': 'Order No Date Added'
+            },
+            'orderno_inc': {
+              'inputType': 'input',
+              'label': 'Order No Start Value'
+            },
+            'orderno_size': {
+              'inputType': 'input',
+              'label': 'Order No Size'
+            },
+            icon: 'cart'
+          },
+          'Social': {
             'facebook_link': {
               'inputType': 'input',
               'label': 'Facebook'
@@ -126,13 +238,28 @@
               'inputType': 'input',
               'label': 'LinkedIn'
             },
-            icon: 'file-document'
+            icon: 'emoticon'
           }
         }
       }
     },
+    async asyncData ({ store, app: { $axios } }) {
+      try {
+        if (!(store.state.authUser instanceof Object)) {
+          this.$store.commit('SET_USER', this.$cookies.get('key2publish').authUser)
+        }
+
+        let data = await $axios.$get(store.state.apiUrl + '/admin/config')
+        console.log(data)
+        let countryList = await store.dispatch('order/getCountryList')
+        return { productData: data.result._result[0], isNew: false, countryList: countryList }
+      } catch (e) {
+        // $toast.open('Could not load data')
+        return { productData: {}, isNew: false, countryList: {} }
+      }
+    },
     created () {
-      this.getData()
+      // this.getData()
     },
     methods: {
       setModel (val, fieldKey, tabKey) {
@@ -147,33 +274,19 @@
       getValue (val, fieldKey, tabKey, inputType) {
         if (this.productData instanceof Object) {
           if (inputType === 'checkbox') {
-            console.log(fieldKey + ': ' + this.productData[fieldKey])
+            // console.log(fieldKey + ': ' + this.productData[fieldKey])
             if (this.productData[fieldKey] === 'true') { console.log('true') }
             return !this.productData[fieldKey]
           }
           return this.productData[fieldKey]
         }
-        return ''
+        return null
       },
       setCheckbox (val, fieldKey, tabKey) {
         this.productData[fieldKey] = !val
       },
       async getData () {
-        try {
-          this.isLoading = true
-          if (!(this.$store.state.authUser instanceof Object)) {
-            console.log(this)
-            this.$store.commit('SET_USER', this.$cookies.get('key2publish').authUser)
-          }
 
-          let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/config')
-          this.productData = data['result']['_result'][0]
-          this.isNew = false
-          this.isLoading = false
-        } catch (e) {
-          this.$toast.open('Could not load data')
-          this.isLoading = false
-        }
       },
       async saveData () {
         try {
@@ -189,7 +302,30 @@
             cookiewall: (this.productData.cookie_wall !== undefined) ? this.productData.cookie_wall : false,
             cookiewall_text: (this.productData.cookie_wall_text !== undefined) ? this.productData.cookie_wall_text : '',
             facebook_link: (this.productData.facebook_link !== undefined) ? this.productData.facebook_link : '',
-            linkedin_link: (this.productData.linkedin_link !== undefined) ? this.productData.linkedin_link : ''
+            linkedin_link: (this.productData.linkedin_link !== undefined) ? this.productData.linkedin_link : '',
+            VAT: (this.productData.VAT !== undefined) ? this.productData.VAT : '',
+            orderno_inc: (this.productData.orderno_inc !== undefined) ? this.productData.orderno_inc : '',
+            order_prefix: (this.productData.order_prefix !== undefined) ? this.productData.order_prefix : '',
+            order_date: (this.productData.order_date !== undefined) ? this.productData.order_date : '',
+            orderno_size: (this.productData.orderno_size !== undefined) ? this.productData.orderno_size : '',
+            contact_name: (this.productData.contact_name !== undefined) ? this.productData.contact_name : '',
+            contact_street: (this.productData.contact_street !== undefined) ? this.productData.contact_street : '',
+            contact_houseno: (this.productData.contact_houseno !== undefined) ? this.productData.contact_houseno : '',
+            contact_postcode: (this.productData.contact_postcode !== undefined) ? this.productData.contact_postcode : '',
+            contact_city: (this.productData.contact_city !== undefined) ? this.productData.contact_city : '',
+            contact_country: (this.productData.contact_country !== undefined) ? this.productData.contact_country : '',
+            contact_phone: (this.productData.contact_phone !== undefined) ? this.productData.contact_phone : '',
+            contact_phone_int: (this.productData.contact_phone_int !== undefined) ? this.productData.contact_phone_int : '',
+            contact_vatno: (this.productData.contact_vatno !== undefined) ? this.productData.contact_vatno : '',
+            contact_cocno: (this.productData.contact_cocno !== undefined) ? this.productData.contact_cocno : '',
+            contact_bank: (this.productData.contact_bank !== undefined) ? this.productData.contact_bank : '',
+            contact_IBAN: (this.productData.contact_IBAN !== undefined) ? this.productData.contact_IBAN : '',
+            contact_BIC: (this.productData.contact_BIC !== undefined) ? this.productData.contact_BIC : '',
+            order_email_text: (this.productData.order_email_text !== undefined) ? this.productData.order_email_text : '',
+            contact_email_text: (this.productData.contact_email_text !== undefined) ? this.productData.contact_email_text : '',
+            register_email_text: (this.productData.register_email_text !== undefined) ? this.productData.register_email_text : '',
+            verify_email_text: (this.productData.verify_email_text !== undefined) ? this.productData.verify_email_text : '',
+            delete_customer_email_text: (this.productData.delete_customer_email_text !== undefined) ? this.productData.delete_customer_email_text : ''
           }
           let data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/config', postData)
           console.log(data)

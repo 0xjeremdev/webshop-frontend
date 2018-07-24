@@ -2,13 +2,13 @@
   <section id="search">
     <!-- <hr class="navbar-divider my_div"> -->
     <br />
-    <b-field>
-      <p class="control">
-        <button class="button is-orange" @click="doSubmit()">
+    <b-field custom-class="is-medium">
+      <p class="control is-medium">
+        <button class="button is-orange is-medium" @click="doSubmit()">
             Search
         </button>
       </p>
-      <b-autocomplete
+      <b-autocomplete size="is-medium"
         v-model.lazy="productName"
         icon="microscope"
         :data="autocomplete"

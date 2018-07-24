@@ -4,7 +4,7 @@
       <breadCrumb></breadCrumb>
       <div class="columns">
         <div class="column"></div>
-        <div class="column">
+        <div class="column is-one-third">
           <h1 class="title">Contact Us</h1>
           <b-message :type="(wasSend) ? 'is-success' : 'is-danger'" has-icon :title="(wasSend) ? 'Success' : 'An error has occured'" :active.sync="showError">
             {{ formError }}
@@ -34,12 +34,13 @@
               sitekey="6Lf0WGQUAAAAAIuDsIZZ1yfdTduM1YcX5nglDyjZ">
             </vue-recaptcha>
             <br />
-            <button type="submit" class="button is-primary">Submit</button>
+            <button type="submit" class="button is-orange">Submit</button>
           </form>
         </div>
-        <div class="column">
-
+        <div class="column is-one-third">
+          <contactinfo :info="info"></contactinfo>
         </div>
+        <div class="column"></div>
       </div>
     </div>
   </section>
@@ -48,8 +49,17 @@
 <script>
   import VueRecaptcha from 'vue-recaptcha'
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
+  import contactinfo from '~/components/widgets/contactinfo.vue'
+
   export default {
-    components: { VueRecaptcha, breadCrumb },
+    head () {
+      return {
+        script: [
+          { src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit', async: true, defer: true }
+        ]
+      }
+    },
+    components: { VueRecaptcha, breadCrumb, contactinfo },
     data () {
       return {
         wasSend: false,
@@ -65,6 +75,12 @@
         recaptchaToken: null,
         titles: ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.']
       }
+    },
+    async asyncData ({ store }) {
+      let info = ''
+      await store.dispatch('getSettings')
+      info = store.state.settings
+      return { info: info }
     },
     computed: {
       checkErrors: {

@@ -6,29 +6,15 @@
       :autoplay="true"
       :autoplayTimeout="5000"
       :navigationEnabled="false"
-      :paginationEnabled="true">
+      :paginationEnabled="false">
       <Slide>
         <div class="my-overlay">
-          <img src="https://wikiki.github.io/images/merry-christmas.jpg" alt="" />
-          <div class="my-overlay-text title">Merry Christmas</div>
+          <img src="https://wikiki.github.io/images/merry-christmas.jpg" alt="Image1" />
         </div>
       </Slide>
       <Slide>
         <div class="my-overlay">
-          <img src="https://wikiki.github.io/images/singer.jpg" alt="" />
-          <div class="my-overlay-text title">Original Gift: Offer a song with <a href="https://lasongbox.com" target="_blank">La Song Box</a></div>
-        </div>
-      </Slide>
-      <Slide>
-        <div class="my-overlay">
-          <img class="is-background" src="https://wikiki.github.io/images/sushi.jpg" alt="" />
-          <div class="my-overlay-text title">Sushi time</div>
-        </div>
-      </Slide>
-      <Slide>
-        <div class="my-overlay">
-          <img src="https://wikiki.github.io/images/life.jpg" alt="" />
-          <div class="my-overlay-text title">Life</div>
+          <img src="https://wikiki.github.io/images/singer.jpg" alt="Image2" />
         </div>
       </Slide>
     </Carousel>

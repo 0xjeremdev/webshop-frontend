@@ -41,6 +41,11 @@
 
       <div id="navbarFront" class="navbar-menu" :class="{ 'is-active': showNav }">
         <div class="navbar-start">
+          <nuxt-link class="navbar-item" to="/">
+            <span class="icon">
+              <i class="mdi mdi-home-outline"></i>
+            </span>
+          </nuxt-link>
           <nuxt-link class="navbar-item" to="/search">
             Products
           </nuxt-link>
@@ -54,10 +59,10 @@
             Distributors
           </nuxt-link>
           <nuxt-link class="navbar-item" to="/blog">
-            Our Blog
+            Blog
           </nuxt-link>
           <nuxt-link class="navbar-item" to="/contact">
-            Contact Us
+            Contact
           </nuxt-link>
         </div>
       </div>
@@ -67,24 +72,15 @@
       <search v-if="$route.path !== '/'" :expanded="true"></search>
       <nuxt/>
     </main>
-    <footer class="footer">
-      <div class="container">
-        <div class="columns">
-          <div class="column">
-            <h3 class="subtitle">Social Media</h3>
-            <social></social>
-          </div>
-          <div class="column is-4">
-            <h3 class="subtitle">Payment Options</h3>
-
-          </div>
-          <div class="column is-2">
-            <h3 class="subtitle">Help &amp; Support</h3>
-            <p v-for="value in supportLinks">
-              <nuxt-link :to="value.link">{{ value.name }}</nuxt-link>
-            </p>
-          </div>
+    <footer class="footer my-paddings">
+      <div class="columns">
+        <div class="column">© LabNed.com {{ new Date().getFullYear() }}</div>
+        <div class="column is-two-thirds has-text-centered">
+          | <span v-for="value in supportLinks">
+            <nuxt-link :to="value.link">{{ value.name }}</nuxt-link> |
+          </span>
         </div>
+        <div class="column has-text-right">Powered by <a href="https://www.key2publish.com/" target="_new">Key2Publish</a></div>
       </div>
     </footer>
   </div>
@@ -94,14 +90,16 @@
   import cartWidgets from '~/components/widgets/cart.vue'
   import cookiewall from '~/components/widgets/cookiewall.vue'
   import search from '~/components/widgets/search.vue'
-  import social from '~/components/widgets/social.vue'
 
   export default {
-    created () {
-      this.$store.dispatch('getSettings')
+    async asyncData ({ store, error }) {
+      await store.dispatch('getSettings')
+      console.log('komhier')
+      if (store.state.settings.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
+      return { settings: store.state.settings }
     },
     middleware: [ 'reloadCookie' ],
-    components: { cartWidgets, cookiewall, search, social },
+    components: { cartWidgets, cookiewall, search },
     data () {
       return {
         showNav: false,

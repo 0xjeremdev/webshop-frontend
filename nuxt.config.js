@@ -35,9 +35,6 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'stylesheet', type: 'text/css', href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css' },
       { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto+Slab' }
-    ],
-    script: [
-      { src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit', async: true, defer: true }
     ]
   },
   mode: 'universal',
@@ -60,7 +57,16 @@ module.exports = {
   modules: [
     '@nuxtjs/axios',
     'cookie-universal-nuxt',
+    '@nuxtjs/sentry',
   ],
+
+  sentry: {
+    dsn: 'https://dfb794d1fb994a4fb2dcb741a742d69f@sentry.io/1249042',
+    config: {
+      // Additional config
+      environment: 'production'
+    },
+  },
 
   axios: {
     // proxyHeaders: false

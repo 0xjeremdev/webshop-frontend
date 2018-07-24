@@ -20,6 +20,9 @@
 
   export default {
     components: { search },
+    props: {
+      info: Object
+    },
     data () {
       return {
         breadcrumb: ['Home'],
