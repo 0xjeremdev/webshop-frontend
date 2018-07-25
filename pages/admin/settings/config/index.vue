@@ -50,6 +50,7 @@
             <b-select expanded v-else-if="val.inputType === 'dropdown_country'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
               <option v-for="option in countryList" :key="option.code" :value="option.code">{{ option.name }}</option>
             </b-select>
+            <imageControl v-else-if="val.inputType === 'imageUpload'" image="/images/Accus-Siezenis.png"></imageControl>
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
           <br />
@@ -121,6 +122,12 @@
               'ref': 'cookie_wall_text'
             },
             icon: 'file-document'
+          },
+          'Banner': {
+            'banner_upload_images': {
+              'inputType': 'imageUpload',
+              'label': 'Upload Images'
+            }
           },
           'Contact': {
             'contact_email': {
