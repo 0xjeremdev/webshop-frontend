@@ -7,16 +7,16 @@
       :autoplayTimeout="5000"
       :navigationEnabled="false"
       :paginationEnabled="false">
-      <Slide>
+      <Slide v-for="(img) in images">
         <div class="my-overlay">
-          <img src="https://wikiki.github.io/images/merry-christmas.jpg" alt="Image1" />
+          <img :src="apiUrl + '/img/' + img" alt="Image1" />
         </div>
       </Slide>
-      <Slide>
+      <!-- <Slide>
         <div class="my-overlay">
           <img src="https://wikiki.github.io/images/singer.jpg" alt="Image2" />
         </div>
-      </Slide>
+      </Slide> -->
     </Carousel>
     </no-ssr>
   </section>
@@ -29,7 +29,8 @@
     components: { Carousel, Slide },
     data () {
       return {
-        images: ''
+        images: this.$store.state.settings.banner_upload_images,
+        apiUrl: this.$store.state.apiUrl
       }
     }
   }

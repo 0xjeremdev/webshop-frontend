@@ -1,11 +1,5 @@
 <template>
   <div>
-    {{ image }}
-    {{ files }}
-
-    <figure v-if="image && showImage" class="image is-128x128">
-      <img @click="isImageModalActive = true" :src="image"  @error="imageLoadError">
-    </figure>
     <b-field>
       <b-upload v-model="files" @input="uploadFiles($event)" multiple>
         <a class="button is-primary">
@@ -14,24 +8,37 @@
         </a>
       </b-upload>
     </b-field>
+    <p v-if="isSuccess">
+      Finished uploading
+    </p>
+    <p v-if="isFailed">
+      An error occured while uploading files
+    </p>
+    <p v-if="isSaving">
+      Uploading {{ fileCount }} files... {{ progress }} %
+    </p>
+
+    <figure v-if="myImage && showImage" v-for="(fig) in myImage" class="image is-128x128">
+      <img @click="setImageModalActive(fig)" :src="imageUrl + '/img/' + fig"  @error="imageLoadError">
+    </figure>
 
     <div class="tags">
-        <span v-for="(file, index) in files"
-            :key="index"
-            class="tag is-primary" >
-            {{file.name}}
-            <button class="delete is-small"
-                type="button"
-                @click="deleteDropFile(index)">
-            </button>
-        </span>
+      <span v-for="(file, index) in files"
+        :key="index"
+        class="tag is-primary" >
+        {{file.name}}
+        <button class="delete is-small"
+          type="button"
+          @click="deleteDropFile(index)">
+        </button>
+      </span>
     </div>
 
-    <b-modal :active.sync="isImageModalActive">
+    <!-- <b-modal v-if="myImage && showImage" :key="fig" v-for="(fig) in myImage" :active.sync="imageModelActive[fig]">
         <figure class="image is-4by3">
-          <img :src="image">
+          <img :src="imageUrl + '/img/' + fig">
         </figure>
-    </b-modal>
+    </b-modal> -->
   </div>
 </template>
 
@@ -44,16 +51,21 @@
   export default {
     template: '#image-control',
     props: {
-      image: String
+      image: Array,
+      type: String
     },
     data () {
       return {
         files: [],
+        fileCount: 0,
         showImage: true,
-        isImageModalActive: false,
+        imageModelActive: {},
         uploadError: null,
         currentStatus: null,
-        uploadFieldName: 'filesUploaded'
+        uploadFieldName: 'filesUploaded',
+        progress: 0,
+        myImage: this.image,
+        imageUrl: this.$store.state.apiUrl
       }
     },
     mounted () {
@@ -73,47 +85,63 @@
         return this.currentStatus === STATUS_FAILED
       }
     },
+    watch: {
+      imageModalActive: function (val) {
+        console.log(val)
+      }
+    },
     methods: {
-      save (formData) {
-        // upload data to the server
-        this.currentStatus = STATUS_SAVING
-
-        /* upload(formData)
-          .then(x => {
-            this.uploadedFiles = [].concat(x)
-            this.currentStatus = STATUS_SUCCESS
-          })
-          .catch(err => {
-            this.uploadError = err.response
-            this.currentStatus = STATUS_FAILED
-          }) */
-      },
-      filesChange (fieldName, fileList) {
-        // handle file changes
-        const formData = new FormData()
-
-        if (!fileList.length) return
-
-        // append the files to FormData
-        Array
-          .from(Array(fileList.length).keys())
-          .map(x => {
-            formData.append(fieldName, fileList[x], fileList[x].name)
-          })
-
-        // save it
-        this.save(formData)
+      setImageModalActive (val) {
+        let imageModel = this.imageModelActive
+        imageModel[val] = true
+        this.imageModelActive = imageModel
+        // console.log(this.imageModelActive)
       },
       deleteDropFile (index) {
-        console.log(this.files)
+        // console.log(this.files)
         this.files.splice(index, 1)
       },
       imageLoadError () {
         this.showImage = false
       },
-      uploadFiles (value) {
-        this.files = value
-        console.log(value)
+      async uploadFiles (value) {
+        try {
+          console.log(value)
+          if (!value.length) return
+          this.currentStatus = STATUS_SAVING
+          this.progress = 0
+          this.files = value
+          this.fileCount = this.files.length
+          let postData = new FormData()
+
+          Array
+            .from(Array(this.files.length).keys())
+            .map(x => {
+              postData.append('filesUploaded', this.files[x], this.files[x].name)
+            })
+
+          let config = {
+            headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}`, 'Content-Type': 'multipart/form-data' },
+            onUploadProgress: function (progressEvent) {
+              let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+              this.progress = percentCompleted
+            }.bind(this)
+          }
+          // this.$axios.get(this.$store.state.apiUrl + '/admin/settings')
+          let data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/upload', postData, config)
+          console.log(data)
+          this.myImage = data.result
+          for (let v = 0; v < this.myImage.length; v++) {
+            this.imageModelActive[this.myImage[v]] = false
+          }
+          this.reset()
+          this.showImage = true
+          this.currentStatus = STATUS_SUCCESS
+          console.log(this.imageModalActive)
+        } catch (e) {
+          this.currentStatus = STATUS_FAILED
+          console.log(e)
+        }
       },
       reset () {
         // reset form to initial state

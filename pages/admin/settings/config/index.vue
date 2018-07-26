@@ -25,7 +25,6 @@
             :key="fieldKey"
             :label="getLabel(val, fieldKey)">
             <b-input v-if="val.inputType === 'input'" :value="getValue(val, fieldKey, tabKey)" :placeholder="getLabel(val, fieldKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
-            <imageControl v-else-if="val.inputType === 'imageUpload'" image="/images/Accus-Siezenis.png"></imageControl>
             <b-taginput v-else-if="val.inputType === 'tagInput'"
               :placeholder="getLabel(val, fieldKey)"
               maxtags="5"
@@ -50,7 +49,7 @@
             <b-select expanded v-else-if="val.inputType === 'dropdown_country'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
               <option v-for="option in countryList" :key="option.code" :value="option.code">{{ option.name }}</option>
             </b-select>
-            <imageControl v-else-if="val.inputType === 'imageUpload'" image="/images/Accus-Siezenis.png"></imageControl>
+            <imageControl v-else-if="val.inputType === 'imageUpload'" :image="productData[fieldKey]" type="banner"></imageControl>
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
           <br />
@@ -83,6 +82,7 @@
     components: { imageControl },
     data () {
       return {
+        myimages: ['Accus-Siezenis.png'],
         editorConfig: {},
         options: {
           theme: 'snow',
