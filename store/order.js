@@ -33,9 +33,9 @@ export const mutations = {
 export const actions = {
   async getCountryList ({ commit, state, rootState }) {
     try {
-      if (!(rootState.account.token instanceof Object)) {
-        commit('account/SET_TOKEN', Cookies.getJSON('key2publish').account.token, { root: true })
-      }
+      // if (!(rootState.account.token instanceof Object)) {
+      // commit('account/SET_TOKEN', Cookies.getJSON('key2publish').account.token, { root: true })
+      // }
 
       // this.$axios.setToken(rootState.authUser.jwt, 'Bearer')
 

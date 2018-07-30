@@ -23,9 +23,9 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['title', 'author', 'active'],
-        gridLabels: ['Title', 'Author', 'Active'],
-        gridTypes: { 'title': 'string', 'author': 'string', 'active': 'boolean' },
+        gridColumns: ['title', 'active'],
+        gridLabels: ['Title', 'Active'],
+        gridTypes: { 'title': 'string', 'active': 'boolean' },
         gridData: [],
         apiUrl: this.$store.state.apiUrl,
         tableName: 'Blog',

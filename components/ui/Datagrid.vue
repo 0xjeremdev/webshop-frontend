@@ -246,7 +246,8 @@
             executedQuery['query'] = 'FOR p IN ' + this.tableName + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.perPage * (this.currentPage - 1)) + ', ' + this.perPage + ' RETURN p'
             console.log(executedQuery) */
             let queryString = ''
-            if (this.perPage !== undefined || this.perPage.isInteger()) queryString += '?perPage=' + this.perPage
+            queryString = (this.type.includes('?')) ? '&' : '?'
+            if (this.perPage !== undefined || this.perPage.isInteger()) queryString += 'perPage=' + this.perPage
             if (this.currentPage !== undefined || this.currentPage.isInteger()) queryString += '&currentPage=' + this.currentPage
             if (this.sortField !== undefined || this.sortField !== '') queryString += '&mysort=' + this.sortField
             if (this.sortOrder !== undefined || this.sortOrder !== '') queryString += '&sortOrder=' + this.sortOrder

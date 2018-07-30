@@ -7,7 +7,7 @@
       :autoplayTimeout="5000"
       :navigationEnabled="false"
       :paginationEnabled="false">
-      <Slide v-for="(img) in images">
+      <Slide v-for="(img, index) in images" :key="index">
         <div class="my-overlay">
           <img :src="apiUrl + '/img/' + img" alt="Image1" />
         </div>

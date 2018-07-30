@@ -165,9 +165,5 @@ export const actions = {
     } catch (error) {
       throw new Error('Email was send to ' + email)
     }
-  },
-
-  async getPersonalInfo ({ commit, rootState }) {
-
   }
 }

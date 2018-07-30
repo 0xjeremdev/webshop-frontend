@@ -58,7 +58,10 @@
                   v-model="productData[fieldKey]"
                   :readonly="false">
               </b-datepicker>
-              <b-input v-else value="Could not load this type"></b-input>
+              <div v-else-if="tabKey === 'Address'" class="container">
+                <datagrid :data="val.gridData" :columns="val.gridColumns" :labels="val.gridLabels" :types="val.gridTypes" :tableName="val.tableName" :apiUrl="val.apiUrl" :type="val.type" :customSortField="val.customSortField"></datagrid>
+              </div>
+              <!-- <b-input v-else value="Could not load this type"></b-input> -->
             </b-field>
             <br />
             <hr>
@@ -87,10 +90,11 @@
   // import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
+  import Datagrid from '~/components/ui/Datagrid'
 
   export default {
     layout: 'admin',
-    components: { imageControl },
+    components: { imageControl, Datagrid },
     data () {
       return {
         isLoading: true,
@@ -175,6 +179,19 @@
               'required': true
             },
             icon: 'account'
+          },
+          'Address': {
+            'gridOptions': {
+              gridColumns: ['name', 'street', 'houseno', 'postcode', 'city', 'country'],
+              gridLabels: ['Name', 'Street', 'HouseNo', 'Postcode', 'City', 'Country'],
+              gridTypes: { 'name': 'string', 'street': 'string', 'houseno': 'string', 'postcode': 'string', 'city': 'string', 'country': 'string' },
+              gridData: [],
+              apiUrl: this.$store.state.apiUrl,
+              type: 'address/?customerid=Customer/' + this.$route.params.key,
+              customSortField: 'name',
+              customSortDir: 'DESC',
+              label: ' '
+            }
           }
         }
       }
