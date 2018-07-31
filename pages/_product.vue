@@ -81,7 +81,7 @@
     head () {
       return {
         title: 'LabNed.com - Exploring Possibilities',
-        titleTemplate: `${this.$route.params.product.toUpperCase().replace(/-+/g, ' ')} | %s`
+        titleTemplate: `${this.product.basic.name.replace(/-+/g, ' ')} | %s`
       }
     },
     data () {
@@ -321,15 +321,24 @@
         }
       }
     },
-    asyncData ({ store, params, error, app: { $axios } }) {
-      return $axios.get(store.state.apiUrl + '/product/' + params.product)
+    async asyncData ({ store, params, error, app: { $axios } }) {
+      try {
+        let content = {}
+        let { data } = await $axios.get(store.state.apiUrl + '/product/' + params.product)
+        if (data['result'] !== undefined && data['result']['_result'].length > 0) content = data['result']['_result'][0]
+        if (data['result'] === undefined || data['result']['_result'].length <= 0) error({'statusCode': 404, 'message': 'Page Not Found'})
+        return { product: content }
+      } catch (e) {
+        console.log(e)
+      }
+      /* return $axios.get(store.state.apiUrl + '/product/' + params.product)
         .then((res) => {
-          // console.log(res)
+          console.log('_product loading')
           return { product: res.data.result['_result'][0] }
         })
         .catch((e) => {
           error({ statusCode: 404, message: 'Post not found' })
-        })
+        }) */
     },
     methods: {
       async addToCart (id, name, price) {

@@ -174,7 +174,6 @@
           if (!this.checkErrors) {
             // await this.$store.dispatch('account/saveAddress', { address: this.address })
             // await this.$axios.$push()
-            
             this.isLoading = false
             this.showError = false
             this.$toast.open({ message: 'Saved', type: 'is-success' })

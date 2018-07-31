@@ -43,9 +43,9 @@
     },
     created () {
       this.isFetching = true
-      for (let v in this.searchColumns) {
-        this.getData(this.searchColumns[v])
-      }
+      // for (let v in this.searchColumns) {
+      // this.getData(this.searchColumns[v])
+      // }
       if (!(this.$store.state.product.searchFilters instanceof Object)) {
         this.$store.commit('product/SET_SEARCH_FILTERS', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchFilters : '')
       }
@@ -53,7 +53,22 @@
     },
     computed: {
       getFilters () {
-        return this.$store.state.product.filters
+        let filters = this.$store.state.product.filters
+        // console.log(filters)
+        let exclusive = {}
+        for (let key in filters) {
+          exclusive[key] = []
+          for (let val in filters[key]) {
+            let arr = filters[key][val].split(', ')
+            // console.log(arr.length)
+            for (let v in arr) {
+              // console.log(arr[v])
+              if (!exclusive[key].includes(arr[v].trim())) exclusive[key].push(arr[v].trim())
+            }
+          }
+        }
+        // console.log(exclusive)
+        return exclusive
       }
     },
     methods: {
@@ -78,6 +93,7 @@
         let myVal = []
         myVal[type] = {}
         myVal[type][value] = !checked
+        console.log('komhier')
         this.$store.commit('product/SET_SEARCH_FILTERS', myVal)
         this.getProductData()
         for (let v in this.searchColumns) {
@@ -106,6 +122,7 @@
           {
             root: true
           })
+
           this.isFetching = false
         } catch (e) {
           console.log(e)

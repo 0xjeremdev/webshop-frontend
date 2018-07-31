@@ -53,8 +53,8 @@
       $route: function () {
         let route = this.$route.path
         this.productName = ''
-        let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
-        this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
+        // let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
+        // this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
         // console.log(route)
         if (route === '/search') {
           if ((this.$store.state.product.searchVal === '')) {
@@ -65,6 +65,7 @@
           // console.log(searchVal)
           if (searchVal === null) searchVal = ''
           this.productName = searchVal
+          this.$store.commit('product/SET_SEARCHVAL', searchVal)
           /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
             this.productName = searchVal.name
           } */
@@ -79,7 +80,7 @@
       this.productName = ''
       let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
       this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
-      // console.log(route)
+      console.log(route)
       if (route === '/search') {
         // console.log('benhier')
         if ((this.$store.state.product.searchVal === '')) {
@@ -113,7 +114,8 @@
     },
     methods: {
       doSubmit () {
-        this.$router.replace({ path: '/search' })
+        let route = this.$route.path
+        if (route !== '/search') { this.$router.replace({ path: '/search' }) }
       },
       async getProducts () {
         try {
@@ -122,8 +124,8 @@
           if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser, { root: true })
           }
-          let searchFiltersReset = { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
-          this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
+          // let searchFiltersReset = { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
+          // this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
           let page = 1
           let option = ''
           if (typeof this.productName !== 'undefined' && this.productName !== null) {
@@ -199,9 +201,7 @@
         }
       },
       selectProduct (option) {
-        console.log(option)
         this.$store.commit('product/SET_SEARCHVAL', option)
-        this.$router.push('/search')
       }
     }
   }

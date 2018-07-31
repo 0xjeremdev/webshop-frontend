@@ -54,7 +54,7 @@ export const actions = {
       }
       let searchVal = state.searchVal
       console.log(searchVal)
-      // let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toUpperCase() : ''
+      // let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toLowerCase() : ''
       let search = searchVal
       let searchFilters = state.searchFilters
       let query = {
@@ -88,8 +88,9 @@ export const actions = {
       // console.log(params.search)
       let searchVal = state.searchVal
       // console.log(searchVal)
-      let search = (searchVal !== '' && searchVal !== undefined) ? searchVal.toLowerCase() : ''
+      // let search = (searchVal !== '' && searchVal !== undefined) ? searchVal.toLowerCase() : ''
       // search = (params.search !== '' && params.search !== undefined) ? params.search.toLowerCase() : search
+      let search = searchVal
       let searchFilters = state.searchFilters
       // console.log(query)
 
