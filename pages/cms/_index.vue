@@ -39,6 +39,8 @@
 </script>
 
 <style scoped>
+  @import url("~quill/dist/quill.snow.css");
+
   .control ul li {
     list-style: disc;
   }

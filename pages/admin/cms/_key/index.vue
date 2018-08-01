@@ -34,7 +34,7 @@
             <div class="quill-editor" v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
               :value="getValue(val, fieldKey, tabKey)"
               @input="setModel($event, fieldKey, tabKey)"
-              v-quill:myQuillEditor="editorConfig"></div>
+              v-quill:myQuillEditor="options"></div>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
             <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="!getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon :icon="getIcon(val, fieldKey, tabKey)"></b-icon></b-checkbox-button>
@@ -243,7 +243,7 @@
             let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Blog FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
             console.log(query) */
             let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/page/' + routeParams.key)
-            console.log(data)
+            // console.log(data)
             this.productData = data['result']['_result'][0]
             this.productData['publish_date'] = new Date(this.productData['publish_date'])
             this.isNew = false
@@ -265,7 +265,7 @@
             this.productData.publish_date = new Date()
             this.productData.active = false
 
-            console.log(this.productData)
+            // console.log(this.productData)
             this.isLoading = false
           }
         } catch (e) {

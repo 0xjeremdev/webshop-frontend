@@ -303,6 +303,7 @@
     outline: 0 none;
     padding: 0;
     vertical-align: baseline;
+    display: flex;
   }
 
   .art-label {
@@ -311,9 +312,11 @@
     min-width: 6em;
     clear: both;
     font-weight: bold;
+    flex: 1;
   }
 
   .art-value {
     box-sizing: border-box;
+    flex: 1;
   }
 </style>

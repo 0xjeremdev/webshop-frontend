@@ -43,9 +43,9 @@
     },
     created () {
       this.isFetching = true
-      // for (let v in this.searchColumns) {
-      // this.getData(this.searchColumns[v])
-      // }
+      for (let v in this.searchColumns) {
+        this.getData(this.searchColumns[v])
+      }
       if (!(this.$store.state.product.searchFilters instanceof Object)) {
         this.$store.commit('product/SET_SEARCH_FILTERS', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchFilters : '')
       }
@@ -55,7 +55,7 @@
       getFilters () {
         let filters = this.$store.state.product.filters
         // console.log(filters)
-        let exclusive = {}
+        /* let exclusive = {}
         for (let key in filters) {
           exclusive[key] = []
           for (let val in filters[key]) {
@@ -66,9 +66,9 @@
               if (!exclusive[key].includes(arr[v].trim())) exclusive[key].push(arr[v].trim())
             }
           }
-        }
+        } */
         // console.log(exclusive)
-        return exclusive
+        return filters
       }
     },
     methods: {

@@ -1,7 +1,7 @@
 <template>
   <b-notification :active.sync="isActive" type="is-info" has-icon closable @close="doClose()">
     <b>Cookie-Wall</b><br />
-    {{ cookiewall_text }}<br />
+    <div v-html="cookiewall_text"></div><br />
     <br />
     <button @click="doAccept()" class="button is-success">Accept Cookies</button>
   </b-notification>
@@ -11,7 +11,7 @@
   export default {
     data () {
       return {
-        'cookiewall_text': 'Text Here'
+        'cookiewall_text': this.$store.state.settings.cookiewall_text
       }
     },
     computed: {

@@ -21,7 +21,7 @@
   export default {
     components: { search },
     props: {
-      info: Object
+      info: String
     },
     data () {
       return {
@@ -29,7 +29,7 @@
         breadcrumbLinks: ['/']
       }
     },
-    mounted () {
+    created () {
       this.getBreadCrumb()
     },
     methods: {
@@ -37,12 +37,20 @@
         let myPath = this.$route.path.split('/') // '/product/test/4/aog/55'.split('/')
         let before = []
         myPath.forEach(x => {
-          if (x !== '') this.breadcrumb.push(x)
           if (x !== '') {
+            this.breadcrumb.push(x)
             this.breadcrumbLinks.push(before.join('/') + '/' + x)
             before.push(x)
           }
         })
+        if (this.info !== undefined && this.info !== null && this.info !== '') {
+          this.breadcrumb.pop()
+          this.breadcrumbLinks.pop()
+          before.pop()
+          this.breadcrumb.push(this.info)
+          this.breadcrumbLinks.push(before.join('/') + '/' + this.info)
+          before.push(this.info)
+        }
       }
     }
   }

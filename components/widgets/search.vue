@@ -49,8 +49,8 @@
       productName: _.debounce(function (e) {
         // Do something with search term after it debounced
         this.getProducts()
-      }, 500),
-      $route: function () {
+      }, 500)
+      /* $route: function () {
         let route = this.$route.path
         this.productName = ''
         // let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
@@ -68,19 +68,18 @@
           this.$store.commit('product/SET_SEARCHVAL', searchVal)
           /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
             this.productName = searchVal.name
-          } */
+          }
         } else {
           this.$store.commit('product/SET_SEARCHVAL', '')
         }
-      }
+      } */
 
     },
-    mounted () {
+    created () {
       let route = this.$route.path
-      this.productName = ''
+      // this.productName = ''
       let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
       this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
-      console.log(route)
       if (route === '/search') {
         // console.log('benhier')
         if ((this.$store.state.product.searchVal === '')) {
@@ -96,6 +95,7 @@
         } */
       } else {
         this.$store.commit('product/SET_SEARCHVAL', '')
+        // this.productName = ''
       }
     },
     computed: {
@@ -119,6 +119,7 @@
       },
       async getProducts () {
         try {
+          console.log('iktrigger2')
           this.isFetching = true
           this.$store.commit('SET_ISLOADING', true)
           if (!(this.$store.state.authUser instanceof Object)) {
@@ -202,6 +203,9 @@
       },
       selectProduct (option) {
         this.$store.commit('product/SET_SEARCHVAL', option)
+        console.log('iktrigger')
+        // let route = this.$route.path
+        this.$router.push('/search')
       }
     }
   }

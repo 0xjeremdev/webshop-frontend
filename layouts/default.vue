@@ -94,7 +94,6 @@
   export default {
     async asyncData ({ store, error }) {
       await store.dispatch('getSettings')
-      console.log('komhier')
       if (store.state.settings.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
       return { settings: store.state.settings }
     },

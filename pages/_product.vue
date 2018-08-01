@@ -2,7 +2,7 @@
   <section class="container">
     <div class="columns my-margin-top">
       <div class="column">
-          <breadCrumb></breadCrumb>
+          <breadCrumb :info="product.basic.name"></breadCrumb>
       </div>
       <div class="column">
 
