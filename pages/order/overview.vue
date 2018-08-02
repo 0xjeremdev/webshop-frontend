@@ -130,8 +130,8 @@
         store.commit('order/SET_ADDRESS', $cookies.get('key2publish').order.address)
         store.commit('order/SET_BILLING', $cookies.get('key2publish').order.billing)
         store.commit('order/SET_CUSTOMER', $cookies.get('key2publish').order.customer)
-        store.commit('SET_SETTINGS', $cookies.get('key2publish').settings)
       }
+      store.dispatch('getSettings')
       let cart = store.state.cart.cartContents
       await store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
       let condition = 'RT'

@@ -3,73 +3,19 @@
     <div class="container">
       <h1 class="title">Order - Select Delivery</h1>
       <orderMenu :step="step"></orderMenu>
-      <!-- step 2: if logged in show dropdown boxes with billing and delivery address go to step 4 -->
-      <!-- <div v-if="loggedIn" class="container">
-        <b-field grouped>
-          <b-field label="Title">
-              <b-select v-model="customer.title" placeholder="Title">
-                <option
-                    v-for="option in data.title"
-                    :value="option"
-                    :key="option">
-                    {{ option }}
-                </option>
-              </b-select>
-          </b-field>
-            <b-field label="Firstname" expanded>
-                <b-input v-model="customer.firstname" placeholder="Firstname"></b-input>
-            </b-field>
-            <b-field label="Lastname" expanded>
-                <b-input v-model="customer.lastname" placeholder="Lastname"></b-input>
-            </b-field>
-        </b-field>
-        <b-field label="Area of Interest">
-            <b-select v-model="customer.areaofinterest" expanded placeholder="Select an Area of Interest">
-                <option
-                    v-for="option in data.areaofinterest"
-                    :value="option"
-                    :key="option">
-                    {{ option }}
-                </option>
-            </b-select>
-        </b-field>
-        <b-field grouped>
-          <b-field label="Company" expanded>
-            <b-input v-model="customer.company" placeholder="eg. LabNed"></b-input>
-          </b-field>
-          <b-field label="VAT No" expanded>
-            <b-input v-model="customer.vatno" placeholder="VAT No"></b-input>
-          </b-field>
-        </b-field>
-        <b-field grouped>
-          <b-field label="Phone" expanded>
-            <b-input v-model="customer.phone" placeholder="Phone"></b-input>
-          </b-field>
-          <b-field label="Mobile" expanded>
-            <b-input v-model="customer.mobile" placeholder="Mobile"></b-input>
-          </b-field>
-          <b-field label="Fax" expanded>
-            <b-input v-model="customer.fax" placeholder="Fax"></b-input>
-          </b-field>
-        </b-field>
-        <b-field>
-          <b-checkbox v-model="customer.newsletter">Signup for the monthly newsletter</b-checkbox>
-        </b-field>
-      </div> -->
-      <!-- step 2: if not logged in show billing address form go to step 3
-      // step 3: show delivery address
-      // step 4: show payment OPTIONS
-      // step 5: overview of the order and confirmation to place the order -->
       <div class="container">
         <div class="columns">
           <div class="column">
 
           </div>
           <div class="column is-three-quarters">
+            <b-message type="is-danger" has-icon title="An error has occured" :active.sync="hasErrors.length > 0">
+              <div v-for="val in hasErrors">{{ val.message }}</div>
+            </b-message>
             <div class="tile is-ancestor">
               <div class="tile">
                 <div class="tile is-parent is-vertical">
-                  <article class="tile is-child notification">
+                  <article v-if="address" class="tile is-child notification">
                     <b-field label="Select Delivery Address">
                       <b-select v-model="selectedAddress" expanded placeholder="Select a delivery address">
                           <option
@@ -100,7 +46,7 @@
                       </b-select>
                     </b-field>
                   </article>
-                  <article class="tile is-child notification">
+                  <article v-if="selectedAddress" class="tile is-child notification">
                     <h2 class="subtitle">Your selected delivery address details:</h2>
                     <table class="table">
                       <tbody>
@@ -133,7 +79,7 @@
                       <button @click="doChange()" class="button is-info">Change</button>
                     </p>
                   </article>
-                  <article v-if="differentAsDelivery" class="tile is-child notification">
+                  <article v-if="differentAsDelivery && selectedBilling" class="tile is-child notification">
                     <h2 class="subtitle">Your selected billing address details:</h2>
                     <table class="table">
                       <tbody>
@@ -189,6 +135,7 @@
         selectedBilling: null,
         differentAsDelivery: false,
         formNewsletter: false,
+        hasErrors: [],
         data: {
           areaofinterest: ['Research Immunology', 'Cell Biology', 'Molecular Biology', 'Pathology'],
           title: ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.']
@@ -211,17 +158,31 @@
             break
           }
         }
-
+        // if (address.data.result === undefined || address.data.result._result.length > 0)
         return { customer: customer.data.result._result[0], address: address.data.result._result, selectedAddress: selectedAddress, selectedBilling: selectedBilling }
       }
-      return { customer: '' }
+      return { customer: {}, address: null, selectedAddress: null, selectBilling: null }
     },
     methods: {
       doNext () {
-        this.$store.commit('order/SET_CUSTOMER', this.customer)
-        this.$store.commit('order/SET_ADDRESS', this.selectedAddress)
-        if (this.differentAsDelivery) { this.$store.commit('order/SET_BILLING', this.selectedBilling) } else { this.$store.commit('order/SET_BILLING', this.selectedAddress) }
-        this.$router.replace({ path: '/order/overview', replace: true })
+        let hasErrors = []
+        if (this.selectedAddress === undefined || this.selectedAddress === null || this.selectedAddress === '') {
+          hasErrors.push({'error': 'noValidDeliveryAddress', 'message': 'Please select or create a valid delivery address'})
+        }
+        if (this.customer === undefined || this.customer === null || this.customer === '') {
+          hasErrors.push({'error': 'noValidCustomer', 'message': 'Please select or create a valid customer'})
+        }
+        if (this.differentAsDelivery && (this.selectedBilling === undefined || this.selectedBilling === null || this.selectedBilling === '')) {
+          hasErrors.push({'error': 'noValidBillingAddress', 'message': 'Please select or create a valid billing address'})
+        }
+        if (hasErrors.length === 0) {
+          this.$store.commit('order/SET_CUSTOMER', this.customer)
+          this.$store.commit('order/SET_ADDRESS', this.selectedAddress)
+          if (this.differentAsDelivery) { this.$store.commit('order/SET_BILLING', this.selectedBilling) } else { this.$store.commit('order/SET_BILLING', this.selectedAddress) }
+          this.$router.replace({ path: '/order/overview', replace: true })
+        } else {
+          this.hasErrors = hasErrors
+        }
       },
       doChange () {
         this.$router.replace({ path: '/account/personal', replace: true })
