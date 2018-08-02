@@ -46,6 +46,22 @@
               <b-select multiple v-else-if="val.inputType === 'dropdownmulti'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
                     <option v-for="option in val.options" :key="option.code" :value="option.code">{{ option.name }}</option>
               </b-select>
+              <div v-else-if="val.inputType === 'tableInput'">
+                <table v-if="temperatures" class="table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="temp in temperatures" :key="temp._key">
+                      <td>{{ temp.temperatureDescription }}</td>
+                      <td><b-input @input="setPrice($event, temp)" :value="getPrice(temp, fieldKey, tabKey)"></b-input></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <div v-else-if="val.inputType === 'radio'">
                 <b-radio v-for="ro in val.options"
                   :key="ro"
@@ -103,6 +119,7 @@
           lastname: ''
         }, // filled in one key so it also works when any of the values are untouched
         showError: false,
+        temperatures: {},
         formError: 'There are errors, please correct them to save',
         fields: {
           'Zones': {
@@ -115,7 +132,7 @@
               'label': 'Description'
             },
             'price': {
-              'inputType': 'input',
+              'inputType': 'tableInput',
               'label': 'Price'
             },
             'mysort': {
@@ -137,6 +154,7 @@
       }
     },
     async created () {
+      await this.getTemperatures()
       await this.getCountryList()
       await this.getData()
     },
@@ -167,6 +185,22 @@
       },
       setCheckbox (val, fieldKey, tabKey) {
         this.productData[fieldKey] = !val
+      },
+      getPrice (temp, fieldKey, tabKey) {
+        if (this.productData['price'][temp.temperatureName] === undefined) { return temp.price }
+        return this.productData['price'][temp.temperatureName]
+      },
+      setPrice (val, temp) {
+        this.productData['price'][temp.temperatureName] = val
+      },
+      async getTemperatures () {
+        try {
+          let temperatures = await this.$axios.$get(this.$store.state.apiUrl + '/admin/temperature')
+          console.log(temperatures)
+          this.temperatures = temperatures.result._result
+        } catch (e) {
+          console.log(e)
+        }
       },
       async getCountryList () {
         try {
@@ -254,11 +288,14 @@
           }
           if (!this.checkErrors) {
             // console.log(this.productData)
+            for (let temp in this.temperatures) {
+              if (this.productData['price'][temp.temperatureName] === undefined) { this.productData['price'][temp.temperatureName] = temp.price }
+            }
             let postData = {
               'key': (this.productData._key !== undefined) ? this.productData._key : '',
               'zoneName': (this.productData.zoneName !== undefined) ? this.productData.zoneName : '',
               'zoneDescription': (this.productData.zoneDescription !== undefined) ? this.productData.zoneDescription : '',
-              'price': (this.productData.price !== undefined) ? this.productData.price : '',
+              'price': (this.productData.price !== undefined) ? this.productData.price : {},
               'mysort': (this.productData['mysort'] !== undefined) ? this.productData.mysort : '',
               'countryList': (this.productData.countryList !== undefined) ? this.productData.countryList : '',
               'active': (this.productData.active !== undefined) ? this.productData.active : ''
