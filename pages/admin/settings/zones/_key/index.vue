@@ -57,7 +57,7 @@
                   <tbody>
                     <tr v-for="temp in temperatures" :key="temp._key">
                       <td>{{ temp.temperatureDescription }}</td>
-                      <td><b-input @input="setPrice($event, temp)" :value="getPrice(temp, fieldKey, tabKey)"></b-input></td>
+                      <td><b-input @input="setPrice($event, temp)" :value="getPrice(temp)"></b-input></td>
                     </tr>
                   </tbody>
                 </table>
@@ -186,17 +186,22 @@
       setCheckbox (val, fieldKey, tabKey) {
         this.productData[fieldKey] = !val
       },
-      getPrice (temp, fieldKey, tabKey) {
-        if (this.productData['price'][temp.temperatureName] === undefined) { return temp.price }
+      getPrice (temp) {
+        if (this.productData['price'][temp.temperatureName] === undefined) {
+          return temp.price
+        }
         return this.productData['price'][temp.temperatureName]
       },
       setPrice (val, temp) {
+        console.log(val)
+        console.log(this.productData['price'][temp.temperatureName])
+        console.log(this.productData['price'])
         this.productData['price'][temp.temperatureName] = val
       },
       async getTemperatures () {
         try {
           let temperatures = await this.$axios.$get(this.$store.state.apiUrl + '/admin/temperature')
-          console.log(temperatures)
+          // console.log(temperatures)
           this.temperatures = temperatures.result._result
         } catch (e) {
           console.log(e)
@@ -221,7 +226,7 @@
             // this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
 
             let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/zones/' + routeParams.key)
-            console.log(data)
+            // console.log(data)
             this.productData = data['result']['_result'][0]
             this.isNew = false
             this.isLoading = false
@@ -233,6 +238,10 @@
                 for (var fieldKey in this.fields[tabKey]) {
                   if (fieldKey === 'countryList') {
                     this.productData[fieldKey] = []
+                    continue
+                  }
+                  if (fieldKey === 'price') {
+                    this.productData[fieldKey] = {}
                     continue
                   }
                   this.productData[fieldKey] = ''
@@ -279,18 +288,23 @@
           this.isLoading = true
           this.validate(this.productData.zoneName, 'zoneName', 'field')
           this.validate(this.productData.zoneDescription, 'zoneDescription', 'field')
-          this.validate(this.productData.price, 'price', 'field')
+          // this.validate(this.productData.price, 'price', 'field')
           // this.validate(this.productData['mysort'], 'mysort', 'field')
           // this.validate(this.productData.countryList, 'countryList', 'field')
+          // this.productData
           if (this.checkErrors) {
             this.showError = true
             this.isLoading = false
           }
           if (!this.checkErrors) {
             // console.log(this.productData)
+            console.log(this.temperatures)
             for (let temp in this.temperatures) {
-              if (this.productData['price'][temp.temperatureName] === undefined) { this.productData['price'][temp.temperatureName] = temp.price }
+              if (this.productData['price'][temp.temperatureName] === undefined) {
+                this.productData['price'][temp.temperatureName] = temp.price
+              }
             }
+            console.log(this.productData)
             let postData = {
               'key': (this.productData._key !== undefined) ? this.productData._key : '',
               'zoneName': (this.productData.zoneName !== undefined) ? this.productData.zoneName : '',

@@ -116,7 +116,7 @@
             },
             'price': {
               'inputType': 'input',
-              'label': 'Price'
+              'label': 'Price (default)'
             },
             'mysort': {
               'inputType': 'input',

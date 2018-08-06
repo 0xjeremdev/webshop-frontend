@@ -153,6 +153,10 @@
               'inputType': 'input',
               'label': 'Fax'
             },
+            'allow_banktransfer': {
+              'inputType': 'checkbox',
+              'label': 'Allow Bank Transfer'
+            },
             'state': {
               'inputType': 'dropdown',
               'label': 'Active',
@@ -332,15 +336,14 @@
           this.validate(this.productData.firstname, 'firstname', 'field')
           this.validate(this.productData.title, 'title', 'select')
           this.validate(this.productData.company, 'company', 'field')
-          this.validate(this.productData.VAT_No, 'VAT_No', 'field')
           this.validate(this.productData.email, 'email', 'email')
           this.validate(this.productData.phone, 'phone', 'field')
           this.validate(this.productData.fax, 'fax', 'field')
           this.validate(this.productData.mobile, 'mobile', 'field')
           this.validate(this.productData.state, 'state', 'select')
-          this.validate(this.productData.password, 'password', 'password')
-          this.validate(this.productData.repeat_password, 'repeat_password', 'repeatPassword')
-          this.validate(this.productData.your_password, 'your_password', 'password')
+          if (this.productData.password !== '') this.validate(this.productData.password, 'password', 'password')
+          if (this.productData.repeat_password !== '') this.validate(this.productData.repeat_password, 'repeat_password', 'repeatPassword')
+          if (this.productData.your_password !== '') this.validate(this.productData.your_password, 'your_password', 'password')
           if (this.checkErrors) {
             this.showError = true
             this.isLoading = false
@@ -359,10 +362,11 @@
               'vatno': (this.productData['VAT_No'] !== undefined) ? this.productData['VAT_No'] : '',
               'mobile': (this.productData.mobile !== undefined) ? this.productData.mobile : '',
               'fax': (this.productData.fax !== undefined) ? this.productData.fax : '',
+              'allow_banktransfer': (this.productData.allow_banktransfer !== undefined) ? this.productData.allow_banktransfer : false,
               'state': (this.productData.state !== undefined) ? this.productData.state : '',
               'password': (this.productData.password !== undefined) ? this.productData.password : '',
               'user_password': (this.productData.user_password) ? this.productData.user_password : '',
-              'newsletter': (this.productData.newsletter !== undefined) ? this.productData.newsletter : '',
+              'newsletter': (this.productData.newsletter !== undefined) ? this.productData.newsletter : false,
               'active': (this.productData.active !== undefined) ? this.productData.active : ''
             }
             // console.log(postData)

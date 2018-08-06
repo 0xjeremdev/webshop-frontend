@@ -98,7 +98,7 @@
         showError: false,
         formError: 'Please agree with our Terms and Conditions including our Privacy Policy',
         cartContents: [],
-        paymentMethod: 'cct',
+        paymentMethod: 'iDeal',
         agreement: false,
         shippingcosts: 0,
         shippingtotal: 0,
@@ -108,18 +108,19 @@
         vat: this.$store.state.settings.VAT,
         paymentMethods: [
           {
-            code: 'cct',
-            name: 'Credit Card Test',
+            code: 'paypal',
+            name: 'PayPal Test',
             price: '0'
           },
           {
-            code: 'ideal',
+            code: 'iDeal',
             name: 'IDEAL Test',
-            price: '0'
+            price: '0',
+            options: []
           },
           {
             code: 'bank',
-            name: 'Bank',
+            name: 'Bank Transfer',
             price: '0'
           }
         ]
@@ -145,17 +146,18 @@
           condition = cart[v]['shipping']
         }
       }
-      let costs = await store.dispatch('order/getShippingCosts', { condition: condition }, { root: true })
+      // let costs = await store.dispatch('order/getShippingCosts', { condition: condition }, { root: true })
       let zonecosts = await store.dispatch('order/getZoneCosts', { cc: store.state.order.address.country }, { root: true })
-      console.log(zonecosts['result']['_result'])
-      zonecosts = zonecosts['result']['_result'][0]
+      // console.log(zonecosts['result']['_result'])
+      zonecosts = zonecosts['result']['_result'][0]['price'][condition]
+      // console.log(parseFloat(zonecosts))
       // if (zonecosts['result'] !== undefined && zonecosts['result']['_result'].length > 0) zonecosts = zonecosts['result']['_result'][0]
       // if (zonecosts['result'] === undefined || zonecosts['result']['_result'].length <= 0) error({ 'statusCode': 500, 'message': 'An unexpected error occured' })
       var subtotal = 0
       for (let key in cart) {
         subtotal += parseFloat(cart[key].price) * Number(cart[key].amount)
       }
-      let shippingcosts = parseFloat(zonecosts.price) + parseFloat(costs.price)
+      let shippingcosts = parseFloat(zonecosts)
       let shippingtotal = subtotal + shippingcosts
       let vatamount = (store.state.settings.VAT / 100) * shippingtotal
       let total = shippingtotal + vatamount
