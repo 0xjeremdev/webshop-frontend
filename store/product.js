@@ -111,6 +111,7 @@ export const actions = {
       } else if (field === 'Product category LabNed') {
         let mydata = await this.$axios.$get(rootState.apiUrl + '/filter/' + field)
         let postData = { searchVal: search, searchFilters: searchFilters, field: field }
+        console.log(postData)
         let filteredData = await this.$axios.$post(rootState.apiUrl + '/filter', postData)
         let correctData = mydata.result['_result']
         for (var r = mydata.result['_result'].length; r >= 0; r--) {
@@ -123,6 +124,7 @@ export const actions = {
         val[field] = correctData
       } else {
         let postData = { searchVal: search, searchFilters: searchFilters, field: field }
+        console.log(postData)
         let filteredData = await this.$axios.$post(rootState.apiUrl + '/filter', postData)
         val[field] = filteredData.result['_result']
       }

@@ -4,7 +4,7 @@
       <div class="columns">
         <div class="column">
           <nuxt-link to="/">
-            <img src="http://labned.com/images/I/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.1gJ-QNfrLx.png" alt="LabNed.com" width="auto" height="74px">
+            <img src="/images/xLabNed,P20logo,P202.0.fw.png.pagespeed.ic.1gJ-QNfrLx.png" alt="LabNed.com" width="auto" height="74px">
           </nuxt-link>
         </div>
         <div class="column">
@@ -93,9 +93,14 @@
 
   export default {
     async asyncData ({ store, error }) {
-      await store.dispatch('getSettings')
-      if (store.state.settings.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
-      return { settings: store.state.settings }
+      try {
+        await store.dispatch('getSettings')
+        if (store.state.settings.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
+        return { settings: store.state.settings }
+      } catch (e) {
+        console.log(e)
+        error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
+      }
     },
     middleware: [ 'reloadCookie' ],
     components: { cartWidgets, cookiewall, search },
