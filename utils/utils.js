@@ -1,4 +1,4 @@
-import CryptoJS from 'CryptoJS'
+import CryptoJS from 'crypto-js'
 
 export const contains = (val, arr) => {
   for (var arrVal in arr) {
@@ -47,9 +47,9 @@ export const BuckarooHmac = (function () {
 
   function getHash (websiteKey, secretKey, httpMethod, nonce, timeStamp, requestUri, content) {
     var encodedContent = getEncodedContent(content)
-
     var rawData = websiteKey + httpMethod + requestUri + timeStamp + nonce + encodedContent
     var hash = CryptoJS.HmacSHA256(rawData, secretKey)
+
     var hashInBase64 = CryptoJS.enc.Base64.stringify(hash)
 
     return hashInBase64
@@ -72,6 +72,8 @@ export const BuckarooHmac = (function () {
   self.GetAuthHeader = function (requestUri, websiteKey, secretKey, content, httpMethod) {
     var nonce = getNonce()
     var timeStamp = getTimeStamp()
+    console.log(nonce)
+    console.log(timeStamp)
     content = (content !== undefined || content !== null) ? content : ''
     var url = encodeURIComponent(requestUri).toLowerCase()
     return 'hmac ' + websiteKey + ':' + getHash(websiteKey, secretKey, httpMethod, nonce, timeStamp, url, content) + ':' + nonce + ':' + timeStamp

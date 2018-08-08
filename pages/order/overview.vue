@@ -59,9 +59,21 @@
           <h2 class="subtitle">Payment Methods</h2>
           <div class="field" v-for="value in paymentMethods">
             <b-radio v-model="paymentMethod"
-              :native-value="value.code">
+              :native-value="value.code" @input="setPaymentMethod($event)">
               {{ value.name }} <span v-if="value.price > 0"> (+ € {{ parseFloat(value.price).toFixed(2) }})</span>
             </b-radio>
+
+            <b-field label="Select your Bank" v-if="paymentMethod === 'iDeal' && value.code === 'iDeal'" v-for="(val, index) in idealData" :key="index">
+              <b-select v-model="selectedBank" expanded placeholder="Select your bank" @input="setIdeal($event)">
+                <option
+                  v-for="bank in val.ListItemDescriptions"
+                  :value="bank.Value"
+                  :key="bank.Value"
+                >
+                  {{ bank.Description }}
+                </option>
+              </b-select>
+            </b-field>
           </div>
           <br/>
           <b-field>
@@ -93,6 +105,8 @@
     components: { orderMenu },
     data () {
       return {
+        serviceLink: null,
+        selectedBank: null,
         isFetching: false,
         step: '2',
         showError: false,
@@ -161,7 +175,9 @@
       let shippingtotal = subtotal + shippingcosts
       let vatamount = (store.state.settings.VAT / 100) * shippingtotal
       let total = shippingtotal + vatamount
-      return { cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total }
+      let idealData = await store.dispatch('payment/getIdealData')
+      console.log(idealData)
+      return { cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total, idealData: idealData }
     },
     methods: {
       placeOrder () {
@@ -175,6 +191,56 @@
         this.$store.dispatch('order/placeOrder', { status: 'Payment Received' }, { root: true })
         this.$store.commit('cart/SET_CART', [])
         this.$router.replace({path: '/order/done', replace: true})
+      },
+      async setPaymentMethod (value) {
+        this.paymentMethod = value
+        if (value === 'paypal') {
+          let content = {
+            'Currency': 'EUR',
+            'AmountDebit': parseFloat(this.total).toFixed(2),
+            'Invoice': this.getOrderNo(),
+            'Services': {
+              'ServiceList': [
+                {
+                  'Name': 'paypal',
+                  'Action': 'Pay'
+                }
+              ]
+            }
+          }
+          console.log(content)
+          let service = await this.$store.dispatch('payment/doPayViaPayPal', { content: content })
+          console.log(service)
+        }
+        if (value === 'bank') {
+          this.serviceLink = '/order/done'
+        }
+      },
+      async setIdeal (value) {
+        this.selectedBank = value
+      },
+      getOrderNo () {
+        // create order_no
+        let date = new Date()
+        var monthNums = [
+          '01', '02', '03',
+          '04', '05', '06',
+          '07', '08', '09',
+          '10', '11', '12'
+        ]
+        var day = date.getDate()
+        var monthIndex = monthNums[date.getMonth()]
+        var year = date.getFullYear()
+
+        let no = (Number(this.$store.state.settings.orderno_inc) + 1).toString()
+        let size = Number(this.$store.state.settings.orderno_size)
+        let s = no + ''
+        while (s.length < size) s = '0' + s
+        let orderno = this.$store.state.settings.order_prefix
+        if (this.$store.state.settings.order_date) orderno += year + monthIndex + day
+        orderno += s
+
+        return orderno
       }
     }
   }
