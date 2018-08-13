@@ -195,10 +195,11 @@
       async setPaymentMethod (value) {
         this.paymentMethod = value
         if (value === 'paypal') {
-          let content = {
+          let payment = {
             'Currency': 'EUR',
             'AmountDebit': parseFloat(this.total).toFixed(2),
             'Invoice': this.getOrderNo(),
+            'ContinueOnIncomplete': 1,
             'Services': {
               'ServiceList': [
                 {
@@ -208,8 +209,7 @@
               ]
             }
           }
-          console.log(content)
-          let service = await this.$store.dispatch('payment/doPayViaPayPal', { content: content })
+          let service = await this.$store.dispatch('payment/doPay', { payment: payment })
           console.log(service)
         }
         if (value === 'bank') {

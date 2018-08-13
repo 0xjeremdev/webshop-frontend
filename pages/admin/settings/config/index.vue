@@ -50,6 +50,22 @@
               <option v-for="option in countryList" :key="option.code" :value="option.code">{{ option.name }}</option>
             </b-select>
             <imageControl v-else-if="val.inputType === 'imageUpload'" :image="productData[fieldKey]" type="banner"></imageControl>
+            <div v-else-if="val.inputType === 'tableInput'">
+              <table v-if="productData[fieldKey]" class="table">
+                <thead>
+                  <tr>
+                    <th>Option</th>
+                    <th>On/Off</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(opt, key) in productData[fieldKey]" :key="key">
+                    <td>{{ key }}</td>
+                    <td><b-switch v-model="productData[fieldKey][key]"></b-switch></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <b-input v-else value="Could not load this type"></b-input>
           </b-field>
           <br />
@@ -127,7 +143,8 @@
             'banner_upload_images': {
               'inputType': 'imageUpload',
               'label': 'Upload Images'
-            }
+            },
+            icon: 'file-image'
           },
           'Contact': {
             'contact_email': {
@@ -158,6 +175,14 @@
               'inputType': 'dropdown_country',
               'label': 'Country',
               'options': []
+            },
+            'contact_phone': {
+              'inputType': 'input',
+              'label': 'Phone'
+            },
+            'contact_phone_int': {
+              'inputType': 'input',
+              'label': 'International Phone'
             },
             'contact_vatno': {
               'inputType': 'input',
@@ -235,6 +260,33 @@
               'label': 'Order No Size'
             },
             icon: 'cart'
+          },
+          'Payment': {
+            'payment_testmode': {
+              'inputType': 'switch',
+              'label': 'Testmode'
+            },
+            'payment_link': {
+              'inputType': 'input',
+              'label': 'Buckaroo Live Link'
+            },
+            'payment_testlink': {
+              'inputType': 'input',
+              'label': 'Buckaroo Test Link'
+            },
+            'payment_secretKey': {
+              'inputType': 'input',
+              'label': 'Buckaroo Secret Key'
+            },
+            'payment_websiteKey': {
+              'inputType': 'input',
+              'label': 'Buckaroo Website Key'
+            },
+            'payment_options': {
+              'inputType': 'tableInput',
+              'label': 'Payment Options'
+            },
+            icon: 'credit-card'
           },
           'Social': {
             'facebook_link': {
@@ -332,7 +384,13 @@
             contact_email_text: (this.productData.contact_email_text !== undefined) ? this.productData.contact_email_text : '',
             register_email_text: (this.productData.register_email_text !== undefined) ? this.productData.register_email_text : '',
             verify_email_text: (this.productData.verify_email_text !== undefined) ? this.productData.verify_email_text : '',
-            delete_customer_email_text: (this.productData.delete_customer_email_text !== undefined) ? this.productData.delete_customer_email_text : ''
+            delete_customer_email_text: (this.productData.delete_customer_email_text !== undefined) ? this.productData.delete_customer_email_text : '',
+            payment_link: (this.productData.payment_link !== undefined) ? this.productData.payment_link : '',
+            payment_testlink: (this.productData.payment_testlink !== undefined) ? this.productData.payment_testlink : '',
+            payment_secretKey: (this.productData.payment_secretKey !== undefined) ? this.productData.payment_secretKey : '',
+            payment_websiteKey: (this.productData.payment_websiteKey !== undefined) ? this.productData.payment_websiteKey : '',
+            payment_testmode: (this.productData.payment_testmode !== undefined) ? this.productData.payment_testmode : false,
+            payment_options: (this.productData.payment_options !== undefined) ? this.productData.payment_options : {}
           }
           let data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/config', postData)
           console.log(data)
