@@ -14,7 +14,7 @@
     layout: 'admin',
     head () {
       return {
-        title: 'ITK Diagnostics - Products',
+        title: 'LabNed.com - Exploring Possibilities - Products',
         meta: [
           { hid: 'error description', name: 'error description', content: 'My custom error description' }
         ]

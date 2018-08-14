@@ -98,12 +98,12 @@
                 </div>
               </div>
               <div class="column is-one-third">
-                <p class="title"> € {{ Number(val.price).toFixed(2) }}</p>
+                <p class="title">{{ (Number(val.price).toFixed(2) !== 'NaN') ? '€ ' + Number(val.price).toFixed(2) : 'Inquiry' }}</p>
                 <p class="control">
-                  <button class="button is-orange my-button" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+                  <button class="button is-orange my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
                 </p>
                 <p class="control" style="padding-top: 5px;">
-                  <button class="button is-success my-button" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
+                  <button class="button is-success my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
                 </p>
               </div>
             </div>

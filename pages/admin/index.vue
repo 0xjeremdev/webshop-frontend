@@ -2,7 +2,7 @@
   <div>
     <login v-if="!authUser"></login>
     <div v-else class="container">
-      Logging in .... 
+      Logging in ....
     </div>
   </div>
 </template>
@@ -16,6 +16,11 @@ export default {
   computed: {
     authUser () {
       return this.$store.state.authUser
+    }
+  },
+  head () {
+    return {
+      title: 'LabNed.com - Exploring Possibilities - Login'
     }
   },
   created () {

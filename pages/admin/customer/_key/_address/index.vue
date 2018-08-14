@@ -61,6 +61,11 @@
 <script>
   export default {
     // middleware: 'auth',
+    head () {
+      return {
+        title: 'LabNed.com - Exploring Possibilities - Add/Edit Address'
+      }
+    },
     layout: 'admin',
     data () {
       return {

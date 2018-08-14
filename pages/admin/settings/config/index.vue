@@ -96,6 +96,11 @@
   export default {
     layout: 'admin',
     components: { imageControl },
+    head () {
+      return {
+        title: 'LabNed.com - Exploring Possibilities - Configuration'
+      }
+    },
     data () {
       return {
         myimages: ['Accus-Siezenis.png'],
@@ -286,6 +291,22 @@
               'inputType': 'tableInput',
               'label': 'Payment Options'
             },
+            'payment_ReturnURL': {
+              'inputType': 'input',
+              'label': 'Return URL'
+            },
+            'payment_ReturnURLError': {
+              'inputType': 'input',
+              'label': 'Return Error URL'
+            },
+            'payment_ReturnURLReject': {
+              'inputType': 'input',
+              'label': 'Return Reject URL'
+            },
+            'payment_ReturnURLCancel': {
+              'inputType': 'input',
+              'label': 'Return Cancel URL'
+            },
             icon: 'credit-card'
           },
           'Social': {
@@ -316,9 +337,6 @@
         // $toast.open('Could not load data')
         return { productData: {}, isNew: false, countryList: {} }
       }
-    },
-    created () {
-      // this.getData()
     },
     methods: {
       setModel (val, fieldKey, tabKey) {
@@ -390,7 +408,11 @@
             payment_secretKey: (this.productData.payment_secretKey !== undefined) ? this.productData.payment_secretKey : '',
             payment_websiteKey: (this.productData.payment_websiteKey !== undefined) ? this.productData.payment_websiteKey : '',
             payment_testmode: (this.productData.payment_testmode !== undefined) ? this.productData.payment_testmode : false,
-            payment_options: (this.productData.payment_options !== undefined) ? this.productData.payment_options : {}
+            payment_options: (this.productData.payment_options !== undefined) ? this.productData.payment_options : {},
+            payment_ReturnURL: (this.productData.payment_ReturnURL !== undefined) ? this.productData.payment_ReturnURL : '',
+            payment_ReturnURLError: (this.productData.payment_ReturnURLError !== undefined) ? this.productData.payment_ReturnURLError : '',
+            payment_ReturnURLReject: (this.productData.payment_ReturnURLReject !== undefined) ? this.productData.payment_ReturnURLReject : '',
+            payment_ReturnURLCancel: (this.productData.payment_ReturnURLCancel !== undefined) ? this.productData.payment_ReturnURLCancel : ''
           }
           let data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/config', postData)
           console.log(data)

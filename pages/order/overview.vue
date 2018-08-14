@@ -101,7 +101,7 @@
   import orderMenu from '~/components/ui/orderMenu.vue'
 
   export default {
-    middleware: 'authCustomer',
+    middleware: ['authCustomer'],
     components: { orderMenu },
     data () {
       return {
@@ -176,48 +176,110 @@
       let vatamount = (store.state.settings.VAT / 100) * shippingtotal
       let total = shippingtotal + vatamount
       let idealData = await store.dispatch('payment/getIdealData')
-      console.log(idealData)
       return { cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total, idealData: idealData }
     },
     methods: {
       placeOrder () {
         if (!this.agreement) {
+          this.formError = 'Please agree with our Terms and Conditions including our Privacy Policy'
+          this.showError = true
+          return false
+        }
+
+        if (!this.serviceLink) {
+          this.formError = 'Failed to communicate with this payment option, please select another option'
           this.showError = true
           return false
         }
 
         this.showError = false
         // place order in database should be changed
-        this.$store.dispatch('order/placeOrder', { status: 'Payment Received' }, { root: true })
-        this.$store.commit('cart/SET_CART', [])
-        this.$router.replace({path: '/order/done', replace: true})
+        // console.log(this.$router)
+        window.location.href = this.serviceLink
+        // this.$store.dispatch('order/placeOrder', { status: 'Payment Received' }, { root: true })
+        // this.$store.commit('cart/SET_CART', [])
+        // this.$router.replace({path: '/order/done', replace: true})
       },
       async setPaymentMethod (value) {
-        this.paymentMethod = value
-        if (value === 'paypal') {
+        try {
+          this.showError = false
+          this.paymentMethod = value
+          if (value === 'paypal') {
+            let payment = {
+              'Currency': 'EUR',
+              'AmountDebit': parseFloat(this.total).toFixed(2),
+              'Invoice': this.getOrderNo(),
+              'ContinueOnIncomplete': 1,
+              'ReturnURL': this.$store.state.settings.ReturnURL,
+              'ReturnURLCancel': this.$store.state.settings.ReturnURLCancel,
+              'ReturnURLError': this.$store.state.settings.ReturnURLError,
+              'ReturnURLReject': this.$store.state.settings.ReturnURLReject,
+              'PushURL': this.$store.state.settings.ReturnURL,
+              'PushURLFailure': this.$store.state.settings.ReturnURLError,
+              'Services': {
+                'ServiceList': [
+                  {
+                    'Name': 'paypal',
+                    'Action': 'Pay'
+                  }
+                ]
+              }
+            }
+            let service = await this.$store.dispatch('payment/doPay', { payment: payment })
+            if (service.result.RequiredAction !== undefined && service.result.RequiredAction.RedirectURL !== undefined) {
+              this.serviceLink = service.result.RequiredAction.RedirectURL
+            }
+          }
+          if (value === 'bank') {
+            this.serviceLink = '/order/done'
+          }
+        } catch (e) {
+          console.log(e)
+          this.formError = 'Failed to communicate with this payment option, please select another option'
+          this.showError = true
+        }
+      },
+      async setIdeal (value) {
+        try {
+          console.log(this)
+          this.showError = false
+          this.selectedBank = value
           let payment = {
             'Currency': 'EUR',
             'AmountDebit': parseFloat(this.total).toFixed(2),
             'Invoice': this.getOrderNo(),
             'ContinueOnIncomplete': 1,
+            'ReturnURL': this.$store.state.settings.ReturnURL,
+            'ReturnURLCancel': this.$store.state.settings.ReturnURLCancel,
+            'ReturnURLError': this.$store.state.settings.ReturnURLError,
+            'ReturnURLReject': this.$store.state.settings.ReturnURLReject,
+            'PushURL': this.$store.state.settings.ReturnURL,
+            'PushURLFailure': this.$store.state.settings.ReturnURLError,
+            'ClientIP': {
+              'Type': 0,
+              'Address': '0.0.0.0'
+            },
             'Services': {
-              'ServiceList': [
-                {
-                  'Name': 'paypal',
-                  'Action': 'Pay'
-                }
-              ]
+              'ServiceList': [{
+                'Name': 'ideal',
+                'Action': 'Pay',
+                'Parameters': [{
+                  'Name': 'issuer',
+                  'Value': value
+                }]
+              }]
             }
           }
+
           let service = await this.$store.dispatch('payment/doPay', { payment: payment })
-          console.log(service)
+          if (service.result.RequiredAction !== undefined && service.result.RequiredAction.RedirectURL !== undefined) {
+            this.serviceLink = service.result.RequiredAction.RedirectURL
+          }
+        } catch (e) {
+          console.log(e)
+          this.formError = 'Failed to communicate with this payment option, please select another option'
+          this.showError = true
         }
-        if (value === 'bank') {
-          this.serviceLink = '/order/done'
-        }
-      },
-      async setIdeal (value) {
-        this.selectedBank = value
       },
       getOrderNo () {
         // create order_no

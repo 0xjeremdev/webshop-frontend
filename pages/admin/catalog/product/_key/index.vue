@@ -64,6 +64,11 @@
   export default {
     layout: 'admin',
     components: { imageControl },
+    head () {
+      return {
+        title: 'LabNed.com - Exploring Possibilities - Add/Edit Product'
+      }
+    },
     data () {
       return {
         isLoading: true,

@@ -37,6 +37,11 @@ import lastQuotes from '~/components/widgets/lastQuotes'
 
 export default {
   layout: 'admin',
-  components: { lastCustomers, lastOrders, lastQuotes }
+  components: { lastCustomers, lastOrders, lastQuotes },
+  head () {
+    return {
+      title: 'LabNed.com - Exploring Possibilities - Dashboard'
+    }
+  }
 }
 </script>

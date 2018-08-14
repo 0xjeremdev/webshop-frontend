@@ -15,10 +15,10 @@ export const mutations = {
 }
 
 export const actions = {
-  async getIdealData ({ context, commit, state, rootState }) {
+  async getIdealData ({ rootState }) {
     try {
       let mydata = await this.$axios.$get(rootState.apiUrl + '/payment/ideal', { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
-      console.log(mydata.result.Actions)
+      // console.log(mydata.result.Actions)
       if (mydata.result.Actions[0].RequestParameters !== undefined) return mydata.result.Actions[0].RequestParameters
       return {}
     } catch (e) {
@@ -27,10 +27,10 @@ export const actions = {
     }
   },
 
-  async getPayPalData ({ context, commit, state, rootState }) {
+  async getPayPalData ({ rootState }) {
     try {
       let mydata = await this.$axios.$get(rootState.apiUrl + '/payment/paypal', { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
-      console.log(mydata.result.Actions)
+      // console.log(mydata.result.Actions)
       if (mydata.result.Actions[0].RequestParameters !== undefined) return mydata.result.Actions[0].RequestParameters
       return {}
     } catch (e) {
@@ -39,10 +39,10 @@ export const actions = {
     }
   },
 
-  async doPay ({ context, commit, state, rootState }, { payment }) {
+  async doPay ({ rootState }, { payment }) {
     try {
       let mydata = await this.$axios.$post(rootState.apiUrl + '/payment/transaction', payment, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
-      console.log(mydata)
+      // console.log(mydata)
       return mydata
     } catch (e) {
       console.log(e)

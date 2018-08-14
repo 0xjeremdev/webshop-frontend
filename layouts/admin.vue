@@ -105,6 +105,11 @@
         showNav: false
       }
     },
+    head () {
+      return {
+        title: 'LabNed.com - Exploring Possibilities'
+      }
+    },
     methods: {
       collapse () {
         this.showNav = !this.showNav

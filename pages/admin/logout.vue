@@ -4,6 +4,11 @@
 
 <script>
   export default {
-    layout: 'admin'
+    layout: 'admin',
+    head () {
+      return {
+        title: 'LabNed.com - Exploring Possibilities - Logouts'
+      }
+    }
   }
 </script>

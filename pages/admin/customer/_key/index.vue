@@ -95,6 +95,11 @@
   export default {
     layout: 'admin',
     components: { imageControl, Datagrid },
+    head () {
+      return {
+        title: 'LabNed.com - Exploring Possibilities - Add/Edit Customer'
+      }
+    },
     data () {
       return {
         isLoading: true,

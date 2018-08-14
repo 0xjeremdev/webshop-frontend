@@ -13,13 +13,13 @@
       <div class="columns">
         <div class="column is-one-third">
           <div class="sticky">
-          <p class="title my-img"> € {{ Number(product.basic['Price LabNed']).toFixed(2) }}</p>
+          <p class="title my-img">{{ (Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? '€ ' + Number(product.basic['Price LabNed']).toFixed(2) : 'Inquiry' }}</p>
           <div class="columns is-mobile">
             <div class="column">
-              <button class="button is-orange my-img" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+              <button class="button is-orange my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
             </div>
             <div class="column">
-              <button class="button is-info my-img" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
+              <button class="button is-info my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
             </div>
           </div>
           <br />
