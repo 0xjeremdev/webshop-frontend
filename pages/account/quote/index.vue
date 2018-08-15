@@ -8,17 +8,17 @@
         <div class="column">
           <h1 class="title">Quotes</h1>
           <h2 class="subtitle">Quotes Received</h2>
-          <DataGrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :apiUrl="apiUrl" :type="type" :customSortField="customSortField"></DataGrid>
+          <DataGrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :apiUrl="apiUrl" :type="received_type" :customData="customData" :customSortField="customSortField"></DataGrid>
         </div>
       </div>
 
       <div class="columns">
         <div class="column is-one-quarter">
-          
+
         </div>
         <div class="column">
           <h2 class="subtitle">Quotes Send By You</h2>
-          <DataGrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :apiUrl="apiUrl" :type="received_type" :customData="customData" :customSortField="customSortField"></DataGrid>
+          <DataGrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :apiUrl="apiUrl" :type="type" :customSortField="customSortField"></DataGrid>
         </div>
       </div>
     </div>

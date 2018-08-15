@@ -90,7 +90,7 @@
           this.formError = null
           this.showError = false
           if (this.$store.state.account.token) {
-            const link = (this.$store.state.rememberLink !== undefined && this.$store.state.rememberLink !== '') ? this.$store.state.rememberLink : '/account'
+            const link = (this.$store.state.rememberLink !== undefined && this.$store.state.rememberLink !== '') ? this.$store.state.rememberLink : '/account/personal'
             this.$router.replace({ path: link })
           } else {
             this.formError = 'Could not login'

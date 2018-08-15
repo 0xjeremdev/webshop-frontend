@@ -135,7 +135,7 @@
             this.isLoading = false
           }
           if (!this.checkErrors) {
-            let result = await this.$store.dispatch('order/placeQuote', { status: 'Quote placed', email: this.email })
+            let result = await this.$store.dispatch('order/placeQuote', { status: 'Quote placed', email: this.email, subtotal: this.subtotal })
             if (result) {
               this.isLoading = false
               this.showError = false

@@ -6,8 +6,8 @@
         <div class="column"></div>
         <div class="column">
           <form v-on:submit.prevent>
-            <b-message>
-              Please type your E-mail below to get a link to restore your password
+            <b-message :class="email_type">
+              {{ formEmail }}
             </b-message>
             <b-field label="Email"
                 :type="email_type"
@@ -15,7 +15,7 @@
                 <b-input placeholder="Email"
                     icon="email"
                     :value="email"
-                    v-model="formEmail">
+                    v-model="email">
                 </b-input>
             </b-field>
             <b-field>
@@ -42,13 +42,14 @@
         email_message: '',
         email: '',
         formError: null,
-        formEmail: '',
+        formEmail: 'Please type your E-mail below to get a link to restore your password',
         showError: false
       }
     },
     methods: {
       async forgotPassword () {
-        let err = await this.$store.dispatch('validation/validateMail', { value: this.formEmail })
+        // console.log(this.email)
+        let err = await this.$store.dispatch('validation/validateMail', { value: this.email })
         if (err !== '') {
           this.email_type = 'is-danger'
           this.email_message = err
@@ -57,13 +58,16 @@
         this.email_type = ''
         this.email_message = ''
         let forgotPassword = await this.$store.dispatch('account/forgotPassword', {
-          email: this.formEmail
+          email: this.email
         })
         if (forgotPassword) {
-          this.formEmail = 'An email was send with the password reset link to ' + this.formEmail
+          this.email_type = ''
+          this.formEmail = 'An email was send with the password reset link to ' + this.email
           this.showError = true
+          this.email = ''
         } else {
-          this.formError = 'Unexpected error: Could not send password reset link'
+          this.email_type = 'is-danger'
+          this.formEmail = 'Unexpected error: Could not send password reset link'
           this.showError = true
         }
       }

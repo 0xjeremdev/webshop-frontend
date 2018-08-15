@@ -163,7 +163,8 @@ export const actions = {
       await axios.post(rootState.apiUrl + '/recovery/auth/reset/request', { email: email })
       return true
     } catch (error) {
-      throw new Error('Email was send to ' + email)
+      console.log(error)
+      return false
     }
   }
 }

@@ -49,14 +49,34 @@
                     <th class="th-wrap">ID</th>
                     <th class="th-wrap">Name</th>
                     <th class="th-wrap">Amount</th>
-                    <th class="th-wrap">Price</th>
+                    <th class="th-wrap" width="15%">Price</th>
                   </tr>
                 </thead>
                 <tfoot>
                   <tr>
                     <td class="th-wrap"></td>
                     <td colspan="2" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
-                    <td class="th-wrap"><strong>€ {{ parseFloat(subtotal).toFixed(2) }}</strong></td>
+                    <td width="15%" class="th-wrap has-text-right"><strong>€ {{ parseFloat(subtotal).toFixed(2) }}</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="th-wrap"></td>
+                    <td colspan="2" class="th-wrap has-text-right">Shipping Costs (ex. VAT):</td>
+                    <td width="15%" class="th-wrap has-text-right">€ {{ parseFloat(order.shippingcosts).toFixed(2) }}</td>
+                  </tr>
+                  <tr>
+                    <td class="th-wrap"></td>
+                    <td colspan="2" class="th-wrap has-text-right"><strong>Total (ex. VAT):</strong></td>
+                    <td width="15%" class="th-wrap has-text-right"><strong>€ {{ parseFloat(order.shippingtotal).toFixed(2) }}</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="th-wrap"></td>
+                    <td colspan="2" class="th-wrap has-text-right">VAT: {{ (order.vat) ? `(${order.vat}%)` : '' }}</td>
+                    <td width="15%" class="th-wrap has-text-right">€ {{ parseFloat(order.vatamount).toFixed(2) }}</td>
+                  </tr>
+                  <tr>
+                    <td class="th-wrap"></td>
+                    <td colspan="2" class="th-wrap has-text-right"><strong>Total (incl. VAT):</strong></td>
+                    <td width="15%" class="th-wrap has-text-right"><strong>€ {{ parseFloat(order.total).toFixed(2) }}</strong></td>
                   </tr>
                 </tfoot>
                 <tbody>

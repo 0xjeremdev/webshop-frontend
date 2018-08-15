@@ -14,34 +14,34 @@
                 <th class="th-wrap">ID</th>
                 <th class="th-wrap">Name</th>
                 <th class="th-wrap has-text-right">Amount</th>
-                <th class="th-wrap has-text-right">Price</th>
+                <th width="20%" class="th-wrap has-text-right">Price</th>
               </tr>
             </thead>
             <tfoot>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
                 <td colspan="2" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
-                <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(subtotal).toFixed(2) }}</strong></td>
+                <td width="20%" class="th-wrap has-text-right"><strong>€ {{ parseFloat(subtotal).toFixed(2) }}</strong></td>
               </tr>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
                 <td colspan="2" class="th-wrap has-text-right">Shipping Costs (ex. VAT):</td>
-                <td class="th-wrap has-text-right">€ {{ parseFloat(shippingcosts).toFixed(2) }}</td>
+                <td width="20%" class="th-wrap has-text-right">€ {{ parseFloat(shippingcosts).toFixed(2) }}</td>
               </tr>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
                 <td colspan="2" class="th-wrap has-text-right"><strong>Total (ex. VAT):</strong></td>
-                <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(shippingtotal).toFixed(2) }}</strong></td>
+                <td width="20%" class="th-wrap has-text-right"><strong>€ {{ parseFloat(shippingtotal).toFixed(2) }}</strong></td>
               </tr>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
                 <td colspan="2" class="th-wrap has-text-right">VAT ({{ vat }}%):</td>
-                <td class="th-wrap has-text-right">€ {{ parseFloat(vatamount).toFixed(2) }}</td>
+                <td width="20%" class="th-wrap has-text-right">€ {{ parseFloat(vatamount).toFixed(2) }}</td>
               </tr>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
                 <td colspan="2" class="th-wrap has-text-right"><strong>Total (inc. VAT):</strong></td>
-                <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(total).toFixed(2) }}</strong></td>
+                <td width="20%" class="th-wrap has-text-right"><strong>€ {{ parseFloat(total).toFixed(2) }}</strong></td>
               </tr>
             </tfoot>
             <tbody>
@@ -49,7 +49,7 @@
                 <td>{{ value.id }}</td>
                 <td>{{ value.name }}</td>
                 <td class="has-text-right">{{ value.amount }}</td>
-                <td class="has-text-right">€ {{ (parseFloat(value.price ) * Number(value.amount)).toFixed(2) }}</td>
+                <td width="20%" class="has-text-right">€ {{ (parseFloat(value.price ) * Number(value.amount)).toFixed(2) }}</td>
               </tr>
             </tbody>
           </table>
@@ -141,42 +141,48 @@
       }
     },
     async asyncData ({ store, error, app: { $cookies } }) {
-      if (!(store.state.order.address instanceof Object)) {
+      try {
+        // if (!(store.state.order.address instanceof Object)) {
         store.commit('order/SET_ADDRESS', $cookies.get('key2publish').order.address)
         store.commit('order/SET_BILLING', $cookies.get('key2publish').order.billing)
         store.commit('order/SET_CUSTOMER', $cookies.get('key2publish').order.customer)
-      }
-      store.dispatch('getSettings')
-      let cart = store.state.cart.cartContents
-      await store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
-      let condition = 'RT'
-      cart = store.state.cart.cartContents
-      for (let v = 0; v < cart.length; v++) {
-        if (cart[v]['shipping'] === 'DRY ICE') {
-          condition = cart[v]['shipping']
-          break
+        // }
+        store.dispatch('getSettings')
+
+        let cart = store.state.cart.cartContents
+        await store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
+        let condition = 'RT'
+        cart = store.state.cart.cartContents
+        for (let v = 0; v < cart.length; v++) {
+          if (cart[v]['shipping'] === 'DRY ICE') {
+            condition = cart[v]['shipping']
+            break
+          }
+          if (cart[v]['shipping'] === 'ICE') {
+            condition = cart[v]['shipping']
+          }
         }
-        if (cart[v]['shipping'] === 'ICE') {
-          condition = cart[v]['shipping']
+        // let costs = await store.dispatch('order/getShippingCosts', { condition: condition }, { root: true })
+        let zonecosts = await store.dispatch('order/getZoneCosts', { cc: store.state.order.address.country }, { root: true })
+        // console.log(zonecosts['result']['_result'])
+        zonecosts = zonecosts['result']['_result'][0]['price'][condition]
+        // console.log(parseFloat(zonecosts))
+        // if (zonecosts['result'] !== undefined && zonecosts['result']['_result'].length > 0) zonecosts = zonecosts['result']['_result'][0]
+        // if (zonecosts['result'] === undefined || zonecosts['result']['_result'].length <= 0) error({ 'statusCode': 500, 'message': 'An unexpected error occured' })
+        var subtotal = 0
+        for (let key in cart) {
+          subtotal += parseFloat(cart[key].price) * Number(cart[key].amount)
         }
+        let shippingcosts = parseFloat(zonecosts)
+        let shippingtotal = subtotal + shippingcosts
+        let vatamount = (store.state.settings.VAT / 100) * shippingtotal
+        let total = shippingtotal + vatamount
+        let idealData = await store.dispatch('payment/getIdealData')
+        return { cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total, idealData: idealData }
+      } catch (e) {
+        console.log(e)
+        error({ 'statusCode': 500, 'message': 'Unexpected error occured, please contact our support team' })
       }
-      // let costs = await store.dispatch('order/getShippingCosts', { condition: condition }, { root: true })
-      let zonecosts = await store.dispatch('order/getZoneCosts', { cc: store.state.order.address.country }, { root: true })
-      // console.log(zonecosts['result']['_result'])
-      zonecosts = zonecosts['result']['_result'][0]['price'][condition]
-      // console.log(parseFloat(zonecosts))
-      // if (zonecosts['result'] !== undefined && zonecosts['result']['_result'].length > 0) zonecosts = zonecosts['result']['_result'][0]
-      // if (zonecosts['result'] === undefined || zonecosts['result']['_result'].length <= 0) error({ 'statusCode': 500, 'message': 'An unexpected error occured' })
-      var subtotal = 0
-      for (let key in cart) {
-        subtotal += parseFloat(cart[key].price) * Number(cart[key].amount)
-      }
-      let shippingcosts = parseFloat(zonecosts)
-      let shippingtotal = subtotal + shippingcosts
-      let vatamount = (store.state.settings.VAT / 100) * shippingtotal
-      let total = shippingtotal + vatamount
-      let idealData = await store.dispatch('payment/getIdealData')
-      return { cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total, idealData: idealData }
     },
     methods: {
       placeOrder () {

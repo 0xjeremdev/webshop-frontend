@@ -1,10 +1,9 @@
 import Cookies from 'js-cookie'
 
 export const state = () => ({
-  data: {},
   customer: {},
-  address: '',
-  billing: '',
+  address: {},
+  billing: {},
   fromQuote: false,
   countryList: {}
 })
@@ -12,9 +11,6 @@ export const state = () => ({
 export const mutations = {
   SET_COUNTRYLIST: function (state, value) {
     state.countryList = value
-  },
-  SET_DATA: function (state, value) {
-    state.data = value
   },
   SET_CUSTOMER: function (state, value) {
     state.customer = value
@@ -46,7 +42,7 @@ export const actions = {
       return e
     }
   },
-  async placeOrder ({ commit, state, rootState }, { status }) {
+  async placeOrder ({ commit, state, rootState }, { orderData }) {
     try {
       let postData = {
         delivery: state.address,
@@ -54,8 +50,15 @@ export const actions = {
         customer: state.customer,
         items: rootState.cart.cartContents,
         from_quote: (state.fromQuote) ? state.fromQuote : false,
-        status: status
+        status: orderData.status,
+        total: orderData.total,
+        subtotal: orderData.subtotal,
+        vatamount: orderData.vatamount,
+        shippingtotal: orderData.shippingtotal,
+        shippingcosts: orderData.shippingcosts,
+        vat: orderData.vat
       }
+      console.log(postData)
       await this.$axios.$post(rootState.apiUrl + '/order', postData, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
       return true
     } catch (e) {
@@ -63,7 +66,7 @@ export const actions = {
       return false
     }
   },
-  async placeQuote ({ commit, state, rootState }, { status, email }) {
+  async placeQuote ({ commit, state, rootState }, { status, email, subtotal }) {
     try {
       let postData = {
         // delivery: state.address,
@@ -72,7 +75,8 @@ export const actions = {
         quote_email: email,
         items: rootState.cart.cartContents,
         from_quote: true,
-        status: status
+        status: status,
+        subtotal: subtotal
       }
       console.log(postData)
       await this.$axios.$post(rootState.apiUrl + '/quote', postData, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
