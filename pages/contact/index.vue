@@ -1,10 +1,8 @@
 <template>
   <section class="section">
-    <div class="container">
       <breadCrumb></breadCrumb>
       <div class="columns">
-        <div class="column"></div>
-        <div class="column is-one-third">
+        <div class="column">
           <h1 class="title">Contact Us</h1>
           <b-message :type="(wasSend) ? 'is-success' : 'is-danger'" has-icon :title="(wasSend) ? 'Success' : 'An error has occured'" :active.sync="showError">
             {{ formError }}
@@ -29,6 +27,9 @@
             <b-field label="Message" :type="(typeof message.formMessage !== 'undefined' && message.formMessage !== '') ? 'is-danger' : ''" :message="message.formMessage">
               <b-input type="textarea" :value="formMessage" autocomplete="message" @blur="validate($event.srcElement.value, 'formMessage', 'field')" placeholder="Type your question/message"></b-input>
             </b-field>
+            <b-field>
+              <b-checkbox v-model="formNewsletter">Signup for the monthly newsletter</b-checkbox>
+            </b-field>
             <vue-recaptcha ref="recaptcha"
               @verify="onVerify"
               sitekey="6Lf0WGQUAAAAAIuDsIZZ1yfdTduM1YcX5nglDyjZ">
@@ -37,12 +38,10 @@
             <button type="submit" class="button is-orange">Submit</button>
           </form>
         </div>
-        <div class="column is-one-third">
+        <div class="column">
           <contactinfo :info="info"></contactinfo>
         </div>
-        <div class="column"></div>
       </div>
-    </div>
   </section>
 </template>
 
@@ -68,6 +67,7 @@
         formFirstname: '',
         formLastname: '',
         formTitle: null,
+        formNewsletter: false,
         message: {},
         formError: 'There are errors, please correct them to contact us',
         showError: false,
@@ -155,6 +155,7 @@
             lastname: (this.formLastname !== undefined) ? this.formLastname : '',
             email: (this.formEmail !== undefined) ? this.formEmail : '',
             message: (this.formMessage !== undefined) ? this.formMessage : '',
+            newsletter: (this.formNewsletter !== undefined) ? this.formNewsletter : false,
             recaptchaToken: (this.recaptchaToken !== undefined) ? this.recaptchaToken : ''
           }
           await this.$axios.$post(this.$store.state.apiUrl + '/contact', data)
@@ -162,7 +163,6 @@
           this.formError = 'We have received your contact form successfully, it may take up to two working days before your receive an answer'
           this.isLoading = false
           this.showError = true
-          console.log('Success')
         } catch (e) {
           this.formError = 'Unexpected Error occured'
           this.showError = true

@@ -284,7 +284,7 @@
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
             let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in Customer FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } } */
-            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/customer/' + routeParams.key)
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/customer/' + routeParams.key, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             // console.log(data)
             this.productData = data['result']['_result'][0]
             // this.productData.birthdate = new Date(this.productData.birthdate)
@@ -377,9 +377,9 @@
             // console.log(postData)
             let data = ''
             if (!this.isNew) {
-              data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/customer', postData)
+              data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/customer', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             } else {
-              data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/customer', postData)
+              data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/customer', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             }
             console.log(data)
             this.isLoading = false

@@ -177,7 +177,7 @@
             this.isLoading = false
           }
           if (!this.checkErrors) {
-            // await this.$store.dispatch('account/saveAddress', { address: this.address })
+            await this.$store.dispatch('account/saveAddress', { address: this.address }, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             // await this.$axios.$push()
             this.isLoading = false
             this.showError = false

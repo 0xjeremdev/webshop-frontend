@@ -141,7 +141,7 @@ export const actions = {
 
   async register ({ commit, rootState }, { regData }) {
     try {
-      console.log(regData)
+      // console.log(regData)
       if (regData.vatno === undefined) regData.vatno = ''
       if (regData.company === undefined) regData.company = ''
       if (regData.phone === undefined) regData.phone = ''
@@ -159,11 +159,40 @@ export const actions = {
 
   async forgotPassword ({ rootState }, { email }) {
     try {
-      console.log(email)
       await axios.post(rootState.apiUrl + '/recovery/auth/reset/request', { email: email })
       return true
     } catch (error) {
       console.log(error)
+      return false
+    }
+  },
+
+  async verifyPasswordByToken ({ rootState }, { token }) {
+    try {
+      await axios.post(rootState.apiUrl + '/recovery/auth/reset/verifytoken', { token: token })
+      return true
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  },
+
+  async resetPasswordByToken ({ rootState }, { token, password }) {
+    try {
+      await axios.post(rootState.apiUrl + '/recovery/auth/reset', { token: token, password: password })
+      return true
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  },
+
+  async deleteAccount ({ rootState, state }) {
+    try {
+      await axios.delete(rootState.apiUrl + '/customer', { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+      return true
+    } catch (e) {
+      console.log(e)
       return false
     }
   }

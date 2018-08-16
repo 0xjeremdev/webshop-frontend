@@ -54,7 +54,7 @@
         <b-table-column v-for="key in columns"  v-bind:data="key"
            v-bind:key="key.text" :field="key" :label="key|capitalize" sortable width="150">
             <span v-if="((data.row.hasOwnProperty(key)) && (types[key] === 'string'))">{{ data.row[key] }}</span>
-            <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'combined'))">{{ data.row[key] }}</span>            
+            <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'combined'))">{{ data.row[key] }}</span>
             <span v-else-if="data.row.hasOwnProperty('basic')">{{ data.row.basic[key] }}</span>
             <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'date'))" class="tag is-success">{{ new Date(data.row[key]).toLocaleDateString('nl-NL', options ) }}</span>
             <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'boolean'))"><b-icon :icon="getIcon(data.row[key])"></b-icon></span>
@@ -165,7 +165,7 @@
           if (!(this.$store.state.authUser instanceof Object)) {
             this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
           }
-          this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
+          // this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
           let codes = '['
           let count = 0
           if (withCheckbox) {
@@ -183,7 +183,7 @@
             query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p IN ' + this.tableName + ' FILTER p._key == @key REMOVE { _key: p._key } IN ' + this.tableName + ' OPTIONS { waitForSync: true }', bindVars: { 'key': row._key } }
           }
           console.log(query)
-          await this.$axios.$post(this.postUrl + '/_api/cursor', query)
+          await this.$axios.$post(this.postUrl + '/_api/cursor', query, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           await this.loadAsyncData()
           this.$toast.open('Deleted ' + this.type)
         } catch (e) {
@@ -234,7 +234,7 @@
             if (this.customLookup === undefined) { customLookup = '' }
             executedQuery['query'] = 'FOR p IN ' + this.tableName + customLookup + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.perPage * (this.currentPage - 1)) + ', ' + this.perPage + returnStatement
             console.log(executedQuery)
-            let data = await this.$axios.$post(this.postUrl + '/_api/cursor', executedQuery)
+            let data = await this.$axios.$post(this.postUrl + '/_api/cursor', executedQuery, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             console.log(data)
             if (data['result'][0] instanceof Object) {
               this.data = data['result']

@@ -190,10 +190,10 @@
           let data
           if (withCheckbox) {
             console.log(this.apiUrl + '/admin/' + this.type + '/delete')
-            data = await this.$axios.$post(this.apiUrl + '/admin/' + this.type + '/delete', {id: codes})
+            data = await this.$axios.$post(this.apiUrl + '/admin/' + this.type + '/delete', {id: codes}, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           } else {
             console.log(this.apiUrl + '/admin/' + this.type + '/' + row._key)
-            data = await this.$axios.$delete(this.apiUrl + '/admin/' + this.type + '/' + row._key)
+            data = await this.$axios.$delete(this.apiUrl + '/admin/' + this.type + '/' + row._key, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           }
 
           console.log(data['_result'])
@@ -262,7 +262,7 @@
             queryString += searchFilter
 
             console.log(this.apiUrl + '/' + this.type + queryString)
-            let data = await this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString)
+            let data = await this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             console.log(data)
             if (data['result']['_result'][0] instanceof Object) {
               this.data = data['result']['_result']
