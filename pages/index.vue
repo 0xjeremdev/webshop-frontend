@@ -6,10 +6,14 @@
       <Banner></Banner>
       </div>
       <div class="column">
-        <search :expanded="true"></search>
-        <br/>
-        <contactinfo :info="info"></contactinfo>
-        <social></social>
+        <div class="columns">
+          <div class="column is-three-quarters">
+            <search :expanded="true"></search>
+          </div>
+          <div class="column">
+            <social></social>
+          </div>
+        </div>
       </div>
     </div>
   </section>

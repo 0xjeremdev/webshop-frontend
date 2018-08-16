@@ -9,7 +9,7 @@
       :paginationEnabled="false">
       <Slide v-for="(img, index) in images" :key="index">
         <div class="my-overlay">
-          <img :src="apiUrl + '/img/' + img" alt="Image1" />
+          <img :src="apiUrl + '/img/banner/' + img" alt="Image1" />
         </div>
       </Slide>
       <!-- <Slide>

@@ -25,10 +25,12 @@
           <br />
           <div class="columns is-mobile">
             <div class="column">
-              <img class="my-img" src="https://wikiki.github.io/images/merry-christmas.jpg" />
+              <img v-if="product.basic.image" class="my-img" :src="apiUrl + '/img/product/' + product.basic.image" alt="Image1" />
+              <!-- <img class="my-img" src="https://wikiki.github.io/images/merry-christmas.jpg" /> -->
             </div>
             <div class="column">
-              <img class="my-img" src="https://wikiki.github.io/images/singer.jpg" />
+              <img v-if="product.basic.price" class="my-img" :src="apiUrl + '/img/product/' + product.basic.price" alt="Image2" />
+              <!-- <img class="my-img" src="https://wikiki.github.io/images/singer.jpg" /> -->
             </div>
           </div>
           </div>
@@ -86,6 +88,7 @@
     },
     data () {
       return {
+        apiUrl: this.$store.state.apiUrl,
         product: {},
         fields: {
           'Product Information': {
@@ -356,7 +359,7 @@
         }
       },
       showPDF (id) {
-
+        window.open(this.apiUrl + '/img/pdf/' + id + '.pdf', '_blank')
       }
     }
   }

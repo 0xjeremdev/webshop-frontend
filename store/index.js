@@ -114,6 +114,6 @@ export const actions = {
 
   async logout ({ commit }) {
     await commit('SET_USER', null)
-    console.log('logged out')
+    // console.log('logged out')
   }
 }
