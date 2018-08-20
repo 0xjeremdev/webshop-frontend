@@ -49,7 +49,7 @@
             <b-select expanded v-else-if="val.inputType === 'dropdown_country'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
               <option v-for="option in countryList" :key="option.code" :value="option.code">{{ option.name }}</option>
             </b-select>
-            <imageControl v-else-if="val.inputType === 'imageUpload'" :image="productData[fieldKey]" type="banner"></imageControl>
+            <imageControl v-else-if="val.inputType === 'imageUpload'" :image="productData[fieldKey]" :type="val.type"></imageControl>
             <div v-else-if="val.inputType === 'tableInput'">
               <table v-if="productData[fieldKey]" class="table">
                 <thead>
@@ -147,7 +147,13 @@
           'Banner': {
             'banner_upload_images': {
               'inputType': 'imageUpload',
-              'label': 'Upload Images'
+              'label': 'Banner',
+              'type': 'banner'
+            },
+            'banner2_upload_images': {
+              'inputType': 'imageUpload',
+              'label': 'Banner 2',
+              'type': 'banner2'
             },
             icon: 'file-image'
           },
@@ -307,6 +313,11 @@
               'inputType': 'input',
               'label': 'Return Cancel URL'
             },
+            'payment_logos': {
+              'inputType': 'imageUpload',
+              'label': 'Payment Logos',
+              'type': 'paymentlogos'
+            },
             icon: 'credit-card'
           },
           'Social': {
@@ -414,7 +425,7 @@
             payment_ReturnURLReject: (this.productData.payment_ReturnURLReject !== undefined) ? this.productData.payment_ReturnURLReject : '',
             payment_ReturnURLCancel: (this.productData.payment_ReturnURLCancel !== undefined) ? this.productData.payment_ReturnURLCancel : ''
           }
-          let data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/config', postData)
+          let data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/config', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           console.log(data)
           this.isLoading = false
           this.$toast.open('Saved')

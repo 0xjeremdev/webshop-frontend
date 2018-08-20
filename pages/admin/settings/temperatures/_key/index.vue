@@ -175,7 +175,7 @@
           if (routeParams instanceof Object && routeParams.key !== 'new') {
             // this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
 
-            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/temperature/' + routeParams.key)
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/temperature/' + routeParams.key, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             console.log(data)
             this.productData = data['result']['_result'][0]
             this.isNew = false
@@ -253,9 +253,9 @@
             // TODO: CHECK IF this.productData complies with fields before saving (this is necessary when isNew is True)
             let data = ''
             if (!this.isNew) {
-              data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/temperature', postData)
+              data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/temperature', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             } else {
-              data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/temperature', postData)
+              data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/temperature', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             }
             console.log(data)
             this.isLoading = false

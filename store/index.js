@@ -14,7 +14,9 @@ export const state = () => ({
   cookieAccepted: false,
   isLoading: false,
   settings: {},
-  rememberLink: ''
+  rememberLink: '',
+  navbarLinks: '',
+  footerLinks: ''
 })
 
 export const mutations = {
@@ -32,14 +34,28 @@ export const mutations = {
   },
   SET_REMEMBERLINK: function (state, value) {
     state.rememberLink = value
+  },
+  SET_NAVBARLINKS: function (state, value) {
+    state.navbarLinks = value
+  },
+  SET_FOOTERLINKS: function (state, value) {
+    state.footerLinks = value
   }
 }
 export const actions = {
   // nuxtServerInit is called by Nuxt.js before server-rendering every page
-  nuxtServerInit ({ commit }, { req }) {
-    if (req.session && req.session.authUser) {
-      // console.log(req.session)
-      // commit('SET_USER', req.session.authUser)
+  async nuxtServerInit ({ commit, state }, { req }) {
+    try {
+      let navbar = await axios.get(state.apiUrl + '/navbar/navbar')
+      if (navbar.data.result._result !== undefined) commit('SET_NAVBARLINKS', navbar.data.result._result)
+      let footer = await axios.get(state.apiUrl + '/navbar/footer')
+      if (footer.data.result._result !== undefined) commit('SET_FOOTERLINKS', footer.data.result._result)
+      if (req.session && req.session.authUser) {
+        // console.log(req.session)
+        // commit('SET_USER', req.session.authUser)
+      }
+    } catch (e) {
+      console.log(e)
     }
   },
   // deprecated

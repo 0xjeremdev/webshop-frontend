@@ -3,7 +3,7 @@
     <div class="columns">
       <div class="column">
         <br/>
-      <Banner></Banner>
+      <Banner type="banner"></Banner>
       </div>
       <div class="column">
         <div class="columns">
@@ -14,6 +14,8 @@
             <social></social>
           </div>
         </div>
+        <Banner type="banner2"></Banner>
+        <Banner type="paymentlogos"></Banner>
       </div>
     </div>
   </section>

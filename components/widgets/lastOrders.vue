@@ -60,7 +60,7 @@ export default {
         }
         this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer') */
 
-        let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/widgets/lastorders')
+        let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/widgets/lastorders', { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
         console.log(data)
         if (data.status === 200) {
           this.orderData = data['result']['_result']

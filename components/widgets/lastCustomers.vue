@@ -55,7 +55,7 @@ export default {
       try {
         this.isLoading = true
         // get user token
-        let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/widgets/lastcustomers', '')
+        let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/widgets/lastcustomers', { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
         console.log(data['result'])
         this.customerData = data['result']['_result']
         if (!(data['result']['_result'][0] instanceof Object)) {

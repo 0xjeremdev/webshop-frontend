@@ -9,7 +9,7 @@
       :paginationEnabled="false">
       <Slide v-for="(img, index) in images" :key="index">
         <div class="my-overlay">
-          <img :src="apiUrl + '/img/banner/' + img" alt="Image1" />
+          <img :src="apiUrl + '/img/' + type + '/' + img" alt="Image1" />
         </div>
       </Slide>
       <!-- <Slide>
@@ -27,9 +27,12 @@
 
   export default {
     components: { Carousel, Slide },
+    props: {
+      type: String
+    },
     data () {
       return {
-        images: this.$store.state.settings.banner_upload_images,
+        images: this.$store.state.settings[this.type],
         apiUrl: this.$store.state.apiUrl
       }
     }

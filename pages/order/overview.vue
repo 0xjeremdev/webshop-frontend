@@ -57,13 +57,16 @@
         </div>
         <div class="column">
           <h2 class="subtitle">Payment Methods</h2>
-          <div class="field" v-for="value in paymentMethods">
-            <b-radio v-model="paymentMethod"
-              :native-value="value.code" @input="setPaymentMethod($event)">
-              {{ value.name }} <span v-if="value.price > 0"> (+ € {{ parseFloat(value.price).toFixed(2) }})</span>
+          <div class="field" v-for="(value, key) in payment_options" :key="key" v-if="value">
+            <b-radio v-if="key === 'Bank Transfer' && customer['allow_banktransfer']" v-model="paymentMethod"
+              :native-value="key" @input="setPaymentMethod($event)">
+              {{ key }}
             </b-radio>
-
-            <b-field label="Select your Bank" v-if="paymentMethod === 'iDeal' && value.code === 'iDeal'" v-for="(val, index) in idealData" :key="index">
+            <b-radio v-else-if="key !== 'Bank Transfer'" v-model="paymentMethod"
+              :native-value="key" @input="setPaymentMethod($event)">
+              {{ key }}
+            </b-radio>
+            <b-field label="Select your Bank" v-if="paymentMethod === 'iDeal' && key === 'iDeal'" v-for="(val, index) in idealData" :key="index">
               <b-select v-model="selectedBank" expanded placeholder="Select your bank" @input="setIdeal($event)">
                 <option
                   v-for="bank in val.ListItemDescriptions"
@@ -120,6 +123,8 @@
         vatamount: 0,
         total: 0,
         vat: this.$store.state.settings.VAT,
+        customer: {},
+        payment_options: [],
         paymentMethods: [
           {
             code: 'paypal',
@@ -178,7 +183,9 @@
         let vatamount = (store.state.settings.VAT / 100) * shippingtotal
         let total = shippingtotal + vatamount
         let idealData = await store.dispatch('payment/getIdealData')
-        return { cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total, idealData: idealData }
+        let customerData = await store.dispatch('account/getCustomerByToken')
+        console.log(customerData)
+        return { customer: customerData.data.result._result[0], payment_options: store.state.settings.payment_options, cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total, idealData: idealData }
       } catch (e) {
         console.log(e)
         error({ 'statusCode': 500, 'message': 'Unexpected error occured, please contact our support team' })
@@ -210,7 +217,7 @@
         try {
           this.showError = false
           this.paymentMethod = value
-          if (value === 'paypal') {
+          if (value === 'PayPal') {
             let payment = {
               'Currency': 'EUR',
               'AmountDebit': parseFloat(this.total).toFixed(2),
@@ -236,7 +243,7 @@
               this.serviceLink = service.result.RequiredAction.RedirectURL
             }
           }
-          if (value === 'bank') {
+          if (value === 'Bank Transfer') {
             this.serviceLink = '/order/done'
           }
         } catch (e) {

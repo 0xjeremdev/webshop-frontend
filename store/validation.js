@@ -29,9 +29,12 @@ export const actions = {
       return message
     }
   },
+  async validateNumber ({ commit, state, rootState }, { value }) {
+
+  },
   async validateField ({ commit, state, rootState }, { value }) {
     try {
-      let res = value.match(/<[^>]*>/g)
+      let res = value.toString().match(/<[^>]*>/g)
       let message = ''
 
       if (res !== null && res.length > 0) {
@@ -43,6 +46,7 @@ export const actions = {
 
       return message
     } catch (error) {
+      console.log(error)
       let message = 'Unexpected error occured, while validating'
       return message
     }

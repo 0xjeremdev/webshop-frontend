@@ -19,7 +19,7 @@
     </p>
 
     <figure v-if="myImage && showImage" v-for="(fig) in myImage" class="image is-128x128">
-      <img @click="setImageModalActive(fig)" :src="imageUrl + '/img/' + fig"  @error="imageLoadError">
+      <img @click="setImageModalActive(fig)" :src="imageUrl + '/img/' + type + '/' + fig"  @error="imageLoadError">
     </figure>
 
     <div class="tags">
@@ -127,9 +127,11 @@
               this.progress = percentCompleted
             }.bind(this)
           }
+          postData.append('type', this.type)
+          // console.log(postData)
           // this.$axios.get(this.$store.state.apiUrl + '/admin/settings')
           let data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/upload', postData, config)
-          console.log(data)
+          // console.log(data)
           this.myImage = data.result
           for (let v = 0; v < this.myImage.length; v++) {
             this.imageModelActive[this.myImage[v]] = false

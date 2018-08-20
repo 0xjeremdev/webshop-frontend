@@ -52,7 +52,7 @@
                 :readonly="false">
             </b-datepicker>
             <b-select v-else-if="val.inputType === 'dropdown'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
-                  <option v-for="option in val.options" :key="option" :value="option">{{ option }}</option>
+                  <option v-for="option in val.options" :key="option.code" :value="option.code">{{ option.name }}</option>
             </b-select>
             <span v-else-if="val.inputType === 'readonly'">{{ productData[fieldKey] }}</span>
             <b-input v-else value="Could not load this type"></b-input>
@@ -68,27 +68,27 @@
                 <tr>
                   <td class="th-wrap">&nbsp;</td>
                   <td colspan="3" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
-                  <td class="th-wrap has-text-right"><strong>€ {{ productData.subtotal }}</strong></td>
+                  <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(productData.subtotal).toFixed(2) }}</strong></td>
                 </tr>
                 <tr>
                   <td class="th-wrap">&nbsp;</td>
                   <td colspan="3" class="th-wrap has-text-right">Shipping Costs (ex. VAT):</td>
-                  <td class="th-wrap has-text-right">€ {{ productData.shippingcosts }}</td>
+                  <td class="th-wrap has-text-right">€ {{ parseFloat(productData.shippingcosts).toFixed(2) }}</td>
                 </tr>
                 <tr>
                   <td class="th-wrap">&nbsp;</td>
                   <td colspan="3" class="th-wrap has-text-right"><strong>Total (ex. VAT):</strong></td>
-                  <td class="th-wrap has-text-right"><strong>€ {{ productData.shippingtotal }}</strong></td>
+                  <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(productData.shippingtotal).toFixed(2) }}</strong></td>
                 </tr>
                 <tr>
                   <td class="th-wrap">&nbsp;</td>
-                  <td colspan="3" class="th-wrap has-text-right">VAT:</td>
-                  <td class="th-wrap has-text-right">€ {{ productData.vat }}</td>
+                  <td colspan="3" class="th-wrap has-text-right">VAT {{ (productData.vat) ? `(${productData.vat}%)`: '' }}:</td>
+                  <td class="th-wrap has-text-right">€ {{ parseFloat(productData.vatamount).toFixed(2) }}</td>
                 </tr>
                 <tr>
                   <td class="th-wrap">&nbsp;</td>
                   <td colspan="3" class="th-wrap has-text-right"><strong>Total (inc. VAT):</strong></td>
-                  <td class="th-wrap has-text-right"><strong>€ {{ productData.total }}</strong></td>
+                  <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(productData.total).toFixed(2) }}</strong></td>
                 </tr>
               </tfoot>
               <tbody>
@@ -319,6 +319,7 @@
       }
     },
     async created () {
+      await this.getCountryList()
       await this.getData()
     },
     validate ({ params }) {
@@ -446,6 +447,16 @@
       setCheckbox (val, fieldKey, tabKey) {
         this.productData[fieldKey] = !val
       },
+      async getCountryList () {
+        try {
+          let countryList = await this.$store.dispatch('order/getCountryList')
+          this.fields.Billing.country.options = countryList
+          this.fields.Delivery.country.options = countryList
+        } catch (e) {
+          console.log(e)
+          this.$toast.open('Could not load country list data')
+        }
+      },
       async getData () {
         try {
           this.isLoading = true
@@ -455,8 +466,8 @@
             if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
-            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/order/' + routeParams.key)
-            console.log(data)
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/order/' + routeParams.key, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+
             this.productData = data['result']['_result'][0]
             this.productData.order_date = new Date(this.productData.order_date)
             this.productData.quote_date = new Date(this.productData.quote_date)
@@ -488,7 +499,7 @@
           }
           // validation necessary
           let postData = this.productData
-          let data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/order', postData)
+          let data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/order', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           console.log(data)
           // this.testData = data['result']
           this.isLoading = false

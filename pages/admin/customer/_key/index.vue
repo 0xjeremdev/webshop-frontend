@@ -219,8 +219,8 @@
           try {
             let messages = this.message
             for (var mes in messages) {
-              console.log(mes)
-              if (mes !== '') {
+              // console.log(mes + ' - ' + this.message[mes])
+              if (this.message[mes] !== '') {
                 return true
               }
             }
@@ -332,6 +332,7 @@
 
         this.message = '' // hack to let two way binding work if a key in an object has changed
         this.message = messages
+        // console.log(this.message)
         this.productData[fld] = value
       },
       async saveData () {
@@ -346,15 +347,17 @@
           this.validate(this.productData.fax, 'fax', 'field')
           this.validate(this.productData.mobile, 'mobile', 'field')
           this.validate(this.productData.state, 'state', 'select')
-          if (this.productData.password !== '') this.validate(this.productData.password, 'password', 'password')
-          if (this.productData.repeat_password !== '') this.validate(this.productData.repeat_password, 'repeat_password', 'repeatPassword')
-          if (this.productData.your_password !== '') this.validate(this.productData.your_password, 'your_password', 'password')
+
+          if (this.productData.password !== undefined && this.productData.password !== '') this.validate(this.productData.password, 'password', 'password')
+          if (this.productData.repeat_password !== undefined && this.productData.repeat_password !== '') this.validate(this.productData.repeat_password, 'repeat_password', 'repeatPassword')
+          if (this.productData.your_password !== undefined && this.productData.your_password !== '') this.validate(this.productData.your_password, 'your_password', 'password')
+          console.log(this.checkErrors)
           if (this.checkErrors) {
             this.showError = true
             this.isLoading = false
           }
           if (!this.checkErrors) {
-            // console.log(this.productData)
+            console.log(this.productData)
             let postData = {
               'key': (this.productData._key !== undefined) ? this.productData._key : '',
               'lastname': (this.productData.lastname !== undefined) ? this.productData.lastname : '',
@@ -374,7 +377,7 @@
               'newsletter': (this.productData.newsletter !== undefined) ? this.productData.newsletter : false,
               'active': (this.productData.active !== undefined) ? this.productData.active : ''
             }
-            // console.log(postData)
+            console.log(postData)
             let data = ''
             if (!this.isNew) {
               data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/customer', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })

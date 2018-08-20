@@ -370,7 +370,7 @@
             if (!(this.$store.state.authUser instanceof Object)) {
               this.$store.commit('SET_USER', Cookies.getJSON('key2publish').authUser)
             }
-            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/quote/' + routeParams.key)
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/quote/' + routeParams.key, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             console.log(data)
             this.productData = data['result']['_result'][0]
             this.productData.order_date = new Date(this.productData.order_date)
@@ -403,7 +403,7 @@
           }
           // validation necessary
           let postData = this.productData
-          let data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/quote', postData)
+          let data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/quote', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           console.log(data)
           // this.testData = data['result']
           this.isLoading = false

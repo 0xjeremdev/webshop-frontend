@@ -157,7 +157,7 @@
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
             let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_category FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } }
-            let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query)
+            let data = await this.$axios.$post('http://localhost:8529/_db/key2publish/_api/cursor', query, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             console.log(data)
             this.productData = data['result'][0]
             this.isNew = false
@@ -222,7 +222,7 @@
             }
             // console.log(query)
           }
-          let data = await this.$axios.$post(this.$store.state.productUrl + '/_api/cursor', query)
+          let data = await this.$axios.$post(this.$store.state.productUrl + '/_api/cursor', query, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           console.log(data)
           this.isLoading = false
           this.$toast.open('Saved')

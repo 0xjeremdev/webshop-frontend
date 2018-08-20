@@ -78,7 +78,16 @@ export const actions = {
     return false
   },
 
-  async getCustomer ({ commit, state, rootState }, { id }) {
+  async getCustomerByToken ({ state, rootState }) {
+    try {
+      return await axios.get(rootState.apiUrl + '/customer', { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  },
+
+  async getCustomer ({ state, rootState }, { id }) {
     try {
       const key = id.replace('Customer/', '')
       return await axios.get(rootState.apiUrl + '/customer/' + key, { headers: { Authorization: `Bearer ${state.token.jwt}` } })

@@ -176,13 +176,21 @@
             this.showError = true
             this.isLoading = false
           }
+
           if (!this.checkErrors) {
-            await this.$store.dispatch('account/saveAddress', { address: this.address }, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+            if (this.key === 'new') {
+              // add an address
+              await this.$axios.post(this.$store.state.apiUrl + '/address', this.address, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+            } else {
+              // update an address
+              await this.$axios.put(this.$store.state.apiUrl + '/address', this.address, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+            }
+            // await this.$store.dispatch('admin/address/saveAddress', { address: this.address }, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             // await this.$axios.$push()
             this.isLoading = false
             this.showError = false
             this.$toast.open({ message: 'Saved', type: 'is-success' })
-            this.$router.push('/account/delivery')
+            this.$router.push('/admin/customer/' + this.$route.params.key)
           }
         } catch (e) {
           console.log(e)

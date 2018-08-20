@@ -49,6 +49,10 @@
           <nuxt-link class="navbar-item" to="/search">
             Products
           </nuxt-link>
+          <nuxt-link class="navbar-item" v-for="value in navbarLinks" :key="value.seo.url_slug" :to="'/cms/' + value.seo.url_slug">
+            {{ value.title }}
+          </nuxt-link>
+          <!--
           <nuxt-link class="navbar-item" to="/about-us">
             About Us
           </nuxt-link>
@@ -57,7 +61,7 @@
           </nuxt-link>
           <nuxt-link class="navbar-item" to="/distributors">
             Distributors
-          </nuxt-link>
+          </nuxt-link> -->
           <nuxt-link class="navbar-item" to="/blog">
             Blog
           </nuxt-link>
@@ -75,9 +79,9 @@
     <footer class="footer my-paddings">
       <div class="columns">
         <div class="column">© LabNed.com {{ new Date().getFullYear() }}</div>
-        <div class="column is-two-thirds has-text-centered">
-          | <span v-for="value in supportLinks">
-            <nuxt-link :to="value.link">{{ value.name }}</nuxt-link> |
+        <div v-if="footerLinks.length > 0" class="column is-two-thirds has-text-centered">
+          | <span v-for="value in footerLinks" :key="value.seo.url_slug">
+            <nuxt-link :to="'/cms/' + value.seo.url_slug">{{ value.title }}</nuxt-link> |
           </span>
         </div>
         <div class="column has-text-right">Powered by <a href="https://www.key2publish.com/" target="_new">Key2Publish</a></div>
@@ -92,11 +96,24 @@
   import search from '~/components/widgets/search.vue'
 
   export default {
-    async asyncData ({ store, error }) {
+    data () {
+      return {
+        showNav: false,
+        footerLinks: this.$store.state.footerLinks,
+        navbarLinks: this.$store.state.navbarLinks
+      }
+    },
+    async asyncData ({ store, error, app: { $axios } }) {
       try {
         await store.dispatch('getSettings')
         if (store.state.settings.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
-        return { settings: store.state.settings }
+        // let navbar = await $axios.$get(store.state.apiUrl + '/navbar/navbar')
+        // let footer = await $axios.$get(store.state.apiUrl + '/navbar/footer')
+        // console.log(footer)
+        // console.log('komhier')
+        // let navbarLinks = navbar.result._result
+        // let footerLinks = footer.result._result
+        return { settings: store.state.settings, footerLinks: store.state.footerLinks, navbarLinks: store.state.navbarLinks }
       } catch (e) {
         console.log(e)
         error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
@@ -104,22 +121,6 @@
     },
     middleware: [ 'reloadCookie' ],
     components: { cartWidgets, cookiewall, search },
-    data () {
-      return {
-        showNav: false,
-        supportLinks: [
-          { 'name': 'Technical Faqs', 'link': '/cms/technical-faqs' },
-          { 'name': 'Terms & Conditions', 'link': '/cms/terms-conditions' },
-          { 'name': 'Cookie Statement', 'link': '/cms/cookie-statement' },
-          { 'name': 'Privacy Statement', 'link': '/cms/privacy-statement' },
-          { 'name': 'Disclaimer', 'link': '/cms/disclaimer' }
-        ],
-        companyLinks: [
-          { 'name': 'Protocols', 'link': '/protocols' },
-          { 'name': 'LabNews', 'link': '/blog' }
-        ]
-      }
-    },
     head () {
       return {
         title: 'LabNed.com - Exploring Possibilities'

@@ -18,8 +18,19 @@
         }
       }
     },
+    async asyncData ({ store, params, error, app: { $axios } }) {
+      try {
+        let data = await $axios.$get(store.state.apiUrl + '/page/' + params.index)
+        console.log(data)
+        if (data['result']['_result'].length > 0) return { content: data['result']['_result'][0] }
+        if (data['result']['_result'].length <= 0) error({'statusCode': 404, 'message': 'Page Not Found'})
+      } catch (e) {
+        console.log(e)
+        error({ 'statusCode': 404, 'message': 'Page Not Found' })
+      }
+    },
     async mounted () {
-      await this.getPage()
+      // await this.getPage()
     },
     methods: {
       async getPage () {

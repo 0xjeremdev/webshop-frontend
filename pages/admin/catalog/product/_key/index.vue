@@ -380,7 +380,7 @@
             }
             this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
             let query = { 'options': { 'fullCount': true }, 'count': true, 'query': 'FOR p in k2p_product FILTER p._key == @key RETURN p', bindVars: { 'key': routeParams.key } } */
-            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/product/' + routeParams.key)
+            let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/product/' + routeParams.key, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             console.log(data)
             this.productData = data['result']['_result'][0]
             this.isNew = false
@@ -447,9 +447,9 @@
           console.log(this.productData)
           let data = ''
           if (!this.isNew) {
-            data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/product', { basic: this.productData.basic, seo: this.productData.seo, key: this.productData['_key'] })
+            data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/product', { basic: this.productData.basic, seo: this.productData.seo, key: this.productData['_key'] }, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           } else {
-            data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/product', { basic: this.productData.basic, seo: this.productData.seo, key: this.productData['_key'] })
+            data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/product', { basic: this.productData.basic, seo: this.productData.seo, key: this.productData['_key'] }, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           }
 
           console.log(data)

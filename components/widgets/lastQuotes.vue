@@ -55,7 +55,7 @@ export default {
     async getData () {
       try {
         this.isLoading = true
-        let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/widgets/lastquotes')
+        let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/widgets/lastquotes', { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
         console.log(data)
         if (data.status === 200) {
           this.orderData = data['result']['_result']
