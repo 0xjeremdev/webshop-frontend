@@ -89,13 +89,21 @@
               'inputType': 'input',
               'label': 'Alternative names'
             },
-            'picture': {
-              'inputType': 'imageUpload',
+            'image': {
+              'inputType': 'input',
               'label': 'Image 1'
             },
+            'image1_text': {
+              'inputType': 'input',
+              'label': 'Image 1 Text'
+            },
             'price': {
-              'inputType': 'imageUpload',
+              'inputType': 'input',
               'label': 'Image 2'
+            },
+            'image2_text': {
+              'inputType': 'input',
+              'label': 'Image 2 Text'
             },
             'vat': {
               'inputType': 'input',

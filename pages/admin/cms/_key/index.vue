@@ -31,10 +31,12 @@
               maxtags="5"
               :value="[]">
             </b-taginput>
-            <div class="quill-editor" v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
+            <editor v-else-if="val.inputType === 'texteditor'" ref="myTextEditor" @input="setModel($event, fieldKey, tabKey)" :initial-value="getValue(val, fieldKey, tabKey)"
+            :init="{plugins: 'advlist autolink link image lists charmap print preview code wordcount'}"></editor>
+            <!-- <div class="quill-editor" v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
               :value="getValue(val, fieldKey, tabKey)"
               @input="setModel($event, fieldKey, tabKey)"
-              v-quill:myQuillEditor="options"></div>
+              v-quill:myQuillEditor="options"></div> -->
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
             <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="!getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon :icon="getIcon(val, fieldKey, tabKey)"></b-icon></b-checkbox-button>
@@ -85,13 +87,17 @@
   // import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
+  import Editor from '@tinymce/tinymce-vue'
 
   export default {
     layout: 'admin',
-    components: { imageControl },
+    components: { imageControl, Editor },
     head () {
       return {
-        title: 'LabNed.com - Exploring Possibilities - Add/Edit CMS page'
+        title: 'LabNed.com - Exploring Possibilities - Add/Edit CMS page',
+        script: [
+          { src: 'https://cloud.tinymce.com/stable/tinymce.min.js' }
+        ]
       }
     },
     data () {
