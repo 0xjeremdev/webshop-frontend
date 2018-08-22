@@ -19,7 +19,7 @@ const sassResourcesLoader = {
 
 module.exports = {
   env: {
-    apiUrl: process.env.API_URL || 'https://itk-api.blt.ovh'
+    apiUrl: 'https://itk-api.blt.ovh'
   },
   /*
   ** Headers of the page

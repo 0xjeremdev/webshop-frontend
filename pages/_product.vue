@@ -25,12 +25,12 @@
           <br />
           <div class="columns is-mobile">
             <div class="column">
-              <img v-if="product.basic.image" class="my-img" :src="apiUrl + '/img/product/' + product.basic.image" alt="Image1" />
+              <img v-if="product.basic.image" class="my-img" :src="apiUrl + '/img/product/' + product.basic.vat.charAt(2) + product.basic.vat.charAt(3) + '/' + product.basic.image" alt="Image1" />
               <span>{{ product.basic.image1_text }}</span>
               <!-- <img class="my-img" src="https://wikiki.github.io/images/merry-christmas.jpg" /> -->
             </div>
             <div class="column">
-              <img v-if="product.basic.price" class="my-img" :src="apiUrl + '/img/product/' + product.basic.price" alt="Image2" />
+              <img v-if="product.basic.price" class="my-img" :src="apiUrl + '/img/product/' + product.basic.vat.charAt(2) + product.basic.vat.charAt(3) + '/' + product.basic.price" alt="Image2" />
               <span>{{ product.basic.image2_text }}</span>
               <!-- <img class="my-img" src="https://wikiki.github.io/images/singer.jpg" /> -->
             </div>
@@ -361,7 +361,7 @@
         }
       },
       showPDF (id) {
-        window.open(this.apiUrl + '/img/pdf/' + id + '.pdf', '_blank')
+        window.open(this.apiUrl + '/img/pdf/' + id.charAt(2) + id.charAt(3) + '/' + id + '.pdf', '_blank')
       }
     }
   }
