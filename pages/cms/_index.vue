@@ -2,7 +2,7 @@
   <section class="section">
     <div class="container">
       <h1 class="title">{{ content.title }}</h1><br />
-      <p class="control" v-html="content.article"></p>
+      <div v-html="content.article"></div>
     </div>
   </section>
 </template>
@@ -16,6 +16,11 @@
           title: '',
           article: ''
         }
+      }
+    },
+    head () {
+      return {
+        title: `${this.content.title} | LabNed.com - Exploring Possibilities`
       }
     },
     async asyncData ({ store, params, error, app: { $axios } }) {
@@ -50,7 +55,65 @@
 </script>
 
 <style scoped>
-  @import url("~quill/dist/quill.snow.css");
+
+  h1 {
+    display: block;
+    font-size: 2em;
+    -webkit-margin-before: 0.67em;
+    -webkit-margin-after: 0.67em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+  }
+
+  h2 {
+      display: block;
+      font-size: 1.5em;
+      -webkit-margin-before: 0.83em;
+      -webkit-margin-after: 0.83em;
+      -webkit-margin-start: 0px;
+      -webkit-margin-end: 0px;
+      font-weight: bold;
+  }
+
+  h3 {
+    display: block;
+    font-size: 1.17em;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+  }
+
+  h4 {
+      display: block;
+      -webkit-margin-before: 1.33em;
+      -webkit-margin-after: 1.33em;
+      -webkit-margin-start: 0px;
+      -webkit-margin-end: 0px;
+      font-weight: bold;
+  }
+
+  h5 {
+    display: block;
+    font-size: 0.83em;
+    -webkit-margin-before: 1.67em;
+    -webkit-margin-after: 1.67em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+  }
+
+  h6 {
+    display: block;
+    font-size: 0.67em;
+    -webkit-margin-before: 2.33em;
+    -webkit-margin-after: 2.33em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+  }
 
   .control ul li {
     list-style: disc;

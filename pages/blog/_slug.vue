@@ -20,6 +20,11 @@
         }
       }
     },
+    head () {
+      return {
+        title: `${this.content.title} | LabNed.com - Exploring Possibilities`
+      }
+    },
     async asyncData ({ store, params, error, app: { $axios } }) {
       let content = {}
       let { data } = await $axios.get(store.state.apiUrl + '/blog/' + params.slug)

@@ -13,7 +13,30 @@
                 </b-icon>
             </a>
         </div>
-        <div class="card-content">
+        <div class="card-content" v-if="val === 'Product category LabNed'">
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Primary Antibodies'">
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+            </div>
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Secondary Antibodies'">
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+            </div>
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Immunoassays'">
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+            </div>
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Peptides & (rec.) Proteins'">
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+            </div>
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Controls, Slides & Lysates'">
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+            </div>
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Consumables & Misc.'">
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+            </div>
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="!searchProductType.includes(svVal)">
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+            </div>
+        </div>
+        <div class="card-content" v-if="val !== 'Product category LabNed'">
             <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey">
               <!--<b-field >
                 <b-checkbox :value="getSearchFilters(val, svKey, svVal)" @input.lazy="setSearch(val, svKey, svVal)">{{ svVal[val] }}</b-checkbox>
@@ -32,6 +55,7 @@
   export default {
     data () {
       return {
+        searchProductType: [ 'Primary Antibodies', 'Secondary Antibodies', 'Immunoassays', 'Peptides & (rec.) Proteins', 'Controls, Slides & Lysates', 'Consumables & Misc.' ],
         searchColumns: [ 'Product category LabNed', 'Reactivity', 'Host', 'Clone', 'Applications', 'Conjugate' ],
         searchLabels: [ 'Product Type', 'Reactivity', 'Host', 'Clone', 'Application', 'Conjugate' ],
         /* sort: {

@@ -32,7 +32,8 @@
               :value="[]">
             </b-taginput>
             <editor v-else-if="val.inputType === 'texteditor'" ref="myTextEditor" @input="setModel($event, fieldKey, tabKey)" :initial-value="getValue(val, fieldKey, tabKey)"
-            :init="{plugins: 'advlist autolink link image lists charmap print preview code wordcount'}"></editor>
+            :init="{plugins: 'advlist autolink link image lists charmap print preview code wordcount'}"
+            apikey="ajmdvsyicmj4n08v4wb7rhojisjuhy7056o4nivhid3rv4ns"></editor>
             <!-- <div class="quill-editor" v-else-if="val.inputType === 'texteditor'" ref="myTextEditor"
               :value="getValue(val, fieldKey, tabKey)"
               @input="setModel($event, fieldKey, tabKey)"
@@ -87,6 +88,7 @@
   // import Cookies from 'js-cookie'
   import { contains } from '~/utils/utils'
   import imageControl from '~/components/ui/Imagecontrol'
+
   import Editor from '@tinymce/tinymce-vue'
 
   export default {
@@ -96,13 +98,13 @@
       return {
         title: 'LabNed.com - Exploring Possibilities - Add/Edit CMS page',
         script: [
-          { src: 'https://cloud.tinymce.com/stable/tinymce.min.js' }
+          { src: 'https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=ajmdvsyicmj4n08v4wb7rhojisjuhy7056o4nivhid3rv4ns' }
         ]
       }
     },
     data () {
       return {
-        editorConfig: {},
+        /* editorConfig: {},
         options: {
           theme: 'snow',
           modules: {
@@ -122,7 +124,7 @@
               ['clean'] // remove formatting button
             ]
           }
-        },
+        }, */
         isLoading: true,
         isNew: true,
         productData: {
@@ -196,9 +198,9 @@
       return params
     },
     methods: {
-      getHTML () {
+      /* getHTML () {
         console.log(this.$refs.myTextEditor[0].quill.root.innerHTML)
-      },
+      }, */
       getIcon (val, fieldKey, tabKey) {
         if (this.productData[fieldKey]) {
           return 'check'
