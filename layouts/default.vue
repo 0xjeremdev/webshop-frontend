@@ -9,6 +9,7 @@
         </div>
         <div class="column">
           <div class="field is-grouped is-pulled-right my-margins">
+            <social></social>
             <cartWidgets></cartWidgets>
             <b-dropdown hoverable position="is-bottom-left" v-if="getAuth">
               <button class="button is-info" @click="account()" style="border: 1px solid white;" slot="trigger">
@@ -94,6 +95,7 @@
   import cartWidgets from '~/components/widgets/cart.vue'
   import cookiewall from '~/components/widgets/cookiewall.vue'
   import search from '~/components/widgets/search.vue'
+  import social from '~/components/widgets/social.vue'
 
   export default {
     data () {
@@ -120,7 +122,7 @@
       }
     },
     middleware: [ 'reloadCookie' ],
-    components: { cartWidgets, cookiewall, search },
+    components: { cartWidgets, cookiewall, search, social },
     head () {
       return {
         title: 'LabNed.com - Exploring Possibilities'

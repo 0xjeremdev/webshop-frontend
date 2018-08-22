@@ -7,11 +7,8 @@
       </div>
       <div class="column">
         <div class="columns">
-          <div class="column is-three-quarters">
-            <search :expanded="true"></search>
-          </div>
           <div class="column">
-            <social></social>
+            <search :expanded="true"></search>
           </div>
         </div>
         <Banner type="banner2"></Banner>
@@ -25,7 +22,6 @@
   import Banner from '~/components/widgets/banner.vue'
   import Search from '~/components/widgets/search.vue'
   import Contactinfo from '~/components/widgets/contactinfo.vue'
-  import social from '~/components/widgets/social.vue'
 
   export default {
     head () {
@@ -33,7 +29,7 @@
         title: 'LabNed.com - Exploring Possibilities'
       }
     },
-    components: { Banner, Search, Contactinfo, social },
+    components: { Banner, Search, Contactinfo },
     data () {
       return {
 

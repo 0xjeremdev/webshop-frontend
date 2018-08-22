@@ -36,8 +36,6 @@
         :default-sort-direction="defaultSortDirection"
         :default-sort="[sortField, sortOrder]"
         @sort="onSort"
-        :checked-rows.sync="checkedRows"
-        checkable
         hoverable>
         <template slot-scope="data">
           <b-table-column label="Action" align="center" valign="middle" class="action">
@@ -236,10 +234,11 @@
             executedQuery['query'] = 'FOR p IN ' + this.tableName + searchFilter + ' SORT ' + dbIdentifier + this.sortField + ' ' + this.sortOrder + ' LIMIT ' + (this.perPage * (this.currentPage - 1)) + ', ' + this.perPage + ' RETURN p'
             console.log(executedQuery) */
             let queryString = ''
-            if (this.perPage !== undefined && typeof this.perPage === 'number') queryString += '?perPage=' + this.perPage
-            if (this.currentPage !== undefined && typeof this.currentPage === 'number') queryString += '&currentPage=' + this.currentPage
-            if (this.sortField !== undefined && this.sortField !== '') queryString += '&mysort=' + this.sortField
-            if (this.sortOrder !== undefined && this.sortOrder !== '') queryString += '&sortOrder=' + this.sortOrder
+            if (this.perPage !== undefined || this.perPage.isInteger()) queryString += '?perPage=' + this.perPage
+            if (this.currentPage !== undefined || this.currentPage.isInteger()) queryString += '&currentPage=' + this.currentPage
+            if (this.sortField !== undefined || this.sortField !== '') queryString += '&mysort=' + this.sortField
+            if (this.sortOrder !== undefined || this.sortOrder !== '') queryString += '&sortOrder=' + this.sortOrder
+
             if (this.customData !== undefined && this.customData !== '') queryString += this.customData
             let searchFilter = ''
             for (let search in this.searches) {
@@ -280,6 +279,7 @@
        * Handle page-change event
        */
       async onPageChange (page) {
+        console.log(page)
         this.currentPage = page
         await this.loadAsyncData()
       },

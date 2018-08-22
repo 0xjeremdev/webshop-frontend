@@ -47,7 +47,7 @@
                 <b-radio v-for="ro in val.options"
                   :key="ro"
                   :native-value="ro"
-                  :value="getValue(val, fieldKey, tabKey)"
+                  v-model="gender"
                   @input="setModel($event, fieldKey, tabKey)">
                   {{ ro }}
                 </b-radio>
@@ -108,6 +108,7 @@
         message: {
           lastname: ''
         }, // filled in one key so it also works when any of the values are untouched
+        gender: 'M',
         showError: false,
         formError: 'There are errors, please correct them to save',
         fields: {
@@ -125,7 +126,7 @@
             'title': {
               'inputType': 'dropdown',
               'label': 'Title',
-              'options': ['Mr.', 'Mrs.'],
+              'options': ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.'],
               'required': true
             },
             'gender': {
@@ -232,12 +233,14 @@
       }
     },
     methods: {
-      setModel (val, fieldKey, tabKey, inputType) {
-        // console.log(val)
+      async setModel (val, fieldKey, tabKey, inputType) {
+        console.log(val)
         if (inputType === 'date') {
           val = ''
         }
-        this.productData[fieldKey] = val
+        let myData = this.productData
+        myData[fieldKey] = val
+        this.productData = myData
       },
       getLabel (val, fieldKey) {
         if (val.label) {
@@ -322,6 +325,10 @@
             if (value === undefined) value = ''
             messages[fld] = await this.$store.dispatch('validation/validateRepeatPassword', { value: value, repeat: this.productData.password })
             break
+          case 'userPassword':
+            if (value === undefined) value = ''
+            messages[fld] = await this.$store.dispatch('validation/validateUserPassword', { password: value })
+            break
           case 'select':
             messages[fld] = await this.$store.dispatch('validation/validateSelect', { value: value })
             break
@@ -338,26 +345,31 @@
       async saveData () {
         try {
           this.isLoading = true
-          this.validate(this.productData.lastname, 'lastname', 'field')
-          this.validate(this.productData.firstname, 'firstname', 'field')
-          this.validate(this.productData.title, 'title', 'select')
-          this.validate(this.productData.company, 'company', 'field')
-          this.validate(this.productData.email, 'email', 'email')
-          this.validate(this.productData.phone, 'phone', 'field')
-          this.validate(this.productData.fax, 'fax', 'field')
-          this.validate(this.productData.mobile, 'mobile', 'field')
-          this.validate(this.productData.state, 'state', 'select')
+          await this.validate(this.productData.lastname, 'lastname', 'field')
+          await this.validate(this.productData.firstname, 'firstname', 'field')
+          await this.validate(this.productData.title, 'title', 'select')
+          await this.validate(this.productData.company, 'company', 'field')
+          await this.validate(this.productData.email, 'email', 'email')
+          await this.validate(this.productData.phone, 'phone', 'field')
+          await this.validate(this.productData.fax, 'fax', 'field')
+          await this.validate(this.productData.mobile, 'mobile', 'field')
+          await this.validate(this.productData.state, 'state', 'select')
 
           if (this.productData.password !== undefined && this.productData.password !== '') this.validate(this.productData.password, 'password', 'password')
           if (this.productData.repeat_password !== undefined && this.productData.repeat_password !== '') this.validate(this.productData.repeat_password, 'repeat_password', 'repeatPassword')
-          if (this.productData.your_password !== undefined && this.productData.your_password !== '') this.validate(this.productData.your_password, 'your_password', 'password')
+          if (this.productData.your_password !== undefined && this.productData.your_password !== '') {
+            this.validate(this.productData.your_password, 'your_password', 'userPassword')
+          } else {
+            this.message['your_password'] = 'Bad Credentials'
+          }
+          console.log(this.message)
           console.log(this.checkErrors)
           if (this.checkErrors) {
             this.showError = true
             this.isLoading = false
           }
           if (!this.checkErrors) {
-            console.log(this.productData)
+            // console.log(this.productData)
             let postData = {
               'key': (this.productData._key !== undefined) ? this.productData._key : '',
               'lastname': (this.productData.lastname !== undefined) ? this.productData.lastname : '',

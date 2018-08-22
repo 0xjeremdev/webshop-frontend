@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 export const actions = {
   async validateMail ({ commit, state, rootState }, { value }) {
     try {
@@ -92,6 +94,21 @@ export const actions = {
     } catch (error) {
       console.log(error)
       let message = 'Unexpected error occured, while validating'
+      return message
+    }
+  },
+  async validateUserPassword ({ commit, state, rootState }, { password }) {
+    try {
+      let message = ''
+      const check = await axios.post(rootState.apiUrl + '/auth/admin/checkUserPwd', { password }, { headers: { Authorization: `Bearer ${rootState.authUser.jwt}` } })
+      console.log(check)
+      if (check.status !== 200) {
+        message = 'Bad Credentials'
+      }
+      return message
+    } catch (e) {
+      console.log(e)
+      let message = 'Bad Credentials'
       return message
     }
   }

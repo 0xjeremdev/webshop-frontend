@@ -184,6 +184,28 @@
       // can be validated
       return params
     },
+    computed: {
+      checkErrors: {
+        cache: false,
+        deep: true,
+        get () {
+          try {
+            let messages = this.message
+            // console.log('What are the error messages?')
+            // console.log(messages)
+            for (var mes in messages) {
+              // console.log(mes + ' - ' + this.message[mes])
+              if (this.message[mes] !== '') {
+                return true
+              }
+            }
+            return false
+          } catch (e) {
+            console.log(e)
+          }
+        }
+      }
+    },
     methods: {
       setModel (val, fieldKey, tabKey) {
         this.productData[fieldKey] = val
@@ -217,7 +239,7 @@
             // this.$axios.setToken(this.$store.state.authUser.jwt, 'Bearer')
 
             let data = await this.$axios.$get(this.$store.state.apiUrl + '/admin/user/' + routeParams.key, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
-            console.log(data)
+            // console.log(data)
             this.productData = data['result']['_result'][0]
             this.isNew = false
             this.isLoading = false
@@ -231,7 +253,7 @@
                 }
               }
             }
-            console.log(this.productData)
+            // console.log(this.productData)
             this.isLoading = false
           }
         } catch (e) {
@@ -243,6 +265,7 @@
         let messages = this.message
         switch (type) {
           case 'email':
+            if (value === undefined) value = ''
             messages[fld] = await this.$store.dispatch('validation/validateMail', { value: value })
             break
           case 'password':
@@ -253,38 +276,48 @@
             if (value === undefined) value = ''
             messages[fld] = await this.$store.dispatch('validation/validateRepeatPassword', { value: value, repeat: this.productData.password })
             break
+          case 'userPassword':
+            if (value === undefined) value = ''
+            messages[fld] = await this.$store.dispatch('validation/validateUserPassword', { password: value })
+            break
           case 'select':
+            if (value === undefined) value = ''
             messages[fld] = await this.$store.dispatch('validation/validateSelect', { value: value })
             break
           default:
+            if (value === undefined) value = ''
             messages[fld] = await this.$store.dispatch('validation/validateField', { value: value })
             break
         }
 
-        this.message = '' // hack to let two way binding work if a key in an object has changed
+        // this.message = '' // hack to let two way binding work if a key in an object has changed
         this.message = messages
         this.productData[fld] = value
       },
       async saveData () {
         try {
           this.isLoading = true
-          this.validate(this.productData.lastname, 'lastname', 'field')
-          this.validate(this.productData.firstname, 'firstname', 'field')
-          this.validate(this.productData.title, 'title', 'select')
-          this.validate(this.productData.company, 'company', 'field')
-          this.validate(this.productData.VAT_No, 'VAT_No', 'field')
-          this.validate(this.productData.email, 'email', 'email')
-          this.validate(this.productData.phone, 'phone', 'field')
-          this.validate(this.productData.fax, 'fax', 'field')
-          this.validate(this.productData.mobile, 'mobile', 'field')
-          this.validate(this.productData.state, 'state', 'select')
-          this.validate(this.productData.password, 'password', 'password')
-          this.validate(this.productData.repeat_password, 'repeat_password', 'repeatPassword')
-          this.validate(this.productData.your_password, 'your_password', 'password')
+          await this.validate(this.productData.lastname, 'lastname', 'field')
+          await this.validate(this.productData.firstname, 'firstname', 'field')
+          await this.validate(this.productData.title, 'title', 'select')
+          await this.validate(this.productData.company, 'company', 'field')
+          // await this.validate(this.productData.VAT_No, 'VAT_No', 'field')
+          await this.validate(this.productData.email, 'email', 'email')
+          await this.validate(this.productData.phone, 'phone', 'field')
+          await this.validate(this.productData.fax, 'fax', 'field')
+          await this.validate(this.productData.mobile, 'mobile', 'field')
+          await this.validate(this.productData.state, 'state', 'select')
+          await this.validate(this.productData.password, 'password', 'password')
+          await this.validate(this.productData.repeat_password, 'repeat_password', 'repeatPassword')
+          await this.validate(this.productData.your_password, 'your_password', 'userPassword')
+
+          // console.log(this.message)
           if (this.checkErrors) {
             this.showError = true
             this.isLoading = false
           }
+          // console.log('Are there errors?')
+          // console.log(this.checkErrors)
           if (!this.checkErrors) {
             // console.log(this.productData)
             let postData = {
@@ -320,7 +353,7 @@
             console.log(data)
             this.isLoading = false
             this.$toast.open('Saved')
-            this.$router.push('/admin/settings/user')
+            // this.$router.push('/admin/settings/user')
           }
         } catch (e) {
           console.log(e)

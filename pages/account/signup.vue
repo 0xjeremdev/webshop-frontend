@@ -109,12 +109,12 @@
       },
       async doRegister () {
         try {
-          this.validate(this.formTitle, 'formTitle', 'select')
-          this.validate(this.formLastname, 'formLastname', 'field')
-          this.validate(this.formFirstname, 'formFirstname', 'field')
-          this.validate(this.formEmail, 'formEmail', 'email')
-          this.validate(this.formPassword, 'formPassword', 'password')
-          this.validate(this.formRepeatPassword, 'formRepeatPassword', 'repeatPassword')
+          await this.validate(this.formTitle, 'formTitle', 'select')
+          await this.validate(this.formLastname, 'formLastname', 'field')
+          await this.validate(this.formFirstname, 'formFirstname', 'field')
+          await this.validate(this.formEmail, 'formEmail', 'email')
+          await this.validate(this.formPassword, 'formPassword', 'password')
+          await this.validate(this.formRepeatPassword, 'formRepeatPassword', 'repeatPassword')
           // console.log(this.message)
           if (this.checkErrors) this.showError = true
           if (!this.checkErrors) {
