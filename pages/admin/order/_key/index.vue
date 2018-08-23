@@ -52,7 +52,7 @@
                 :readonly="false">
             </b-datepicker>
             <b-select v-else-if="val.inputType === 'dropdown'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
-                  <option v-for="option in val.options" :key="option.code" :value="option.code">{{ option.name }}</option>
+                  <option v-for="option in val.options" :key="option" :value="option">{{ option }}</option>
             </b-select>
             <span v-else-if="val.inputType === 'readonly'">{{ productData[fieldKey] }}</span>
             <b-input v-else value="Could not load this type"></b-input>
@@ -136,26 +136,6 @@
     },
     data () {
       return {
-        options: {
-          theme: 'snow',
-          modules: {
-            toolbar: [
-              ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-              ['blockquote', 'code-block'],
-              [{ 'header': 1 }, { 'header': 2 }], // custom button values
-              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-              [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
-              [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
-              [{ 'direction': 'rtl' }], // text direction
-              [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
-              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-              [{ 'color': [] }, { 'background': [] }], // dropdown with defaults from theme
-              [{ 'font': [] }],
-              [{ 'align': [] }],
-              ['clean'] // remove formatting button
-            ]
-          }
-        },
         isLoading: true,
         isNew: true,
         productData: {},
@@ -169,6 +149,10 @@
               'inputType': 'date',
               'label': 'Order Date'
             },
+            'quote_date': {
+              'inputType': 'date',
+              'label': 'Quote Date'
+            },
             'from_quote': {
               'inputType': 'checkbox',
               'label': 'From Quote'
@@ -177,9 +161,14 @@
               'inputType': 'checkbox',
               'label': 'Is Quote?'
             },
-            'quote_date': {
-              'inputType': 'date',
-              'label': 'Quote Date'
+            'quote_email': {
+              'inputType': 'input',
+              'label': 'Quote has been send to'
+            },
+            'status': {
+              'inputType': 'dropdown',
+              'label': 'Set Status',
+              'options': ['Quote placed', 'Payment Received', 'Shipped', 'Delivered', 'Return', 'Canceled']
             },
             icon: 'file-document'
           },
@@ -499,10 +488,12 @@
           }
           // validation necessary
           let postData = this.productData
-          let data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/order', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+          let data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/order', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           console.log(data)
           // this.testData = data['result']
+          this.$toast.open('Saved')
           this.isLoading = false
+          this.$router.push('/admin/order')
         } catch (e) {
           this.$toast.open('Could not save data, please try again')
         }

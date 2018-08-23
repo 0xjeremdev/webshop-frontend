@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Datagrid from '~/components/ui/Datagrid'
+  import Datagrid from '~/components/ui/DatagridForOrder'
   // import axios from 'axios'
 
   export default {

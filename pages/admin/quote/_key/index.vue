@@ -68,27 +68,7 @@
                 <tr>
                   <td class="th-wrap">&nbsp;</td>
                   <td colspan="3" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
-                  <td class="th-wrap has-text-right"><strong>€ {{ productData.subtotal }}</strong></td>
-                </tr>
-                <tr>
-                  <td class="th-wrap">&nbsp;</td>
-                  <td colspan="3" class="th-wrap has-text-right">Shipping Costs (ex. VAT):</td>
-                  <td class="th-wrap has-text-right">€ {{ productData.shippingcosts }}</td>
-                </tr>
-                <tr>
-                  <td class="th-wrap">&nbsp;</td>
-                  <td colspan="3" class="th-wrap has-text-right"><strong>Total (ex. VAT):</strong></td>
-                  <td class="th-wrap has-text-right"><strong>€ {{ productData.shippingtotal }}</strong></td>
-                </tr>
-                <tr>
-                  <td class="th-wrap">&nbsp;</td>
-                  <td colspan="3" class="th-wrap has-text-right">VAT:</td>
-                  <td class="th-wrap has-text-right">€ {{ productData.vat }}</td>
-                </tr>
-                <tr>
-                  <td class="th-wrap">&nbsp;</td>
-                  <td colspan="3" class="th-wrap has-text-right"><strong>Total (inc. VAT):</strong></td>
-                  <td class="th-wrap has-text-right"><strong>€ {{ productData.total }}</strong></td>
+                  <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(productData.subtotal).toFixed(2) }}</strong></td>
                 </tr>
               </tfoot>
               <tbody>
@@ -136,31 +116,11 @@
     },
     data () {
       return {
-        options: {
-          theme: 'snow',
-          modules: {
-            toolbar: [
-              ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-              ['blockquote', 'code-block'],
-              [{ 'header': 1 }, { 'header': 2 }], // custom button values
-              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-              [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
-              [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
-              [{ 'direction': 'rtl' }], // text direction
-              [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
-              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-              [{ 'color': [] }, { 'background': [] }], // dropdown with defaults from theme
-              [{ 'font': [] }],
-              [{ 'align': [] }],
-              ['clean'] // remove formatting button
-            ]
-          }
-        },
         isLoading: true,
         isNew: true,
         productData: {},
         fields: {
-          'Orders': {
+          'Quotes': {
             'order_no': {
               'inputType': 'input',
               'label': 'Order No'
@@ -168,6 +128,10 @@
             'order_date': {
               'inputType': 'date',
               'label': 'Order Date'
+            },
+            'quote_date': {
+              'inputType': 'date',
+              'label': 'Quote Date'
             },
             'from_quote': {
               'inputType': 'checkbox',
@@ -177,9 +141,18 @@
               'inputType': 'checkbox',
               'label': 'Is Quote?'
             },
-            'quote_date': {
-              'inputType': 'date',
-              'label': 'Quote Date'
+            'quote_email': {
+              'inputType': 'input',
+              'label': 'Quote has been send to'
+            },
+            'status': {
+              'inputType': 'dropdown',
+              'label': 'Set Status',
+              'options': ['Quote placed', 'Payment Received', 'Shipped', 'Delivered', 'Return', 'Canceled']
+            },
+            'active': {
+              'inputType': 'checkbox',
+              'label': 'Active'
             },
             icon: 'file-document'
           },
@@ -302,7 +275,7 @@
       getValue (val, fieldKey, tabKey, inputType) {
         if (this.productData instanceof Object) {
           switch (tabKey) {
-            case 'Orders':
+            case 'Quotes':
               if (inputType === 'checkbox') {
                 return !this.productData[fieldKey]
               } else if (inputType === 'date') {
@@ -406,7 +379,9 @@
           let data = await this.$axios.$post(this.$store.state.apiUrl + '/admin/quote', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           console.log(data)
           // this.testData = data['result']
+          this.$toast.open('Saved')
           this.isLoading = false
+          this.$router.push('/admin/quote')
         } catch (e) {
           this.$toast.open('Could not save data, please try again')
         }
@@ -415,7 +390,7 @@
         return contains(col, arr)
       },
       goBack () {
-        this.$router.push('/admin/order')
+        this.$router.push('/admin/quote')
       }
     }
   }

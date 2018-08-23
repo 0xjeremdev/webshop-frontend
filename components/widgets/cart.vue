@@ -4,7 +4,7 @@
         <b-icon icon="cart-outline"></b-icon>
         <span>Cart</span>
       </button>
-      <b-dropdown-item v-show="getCartContents[0]">
+      <b-dropdown-item v-show="getCartContents[0]" @click="$router.push('/cart')">
         <h1 class="subtitle">Cart</h1>
         <table class="table">
           <thead>
