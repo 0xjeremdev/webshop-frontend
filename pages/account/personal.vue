@@ -184,18 +184,21 @@
           await this.validate(this.customer.firstname, 'firstname')
           await this.validate(this.customer.title, 'title', 'select')
           await this.validate(this.customer.areaofinterest, 'areaofinterest', 'select')
-          console.log(this.checkErrors)
-          console.log(this.message)
+          // console.log(this.checkErrors)
+          // console.log(this.message)
           if (this.checkErrors) {
             this.showError = true
             this.isLoading = false
           }
           if (!this.checkErrors) {
-            console.log(this.customer)
+            // console.log(this.customer)
             await this.$store.dispatch('account/saveCustomer', { customer: this.customer })
             this.isLoading = false
             this.showError = false
             this.$toast.open({ message: 'Saved', type: 'is-success' })
+            if (this.$store.state.cart.cartContents.length > 0) {
+              this.$router.push('/order')
+            }
           }
         } catch (e) {
           console.log(e)

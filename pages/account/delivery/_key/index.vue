@@ -188,7 +188,11 @@
             this.isLoading = false
             this.showError = false
             this.$toast.open({ message: 'Saved', type: 'is-success' })
-            this.$router.push('/account/delivery')
+            let myroute = '/account/delivery'
+            if (this.$store.state.cart.cartContents.length > 0) {
+              myroute = '/order'
+            }
+            this.$router.push(myroute)
           }
         } catch (e) {
           console.log(e)

@@ -121,6 +121,7 @@
         error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
       }
     },
+    scrollToTop: true,
     middleware: [ 'reloadCookie' ],
     components: { cartWidgets, cookiewall, search, social },
     head () {

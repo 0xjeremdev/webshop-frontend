@@ -13,7 +13,7 @@
       <div class="columns">
         <div class="column is-one-third">
           <div class="sticky">
-          <p class="title my-img">{{ (Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? '€ ' + Number(product.basic['Price LabNed']).toFixed(2) : 'Inquiry' }}</p>
+          <p class="title my-img">{{ (Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? '€ ' + Number(product.basic['Price LabNed']).toFixed(2) : 'Inquire' }}</p>
           <div class="columns is-mobile">
             <div class="column">
               <button class="button is-orange my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
@@ -43,7 +43,7 @@
           <b-collapse class="card" v-for="(value, tabKey) in fields" :key="tabKey" :open="(tabKey === 'Product Information')">
             <div slot="trigger" slot-scope="props" class="card-header">
                 <p class="card-header-title">
-                    {{ tabKey }} <p v-if="tabKey === 'Product Information'" class="control"><button class="button is-danger" style="width: 150px;" @click="showPDF(product.basic.vat)"><b-icon icon="file-pdf"></b-icon><span>PDF Datasheet</span></button></p>
+                    {{ tabKey }} <p v-if="tabKey === 'Product Information'" class="control"><button class="button is-orange" style="width: 150px;" @click="showPDF(product.basic.vat)"><b-icon icon="file-pdf"></b-icon><span>PDF Datasheet</span></button></p>
                 </p>
                 <a class="card-header-icon">
                     <b-icon
@@ -55,7 +55,7 @@
                 <div class="content">
                   <table class="table">
                     <tbody>
-                      <tr v-if="(product.basic[fieldKey] !== '') && (fieldKey !== 'icon')" v-for="(val, fieldKey) in value" :key="fieldKey">
+                      <tr v-if="(product.basic[fieldKey] !== undefined && product.basic[fieldKey] !== null && product.basic[fieldKey].trim() !== '') && (fieldKey !== 'icon')" v-for="(val, fieldKey) in value" :key="fieldKey">
                         <td><p>{{ (typeof val.label !== 'undefined') ? val.label : fieldKey }}</p></td>
                         <td><p>{{ product.basic[fieldKey] }}</p></td>
                       </tr>
@@ -149,12 +149,12 @@
             'Purification': {
               'inputType': 'input'
             },
+            'Applications': {
+              'inputType': 'input'
+            },
             'icon': 'file-document'
           },
           'Properties': {
-            'Purification': {
-              'inputType': 'input'
-            },
             'Biological activity': {
               'inputType': 'input'
             },

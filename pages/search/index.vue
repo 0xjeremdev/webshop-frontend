@@ -52,7 +52,15 @@
                         {{ val.reactivity }}
                       </div>
                     </div>
-                    <div v-if="val.host !== '' && val.host !== null" class="art-line">
+                    <div class="art-line" v-if="val['Product category LabNed'] === 'Peptides & (rec.) Proteins' && val.source !== '' && val.source !== null">
+                      <div class="art-label">
+                        Source
+                      </div>
+                      <div class="art-value">
+                        {{ val.source }}
+                      </div>
+                    </div>
+                    <div v-else-if="val.host !== '' && val.host !== null" class="art-line">
                       <div class="art-label">
                         Host
                       </div>
@@ -98,7 +106,7 @@
                 </div>
               </div>
               <div class="column is-one-third">
-                <p class="title">{{ (Number(val.price).toFixed(2) !== 'NaN') ? '€ ' + Number(val.price).toFixed(2) : 'Inquiry' }}</p>
+                <p class="title">{{ (Number(val.price).toFixed(2) !== 'NaN') ? '€ ' + Number(val.price).toFixed(2) : 'Inquire' }}</p>
                 <p class="control">
                   <button class="button is-orange my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
                 </p>
@@ -153,6 +161,7 @@
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
 
   export default {
+    scrollToTop: true,
     components: { FilterSearch, breadCrumb },
     head () {
       return {

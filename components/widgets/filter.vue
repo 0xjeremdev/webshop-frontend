@@ -121,7 +121,8 @@
         this.$store.commit('product/SET_SEARCH_FILTERS', myVal)
         this.getProductData()
         for (let v in this.searchColumns) {
-          if (this.searchColumns[v] !== type) this.getData(this.searchColumns[v])
+          // if (this.searchColumns[v] !== type)
+          this.getData(this.searchColumns[v])
         }
       },
       async getProductData () {
