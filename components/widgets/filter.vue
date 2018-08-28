@@ -15,25 +15,25 @@
         </div>
         <div class="card-content" v-if="val === 'Product category LabNed'">
             <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Primary Antibodies'">
-              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
             <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Secondary Antibodies'">
-              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
             <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Immunoassays'">
-              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
             <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Peptides & (rec.) Proteins'">
-              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
             <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Controls, Slides & Lysates'">
-              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
             <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Consumables & Misc.'">
-              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
-            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="!searchProductType.includes(svVal)">
-              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="checkIncludes(svVal)">
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
         </div>
         <div class="card-content" v-if="val !== 'Product category LabNed'">
@@ -41,7 +41,7 @@
               <!--<b-field >
                 <b-checkbox :value="getSearchFilters(val, svKey, svVal)" @input.lazy="setSearch(val, svKey, svVal)">{{ svVal[val] }}</b-checkbox>
               </b-field> -->
-              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @input="setSearch(val, svKey, svVal)"> {{ svVal }}
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
         </div>
     </b-collapse>
@@ -51,6 +51,7 @@
 
 <script>
   import Cookies from 'js-cookie'
+  import _ from 'lodash'
 
   export default {
     data () {
@@ -78,27 +79,16 @@
     computed: {
       getFilters () {
         let filters = this.$store.state.product.filters
-        // console.log(filters)
-        /* let exclusive = {}
-        for (let key in filters) {
-          exclusive[key] = []
-          for (let val in filters[key]) {
-            let arr = filters[key][val].split(', ')
-            // console.log(arr.length)
-            for (let v in arr) {
-              // console.log(arr[v])
-              if (!exclusive[key].includes(arr[v].trim())) exclusive[key].push(arr[v].trim())
-            }
-          }
-        } */
-        // console.log(exclusive)
         return filters
       }
     },
     methods: {
+      checkIncludes (value) {
+        return !_.includes(this.searchProductType, value)
+      },
       doReset () {
         this.$store.commit('product/SET_SEARCH_FILTERS', { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} })
-        // this.$store.commit('product/SET_SEARCHVAL', '')
+        this.$store.commit('product/SET_SEARCHVAL', '')
         this.getProductData()
         for (let v in this.searchColumns) {
           this.getData(this.searchColumns[v])
@@ -111,6 +101,7 @@
         return checked
       },
       setSearch (type, key, value) {
+        console.log('checked: ' + value)
         let mySearchFiltersState = this.$store.state.product.searchFilters
         let checked = (typeof mySearchFiltersState !== 'undefined') ? (typeof mySearchFiltersState[type] !== 'undefined') ? (mySearchFiltersState[type][value] !== '') ? mySearchFiltersState[type][value] : false : false : false
         // console.log(checked)

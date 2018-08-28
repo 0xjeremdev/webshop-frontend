@@ -76,6 +76,15 @@ module.exports = {
       return { x: 0, y: 0 }
     }
   },
+  babel: {
+    presets: [
+      ['vue-app', {
+        useBuiltIns: true,
+        targets: { ie: 9, uglify: true }
+        }
+      ]
+    ]
+  },
   /* router: {
     middleware: ['auth', 'user-agent']
   }, */

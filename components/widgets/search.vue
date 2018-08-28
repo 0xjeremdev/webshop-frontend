@@ -50,30 +50,6 @@
         // Do something with search term after it debounced
         this.getProducts()
       }, 500)
-      /* $route: function () {
-        let route = this.$route.path
-        this.productName = ''
-        // let searchFiltersReset = { 'Product Type': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
-        // this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
-        // console.log(route)
-        if (route === '/search') {
-          if ((this.$store.state.product.searchVal === '')) {
-            this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
-          }
-
-          let searchVal = this.$store.state.product.searchVal
-          // console.log(searchVal)
-          if (searchVal === null) searchVal = ''
-          this.productName = searchVal
-          this.$store.commit('product/SET_SEARCHVAL', searchVal)
-          /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
-            this.productName = searchVal.name
-          }
-        } else {
-          this.$store.commit('product/SET_SEARCHVAL', '')
-        }
-      } */
-
     },
     created () {
       let route = this.$route.path
@@ -82,8 +58,10 @@
       this.$store.commit('product/SET_SEARCH_FILTERS', searchFiltersReset)
       if (route === '/search') {
         // console.log('benhier')
-        if ((this.$store.state.product.searchVal === '')) {
+        // console.log(this.$store.state.product)
+        if ((this.$store.state.product === undefined)) {
           this.$store.commit('product/SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish').product) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
+          console.log('help:' + this.$store.state.product.searchVal)
         }
 
         let searchVal = this.$store.state.product.searchVal
@@ -104,8 +82,9 @@
         for (let prod in this.productData) {
           let searchNames = this.productData[prod].description.split(',')
           for (let name in searchNames) {
-            if (!names.includes(searchNames[name].trim())) {
-              names.push(searchNames[name].trim())
+            let myName = searchNames[name].trim()
+            if (!names.indexOf(myName) !== -1) {
+              names.push(myName)
             }
           }
         }

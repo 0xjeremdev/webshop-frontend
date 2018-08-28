@@ -50,7 +50,8 @@ export const actions = {
   async getProducts ({ context, commit, state, rootState }, { params, page }) {
     try {
       if ((state.searchVal === '')) {
-        commit('SET_SEARCHVAL', Cookies.getJSON('key2publish').product.searchVal)
+        console.log(Cookies.getJSON('key2publish'))
+        commit('SET_SEARCHVAL', (typeof (Cookies.getJSON('key2publish')) !== 'undefined') ? Cookies.getJSON('key2publish').product.searchVal : '')
       }
       let searchVal = state.searchVal
       console.log(searchVal)
@@ -106,13 +107,13 @@ export const actions = {
       }
       let val = {}
       if (search === '' && filterIsFalse) {
-        let mydata = await this.$axios.$get(rootState.apiUrl + '/filter/' + field)
+        let mydata = await this.$axios.$get(rootState.apiUrl + '/filter/' + field, { headers: { Pragma: 'no-cache', 'Cache-Control': 'no-cache' } })
         val[field] = mydata.result['_result']
       } else if (field === 'Product category LabNed') {
-        let mydata = await this.$axios.$get(rootState.apiUrl + '/filter/' + field)
+        let mydata = await this.$axios.$get(rootState.apiUrl + '/filter/' + field, { headers: { Pragma: 'no-cache', 'Cache-Control': 'no-cache' } })
         let postData = { searchVal: search, searchFilters: searchFilters, field: field }
         console.log(postData)
-        let filteredData = await this.$axios.$post(rootState.apiUrl + '/filter', postData)
+        let filteredData = await this.$axios.$post(rootState.apiUrl + '/filter', postData, { headers: { Pragma: 'no-cache', 'Cache-Control': 'no-cache' } })
         let correctData = mydata.result['_result']
         for (var r = mydata.result['_result'].length; r >= 0; r--) {
           let keep = false
