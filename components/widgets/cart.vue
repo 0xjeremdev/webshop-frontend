@@ -1,6 +1,6 @@
 <template>
-  <b-dropdown hoverable position="is-bottom-left">
-      <button class="button is-orange" @click="$router.push('/cart')" style="border: 1px solid white;" slot="trigger">
+  <b-dropdown style="z-index: 10;" hoverable position="is-bottom-left">
+      <button :data-badge="getCartContents.length" class="button badge is-orange" @click="$router.push('/cart')" style="border: 1px solid white;" slot="trigger">
         <b-icon icon="cart-outline"></b-icon>
         <span>Cart</span>
       </button>
@@ -20,7 +20,7 @@
               <td>{{ val.name }}</td>
               <td class="has-text-right">{{ val.amount }}</td>
               <td class="has-text-right">€ {{ (parseFloat(val.price) * Number(val.amount)).toFixed(2) }}</td>
-              <td><button class="button is-danger" @click="doDeleteCart(key)"><b-icon icon="delete-forever"></b-icon></button></td>
+              <td><button class="button is-info" @click="doDeleteCart(key)"><b-icon icon="delete-forever"></b-icon></button></td>
             </tr>
           </tbody>
           <tfoot>

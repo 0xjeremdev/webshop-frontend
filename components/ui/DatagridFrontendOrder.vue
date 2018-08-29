@@ -40,7 +40,7 @@
         <template slot-scope="data">
           <b-table-column label="Action" align="center" valign="middle" class="action">
             <b-tooltip :label="'Edit ' + type" type="is-dark" animated>
-              <a class="button is-success" @click="editProduct(data.row)"><b-icon icon="pencil" /></a>
+              <a class="button is-primary" @click="editProduct(data.row)"><b-icon icon="pencil" /></a>
             </b-tooltip>
           </b-table-column>
           <b-table-column v-for="(key, index) in columns"  v-bind:data="key"
@@ -48,7 +48,7 @@
               <span v-if="((data.row.hasOwnProperty(key)) && (types[key] === 'string'))">{{ data.row[key] }}</span>
               <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'combined'))">{{ data.row[key] }}</span>
               <span v-else-if="data.row.hasOwnProperty('basic')">{{ data.row.basic[key] }}</span>
-              <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'date'))" class="tag is-success">{{ new Date(data.row[key]).toLocaleDateString('nl-NL', options ) }}</span>
+              <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'date'))" class="tag is-primary">{{ new Date(data.row[key]).toLocaleDateString('nl-NL', options ) }}</span>
               <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'boolean'))"><b-icon :icon="getIcon(data.row[key])"></b-icon></span>
           </b-table-column>
         </template>

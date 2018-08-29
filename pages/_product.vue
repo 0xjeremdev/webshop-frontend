@@ -40,10 +40,10 @@
         <div class="column">
           <h2 class="subtitle">{{ product.basic.name }} - {{ product.basic.vat }}</h2>
 
-          <b-collapse class="card" v-for="(value, tabKey) in fields" :key="tabKey" :open="(tabKey === 'Product Information')">
+          <b-collapse class="card" v-for="(value, tabKey) in fields" :key="tabKey" v-if="hasContent(tabKey)" :open="(tabKey === 'Product Information')">
             <div slot="trigger" slot-scope="props" class="card-header">
                 <p class="card-header-title">
-                    {{ tabKey }} <p v-if="tabKey === 'Product Information'" class="control"><button class="button is-orange" style="width: 150px;" @click="showPDF(product.basic.vat)"><b-icon icon="file-pdf"></b-icon><span>PDF Datasheet</span></button></p>
+                    {{ tabKey }} <p v-if="tabKey === 'Product Information'" class="control"><button class="button is-primary" style="width: 150px; margin: 0.75rem;" @click="showPDF(product.basic.vat)"><b-icon icon="file-pdf"></b-icon><span>PDF Datasheet</span></button></p>
                 </p>
                 <a class="card-header-icon">
                     <b-icon
@@ -346,6 +346,13 @@
         }) */
     },
     methods: {
+      hasContent (tabKey) {
+        let active = false
+        for (let fieldKey in this.fields[tabKey]) {
+          if ((this.product.basic[fieldKey] !== undefined && this.product.basic[fieldKey] !== null && this.product.basic[fieldKey].trim() !== '') && (fieldKey !== 'icon')) active = true
+        }
+        return active
+      },
       async addToCart (id, name, price) {
         try {
           let contents = {'amount': 1, 'id': id}
@@ -360,8 +367,13 @@
           console.log(e)
         }
       },
-      showPDF (id) {
-        window.open(this.apiUrl + '/img/pdf/' + id.charAt(2) + id.charAt(3) + '/' + id + '.pdf', '_blank')
+      async showPDF (id) {
+        try {
+          await this.$axios.get(this.apiUrl + '/img/pdf/' + id.charAt(2) + id.charAt(3) + '/' + id + '.pdf')
+          window.open(this.apiUrl + '/img/pdf/' + id.charAt(2) + id.charAt(3) + '/' + id + '.pdf', '_blank')
+        } catch (e) {
+
+        }
       }
     }
   }

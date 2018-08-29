@@ -74,6 +74,7 @@
     </nav>
     <main role="main">
       <cookiewall></cookiewall>
+      <br/>
       <search v-if="$route.path !== '/'" :expanded="true"></search>
       <nuxt/>
     </main>

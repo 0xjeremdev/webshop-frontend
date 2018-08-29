@@ -1,14 +1,13 @@
 <template>
-  <section>
+  <section class="section section-alt">
     <div class="columns">
       <div class="column">
-        <br/>
       <Banner type="banner"></Banner>
       </div>
       <div class="column">
         <div class="columns">
-          <div class="column">
-            <search :expanded="true"></search>
+          <div class="column notification is-orange">
+            <search :expanded="true" :size="'is-large'"></search>
           </div>
         </div>
         <Banner type="banner2"></Banner>
@@ -44,3 +43,9 @@
     }
   }
 </script>
+
+<style scoped>
+  .section-alt {
+    padding-top: 0.75em;
+  }
+</style>

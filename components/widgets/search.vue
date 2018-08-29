@@ -1,18 +1,17 @@
 <template>
-  <section id="search">
+  <section id="search" class="notification is-orange">
     <!-- <hr class="navbar-divider my_div"> -->
-    <br />
-    <b-field custom-class="is-medium">
-      <p class="control is-medium">
-        <button class="button is-orange is-medium" @click="doSubmit()">
+    <b-field :custom-class="(size) ? size : 'is-medium'">
+      <p :class="(size) ? 'control ' + size : 'control is-medium'">
+        <button :class="(size) ? 'button is-info ' + size : 'button is-info is-medium'" @click="doSubmit()">
             Search
         </button>
       </p>
-      <b-autocomplete size="is-medium"
+      <b-autocomplete :size="(size) ? size : 'is-medium'"
         v-model.lazy="productName"
         icon="microscope"
         :data="autocomplete"
-        placeholder="Search for products/clone/LabNed No. ... e.g. CD3 or 2C8F1 or LN0110026"
+        placeholder="Search for target/clone or labned art. Nr."
         :loading="isFetching"
         @select="option => selectProduct(option)"
         v-on:keyup.13.native="doSubmit()"
@@ -33,7 +32,8 @@
 
   export default {
     props: {
-      expanded: Boolean
+      expanded: Boolean,
+      size: String
     },
     data () {
       return {

@@ -51,7 +51,7 @@
           <hr>
           <b-field>
             <p class="control">
-              <nuxt-link to="/account/delete"><button type="button" class="button is-danger is-small">
+              <nuxt-link to="/account/delete"><button type="button" class="button is-info is-small">
                 Request removal of my account
               </button></nuxt-link>
             </p>

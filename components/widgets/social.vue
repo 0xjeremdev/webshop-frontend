@@ -1,6 +1,6 @@
 <template>
   <section>
-      <div class="columns">
+      <div class="columns is-mobile">
 
         <div class="column is-one-third my_div">
           <a v-if="hasFacebook !== ''" :href="hasFacebook" target="_new">

@@ -152,12 +152,12 @@
             icon: 'file-document'
           },
           'Banner': {
-            'banner_upload_images': {
+            'banner': {
               'inputType': 'imageUpload',
               'label': 'Banner',
               'type': 'banner'
             },
-            'banner2_upload_images': {
+            'banner2': {
               'inputType': 'imageUpload',
               'label': 'Banner 2',
               'type': 'banner2'
@@ -320,7 +320,7 @@
               'inputType': 'input',
               'label': 'Return Cancel URL'
             },
-            'payment_logos': {
+            'paymentlogos': {
               'inputType': 'imageUpload',
               'label': 'Payment Logos',
               'type': 'paymentlogos'

@@ -65,8 +65,8 @@ export const actions = {
       var rules = [
         /[a-z]/, // letters (lower-case)
         /[A-Z]/, // letters (upper-case)
-        /[0-9]/, // numbers (similar to /[0-9]/)
-        /[!@#$&*]/ // some symbols
+        /[0-9]/ // numbers (similar to /[0-9]/)
+        // /[!@#$&*]/ // some symbols
       ]
 
       res = rules.filter(function (rule) {
@@ -75,7 +75,7 @@ export const actions = {
 
       let message = ''
       if (!res) {
-        message = 'The password does not match one of the following criteria of a minimum length of 8, one lowercase character, one uppercase character, a digit and one of the following characters !@#$&*'
+        message = 'The password does not match one of the following criteria of a minimum length of 8, one lowercase character, one uppercase character and a digit'
       }
       return message
     } catch (error) {
