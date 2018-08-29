@@ -2,11 +2,6 @@
   <section class="section">
     <h1 class="title">Blog List</h1>
     <article class="media" v-for="(value, index) in blogList">
-      <figure class="media-left">
-        <div class="image is-64x64">
-          <img src="https://bulma.io/images/placeholders/128x128.png">
-        </div>
-      </figure>
       <div class="media-content">
         <div class="content">
           <h2 class="subtitle"><nuxt-link :to="'/blog/' + value.seo.url_slug">{{ value.title }}</nuxt-link></h2></div>

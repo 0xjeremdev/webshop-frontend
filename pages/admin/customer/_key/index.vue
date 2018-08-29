@@ -159,6 +159,10 @@
               'inputType': 'input',
               'label': 'Fax'
             },
+            'discount': {
+              'inputType': 'input',
+              'label': 'Discount (%)'
+            },
             'allow_banktransfer': {
               'inputType': 'checkbox',
               'label': 'Allow Bank Transfer'
@@ -382,6 +386,7 @@
               'vatno': (this.productData['VAT_No'] !== undefined) ? this.productData['VAT_No'] : '',
               'mobile': (this.productData.mobile !== undefined) ? this.productData.mobile : '',
               'fax': (this.productData.fax !== undefined) ? this.productData.fax : '',
+              'discount': (this.productData.discount !== undefined) ? this.productData.discount : '',
               'allow_banktransfer': (this.productData.allow_banktransfer !== undefined) ? this.productData.allow_banktransfer : false,
               'state': (this.productData.state !== undefined) ? this.productData.state : '',
               'password': (this.productData.password !== undefined) ? this.productData.password : '',

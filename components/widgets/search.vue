@@ -1,5 +1,5 @@
 <template>
-  <section id="search" class="notification is-orange">
+  <section id="search" class="notification is-orange reset-font">
     <!-- <hr class="navbar-divider my_div"> -->
     <b-field :custom-class="(size) ? size : 'is-medium'">
       <p :class="(size) ? 'control ' + size : 'control is-medium'">
@@ -16,6 +16,7 @@
         @select="option => selectProduct(option)"
         v-on:keyup.13.native="doSubmit()"
         :expanded="expanded"
+        style.native="color: #000;"
         >
         <!-- <template slot="header">
           <span style="font-weight:bold;font-style:italic">Suggestions:</span>
@@ -190,8 +191,11 @@
   }
 </script>
 
-<style>
+<style scoped>
   .my_div {
     margin-bottom: 15px;
+  }
+  .reset-font {
+    color: #000;
   }
 </style>

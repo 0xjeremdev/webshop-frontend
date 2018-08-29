@@ -44,7 +44,7 @@
                 <h2 class="subtitle"><nuxt-link :to="'/' + slugify(val.name + '-' + val.artno)">{{ val.name }} - {{ val.artno }}</nuxt-link></h2>
                 <div class="columns">
                   <div class="column">
-                    <div v-if="val.reactivity !== '' || val.reactivity !== null" class="art-line">
+                    <div v-if="val.reactivity !== '' && val.reactivity !== null" class="art-line">
                       <div class="art-label">
                         Reactivity
                       </div>
@@ -108,10 +108,10 @@
               <div class="column is-one-third">
                 <p class="title">{{ (Number(val.price).toFixed(2) !== 'NaN') ? '€ ' + Number(val.price).toFixed(2) : 'Inquire' }}</p>
                 <p class="control">
-                  <button class="button is-orange my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+                  <button class="button is-orange my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price, false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
                 </p>
                 <p class="control" style="padding-top: 5px;">
-                  <button class="button is-success my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
+                  <button class="button is-success my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price, true)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
                 </p>
               </div>
             </div>
@@ -241,7 +241,7 @@
         // this.$route.query.page = number
         this.getProducts()
       },
-      async addToCart (id, name, price) {
+      async addToCart (id, name, price, modifier) {
         try {
           let contents = {'amount': 1, 'id': id}
           console.log('addToCart Function Triggered')
@@ -252,6 +252,9 @@
             message: 'Product added to <nuxt-link to="/cart">Cart</nuxt-link>',
             type: 'is-success'
           })
+          if (modifier) {
+            this.$router.push('cart')
+          }
         } catch (e) {
           console.log(e)
         }
