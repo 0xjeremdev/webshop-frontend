@@ -39,7 +39,7 @@
             </div> -->
             <editor v-else-if="val.inputType === 'texteditor'" :id="val.ref" :ref="val.ref" @input="setModel($event, fieldKey, tabKey)" :initial-value="getValue(val, fieldKey, tabKey)"
             :init="{plugins: 'advlist autolink link image lists charmap print preview code wordcount'}"
-            apikey="ajmdvsyicmj4n08v4wb7rhojisjuhy7056o4nivhid3rv4ns"></editor>
+            apiKey="ajmdvsyicmj4n08v4wb7rhojisjuhy7056o4nivhid3rv4ns"></editor>
             <b-switch v-else-if="val.inputType === 'switch'" v-model="productData[fieldKey]"></b-switch>
             <b-input v-else-if="val.inputType === 'email'" type="email" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>

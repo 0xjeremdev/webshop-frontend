@@ -11,7 +11,7 @@
         v-model.lazy="productName"
         icon="microscope"
         :data="autocomplete"
-        placeholder="Search for target/clone or labned art. Nr."
+        placeholder="Search for target/clone or labned art. No."
         :loading="isFetching"
         @select="option => selectProduct(option)"
         v-on:keyup.13.native="doSubmit()"

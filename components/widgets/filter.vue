@@ -93,6 +93,7 @@
         for (let v in this.searchColumns) {
           this.getData(this.searchColumns[v])
         }
+        location.reload()
       },
       getSearchFilters (type, key, value) {
         let mySearchFiltersState = this.$store.state.product.searchFilters

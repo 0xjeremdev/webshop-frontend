@@ -70,6 +70,16 @@
                   <td colspan="3" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
                   <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(productData.subtotal).toFixed(2) }}</strong></td>
                 </tr>
+                <tr v-if="productData.discount !== undefined && productData.discount !== 0">
+                  <td class="th-wrap">&nbsp;</td>
+                  <td colspan="3" class="th-wrap has-text-right">Discount (ex. VAT):</td>
+                  <td class="th-wrap has-text-right">€ {{ parseFloat(productData.discount).toFixed(2) }}</td>
+                </tr>
+                <tr v-if="productData.discount !== undefined && productData.discount !== 0">
+                  <td class="th-wrap">&nbsp;</td>
+                  <td colspan="3" class="th-wrap has-text-right"><strong>Total (ex. VAT):</strong></td>
+                  <td class="th-wrap has-text-right"><strong>€ {{ parseFloat(productData.subtotalwithdiscount).toFixed(2) }}</strong></td>
+                </tr>
                 <tr>
                   <td class="th-wrap">&nbsp;</td>
                   <td colspan="3" class="th-wrap has-text-right">Shipping Costs (ex. VAT):</td>

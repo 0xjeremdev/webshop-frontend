@@ -386,7 +386,7 @@
               'vatno': (this.productData['VAT_No'] !== undefined) ? this.productData['VAT_No'] : '',
               'mobile': (this.productData.mobile !== undefined) ? this.productData.mobile : '',
               'fax': (this.productData.fax !== undefined) ? this.productData.fax : '',
-              'discount': (this.productData.discount !== undefined) ? this.productData.discount : '',
+              'discount': (this.productData.discount !== undefined) ? this.productData.discount : 0,
               'allow_banktransfer': (this.productData.allow_banktransfer !== undefined) ? this.productData.allow_banktransfer : false,
               'state': (this.productData.state !== undefined) ? this.productData.state : '',
               'password': (this.productData.password !== undefined) ? this.productData.password : '',

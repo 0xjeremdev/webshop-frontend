@@ -23,6 +23,16 @@
                 <td colspan="2" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
                 <td width="20%" class="th-wrap has-text-right"><strong>€ {{ parseFloat(subtotal).toFixed(2) }}</strong></td>
               </tr>
+              <tr v-if="discount !== 0">
+                <td class="th-wrap">&nbsp;</td>
+                <td colspan="2" class="th-wrap has-text-right">Discount ({{ discountPerc }}%):</td>
+                <td width="20%" class="th-wrap has-text-right">€ {{ parseFloat(discount).toFixed(2) }}</td>
+              </tr>
+              <tr v-if="discount !== 0">
+                <td class="th-wrap">&nbsp;</td>
+                <td colspan="2" class="th-wrap has-text-right"><strong>Subtotal (ex. VAT):</strong></td>
+                <td width="20%" class="th-wrap has-text-right"><strong>€ {{ parseFloat(subtotalwithdiscount).toFixed(2) }}</strong></td>
+              </tr>
               <tr>
                 <td class="th-wrap">&nbsp;</td>
                 <td colspan="2" class="th-wrap has-text-right">Shipping Costs (ex. VAT):</td>
@@ -167,25 +177,24 @@
             condition = cart[v]['shipping']
           }
         }
-        // let costs = await store.dispatch('order/getShippingCosts', { condition: condition }, { root: true })
         let zonecosts = await store.dispatch('order/getZoneCosts', { cc: store.state.order.address.country }, { root: true })
-        // console.log(zonecosts['result']['_result'])
         zonecosts = zonecosts['result']['_result'][0]['price'][condition]
-        // console.log(parseFloat(zonecosts))
-        // if (zonecosts['result'] !== undefined && zonecosts['result']['_result'].length > 0) zonecosts = zonecosts['result']['_result'][0]
-        // if (zonecosts['result'] === undefined || zonecosts['result']['_result'].length <= 0) error({ 'statusCode': 500, 'message': 'An unexpected error occured' })
+        let customerData = await store.dispatch('account/getCustomerByToken')
         var subtotal = 0
         for (let key in cart) {
           subtotal += parseFloat(cart[key].price) * Number(cart[key].amount)
         }
+        let discount = (customerData.data.result !== undefined && customerData.data.result._result !== undefined && customerData.data.result._result.length > 0 && customerData.data.result._result[0].discount !== undefined) ? customerData.data.result._result[0].discount : 0
+        let discountPerc = discount
+        discount = subtotal * (discount / 100)
+        let subtotalwithdiscount = subtotal - discount
         let shippingcosts = parseFloat(zonecosts)
-        let shippingtotal = subtotal + shippingcosts
+        let shippingtotal = subtotalwithdiscount + shippingcosts
         let vatamount = (store.state.settings.VAT / 100) * shippingtotal
         let total = shippingtotal + vatamount
         let idealData = await store.dispatch('payment/getIdealData')
-        let customerData = await store.dispatch('account/getCustomerByToken')
-        console.log(customerData)
-        return { customer: customerData.data.result._result[0], payment_options: store.state.settings.payment_options, cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total, idealData: idealData }
+
+        return { discountPerc: discountPerc, customer: customerData.data.result._result[0], payment_options: store.state.settings.payment_options, cartContents: cart, shippingcosts: shippingcosts, subtotal: subtotal, shippingtotal: shippingtotal, vatamount: vatamount, total: total, idealData: idealData, discount: discount, subtotalwithdiscount: subtotalwithdiscount }
       } catch (e) {
         console.log(e)
         error({ 'statusCode': 500, 'message': 'Unexpected error occured, please contact our support team' })

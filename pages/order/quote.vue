@@ -5,10 +5,13 @@
       <em>Please fill in below e-mail address of your purchasing department. This will send an email to your purchasing department, in which they can login (or create an account) and place the order for you. You can also send a quote to yourself, to place an order at a later date.</em>
       <br />
       <br />
-      <b-message type="is-danger" has-icon title="An error has occured" :active.sync="showError">
+      <b-message :type="(wasSend) ? 'is-success' : 'is-danger'" has-icon :title="(wasSend) ? 'Success' : 'An error has occured'" :active.sync="showError">
         {{ formError }}
       </b-message>
-      <div class="columns">
+      <!-- <b-message type="is-danger" has-icon title="An error has occured" :active.sync="showError">
+        {{ formError }}
+      </b-message> -->
+      <div v-if="!wasSend" class="columns">
         <div class="column">
       <form @submit.prevent="sendQuote()">
         <b-field label="E-mail"
@@ -16,7 +19,7 @@
         :message="message['email']">
           <b-input v-model="email" type="email" autocomplete='email' placeholder="example@labned.com"></b-input>
         </b-field>
-        <button class="button is-orange" type="submit">Send quote</button>
+        <p class="control"><button class="button is-orange" type="submit">Send quote</button></p>
       </form>
         </div>
         <div class="column">
@@ -48,6 +51,8 @@
           </table>
         </div>
       </div>
+      <p class="control"><button class="button is-info" style="margin-right: 0.75em;" @click="backToSearch()">Back to Search</button>
+      <button class="button is-info" @click="checkQuotes">Check send Quotes</button></p>
     </div>
   </section>
 </template>
@@ -57,6 +62,7 @@
     middleware: 'authCustomer',
     data () {
       return {
+        wasSend: false,
         email: '',
         vat: this.$store.state.settings.VAT,
         message: {
@@ -124,6 +130,12 @@
         this.message = messages
         this[fld] = value
       },
+      async backToSearch () {
+        this.$router.back()
+      },
+      async checkQuotes () {
+        this.$router.replace({ path: '/account/quote', replace: true })
+      },
       async sendQuote () {
         try {
           this.isLoading = true
@@ -138,20 +150,25 @@
             let result = await this.$store.dispatch('order/placeQuote', { status: 'Quote placed', email: this.email, subtotal: this.subtotal })
             if (result) {
               this.isLoading = false
-              this.showError = false
+              this.showError = true
               this.$store.commit('cart/SET_CART', [])
-              this.$router.replace({ path: '/account/quote', replace: true })
+              this.formError = 'We have send the quote to the specified e-mail: ' + this.email
+              this.wasSend = true
+              // this.$router.replace({ path: '/account/quote', replace: true })
               // this.$toast.open({ message: 'Saved', type: 'is-success' })
-            }
-            this.showError = true
-            this.formError = 'Could not send a quote. Server was not responding please contact us so we can assist you in another way'
-            this.isLoading = false
-            // this.$toast.open({ message: 'Could not save data, please try again', type: 'is-danger' })
+            } else {
+              this.showError = true
+              this.formError = 'Could not send a quote. Server was not responding please contact us so we can assist you in another way'
+              this.isLoading = false
+              this.wasSend = false
+            } // this.$toast.open({ message: 'Could not save data, please try again', type: 'is-danger' })
           }
         } catch (e) {
           console.log(e)
           this.showError = true
           this.isLoading = false
+          this.formError = 'Could not send a quote. Server was not responding please contact us so we can assist you in another way'
+          this.wasSend = false
           // this.$toast.open({ message: 'Could not save data, please try again', type: 'is-danger' })
         }
       }

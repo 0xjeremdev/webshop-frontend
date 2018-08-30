@@ -23,7 +23,7 @@
         store.commit('order/SET_BILLING', $cookies.get('key2publish').order.billing)
         store.commit('order/SET_CUSTOMER', $cookies.get('key2publish').order.customer)
         store.dispatch('getSettings')
-        console.log(store.state.order.address)
+        // console.log(store.state.order.address)
         let cart = store.state.cart.cartContents
         await store.dispatch('cart/getProductForCart', { cart: cart }, { root: true })
         let condition = 'RT'
@@ -44,18 +44,24 @@
         // console.log(parseFloat(zonecosts))
         // if (zonecosts['result'] !== undefined && zonecosts['result']['_result'].length > 0) zonecosts = zonecosts['result']['_result'][0]
         // if (zonecosts['result'] === undefined || zonecosts['result']['_result'].length <= 0) error({ 'statusCode': 500, 'message': 'An unexpected error occured' })
+        let customerData = await store.dispatch('account/getCustomerByToken')
         var subtotal = 0
         for (let key in cart) {
           subtotal += parseFloat(cart[key].price) * Number(cart[key].amount)
         }
+        let discount = (customerData.data.result !== undefined && customerData.data.result._result !== undefined && customerData.data.result._result.length > 0 && customerData.data.result._result[0].discount !== undefined) ? customerData.data.result._result[0].discount : 0
+        discount = subtotal * (discount / 100)
+        let subtotalwithdiscount = subtotal - discount
         let shippingcosts = parseFloat(zonecosts)
-        let shippingtotal = subtotal + shippingcosts
+        let shippingtotal = subtotalwithdiscount + shippingcosts
         let vatamount = (store.state.settings.VAT / 100) * shippingtotal
         let total = shippingtotal + vatamount
         let orderData = {
           status: 'Payment Received',
           total: total,
           vatamount: vatamount,
+          discount: discount,
+          subtotalwithdiscount: subtotalwithdiscount,
           shippingtotal: shippingtotal,
           shippingcosts: shippingcosts,
           subtotal: subtotal,

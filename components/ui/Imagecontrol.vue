@@ -18,20 +18,21 @@
       Uploading {{ fileCount }} files... {{ progress }} %
     </p>
 
-    <figure v-if="myImage && showImage" v-for="(fig) in myImage" class="image is-128x128">
-      <img @click="setImageModalActive(fig)" :src="imageUrl + '/img/' + type + '/' + fig"  @error="imageLoadError">
-    </figure>
-
-    <div class="tags">
-      <span v-for="(file, index) in files"
-        :key="index"
-        class="tag is-primary" >
-        {{file.name}}
-        <button class="delete is-small"
-          type="button"
-          @click="deleteDropFile(index)">
-        </button>
-      </span>
+    <div v-if="myImage && showImage" v-for="(fig, index) in myImage">
+      <figure class="image is-96x96">
+        <img @click="setImageModalActive(fig)" :src="imageUrl + '/img/' + type + '/' + fig"  @error="imageLoadError">
+      </figure>
+      <div class="tags" style="margin-bottom: 0.75em;">
+        <span
+          :key="index"
+          class="tag is-primary" >
+          {{ fig }}
+          <button class="delete is-small"
+            type="button"
+            @click="deleteDropFile(index, fig, type)">
+          </button>
+        </span>
+      </div>
     </div>
 
     <!-- <b-modal v-if="myImage && showImage" :key="fig" v-for="(fig) in myImage" :active.sync="imageModelActive[fig]">
@@ -97,9 +98,14 @@
         this.imageModelActive = imageModel
         // console.log(this.imageModelActive)
       },
-      deleteDropFile (index) {
-        // console.log(this.files)
-        this.files.splice(index, 1)
+      async deleteDropFile (index, name, mytype) {
+        try {
+          await this.$axios.$post(this.$store.state.apiUrl + '/admin/upload/delete', { mytype: mytype, name: name }, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+          this.myImage.splice(index, 1)
+        } catch (e) {
+          console.log(e)
+          this.$toast.open('Could not delete image')
+        }
       },
       imageLoadError () {
         this.showImage = false

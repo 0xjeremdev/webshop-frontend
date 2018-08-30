@@ -16,10 +16,10 @@
           <p class="title my-img">{{ (Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? '€ ' + Number(product.basic['Price LabNed']).toFixed(2) : 'Inquire' }}</p>
           <div class="columns is-mobile">
             <div class="column">
-              <button class="button is-orange my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+              <button class="button is-orange my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'], false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
             </div>
             <div class="column">
-              <button class="button is-info my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'])"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
+              <button class="button is-info my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'], true)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
             </div>
           </div>
           <br />
@@ -72,6 +72,9 @@
         </div>
       </div>
     </div>
+    <b-modal :active.sync="modalActive" has-modal-card>
+      <request-pdf :productid="product.basic.vat"></request-pdf>
+    </b-modal>
   </section>
 </template>
 
@@ -79,9 +82,10 @@
   // import Cookies from 'js-cookie'
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
   import Banner from '~/components/widgets/banner.vue'
+  import requestPdf from '~/components/ui/requestPDF.vue'
 
   export default {
-    components: { breadCrumb, Banner },
+    components: { breadCrumb, Banner, requestPdf },
     head () {
       return {
         title: 'LabNed.com - Exploring Possibilities',
@@ -90,6 +94,7 @@
     },
     data () {
       return {
+        modalActive: false,
         apiUrl: this.$store.state.apiUrl,
         product: {},
         fields: {
@@ -353,7 +358,7 @@
         }
         return active
       },
-      async addToCart (id, name, price) {
+      async addToCart (id, name, price, modifier) {
         try {
           let contents = {'amount': 1, 'id': id}
           this.$store.commit('cart/ADD_TO_CART', contents)
@@ -363,16 +368,34 @@
             message: 'Product added to <nuxt-link to="/cart">Cart</nuxt-link>',
             type: 'is-success'
           })
+          if (modifier) {
+            this.$router.push('/cart')
+          }
         } catch (e) {
           console.log(e)
         }
       },
-      async showPDF (id) {
-        try {
-          await this.$axios.get(this.apiUrl + '/img/pdf/' + id.charAt(2) + id.charAt(3) + '/' + id + '.pdf')
-          window.open(this.apiUrl + '/img/pdf/' + id.charAt(2) + id.charAt(3) + '/' + id + '.pdf', '_blank')
-        } catch (e) {
+      doesFileExist (urlToFile) {
+        var xhr = new XMLHttpRequest()
+        xhr.open('HEAD', urlToFile, false)
+        xhr.send()
 
+        if (xhr.status === 404) {
+          return false
+        } else {
+          return true
+        }
+      },
+      showPDF (id) {
+        try {
+          let theresult = this.doesFileExist(this.apiUrl + '/img/pdf/' + id.charAt(2) + id.charAt(3) + '/' + id + '.pdf')
+          if (theresult === true) {
+            window.open(this.apiUrl + '/img/pdf/' + id.charAt(2) + id.charAt(3) + '/' + id + '.pdf', '_blank')
+          } else {
+            this.modalActive = true
+          }
+        } catch (e) {
+          console.log(e)
         }
       }
     }

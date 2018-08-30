@@ -52,6 +52,8 @@ export const actions = {
         from_quote: (state.fromQuote) ? state.fromQuote : false,
         status: orderData.status,
         total: orderData.total,
+        discount: orderData.discount,
+        subtotalwithdiscount: orderData.subtotalwithdiscount,
         subtotal: orderData.subtotal,
         vatamount: orderData.vatamount,
         shippingtotal: orderData.shippingtotal,
