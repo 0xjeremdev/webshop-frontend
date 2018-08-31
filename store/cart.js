@@ -17,7 +17,11 @@ export const mutations = {
     for (let key in mycart) {
       if (mycart[key]['id'] === cart['id']) {
         // cart.amount++
-        mycart[key] = cart
+        if (cart.hasOwnProperty('name')) {
+          mycart[key] = cart
+        } else {
+          mycart[key]['amount'] = cart['amount']
+        }
         found = true
       }
     }

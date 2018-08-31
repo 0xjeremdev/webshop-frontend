@@ -1,5 +1,5 @@
 <template>
-  <section id="banner" class="hero">
+  <section>
     <no-ssr placeholder="Loading...">
     <Carousel :perPage="1"
       :loop="true"
@@ -8,7 +8,7 @@
       :navigationEnabled="false"
       :paginationEnabled="false">
       <Slide v-for="(img, index) in images" :key="index">
-        <div class="my-overlay">
+        <div :class="(alignment) ? alignment : 'my-overlay'">
           <img :src="apiUrl + '/img/' + type + '/' + img" alt="Image1" />
         </div>
       </Slide>
@@ -28,7 +28,8 @@
   export default {
     components: { Carousel, Slide },
     props: {
-      type: String
+      type: String,
+      alignment: String
     },
     data () {
       return {
@@ -40,6 +41,16 @@
 </script>
 
 <style scoped>
+  .my-overlay-right {
+    position: relative;
+    text-align: right;
+  }
+
+  .my-overlay-left {
+    position: relative;
+    text-align: left;
+  }
+
   .my-overlay {
     position: relative;
     text-align: center;

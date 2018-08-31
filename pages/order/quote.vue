@@ -19,7 +19,7 @@
         :message="message['email']">
           <b-input v-model="email" type="email" autocomplete='email' placeholder="example@labned.com"></b-input>
         </b-field>
-        <p class="control"><button class="button is-orange" type="submit">Send quote</button></p>
+        <p class="control"><button class="button is-orange" type="submit">Send Quote</button></p>
       </form>
         </div>
         <div class="column">

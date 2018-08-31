@@ -16,7 +16,7 @@
           <p class="title my-img">{{ (Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? '€ ' + Number(product.basic['Price LabNed']).toFixed(2) : 'Inquire' }}</p>
           <div class="columns is-mobile">
             <div class="column">
-              <button class="button is-orange my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'], false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+              <button class="button is-primary my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'], false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
             </div>
             <div class="column">
               <button class="button is-info my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'], true)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>

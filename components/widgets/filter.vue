@@ -114,6 +114,7 @@
         this.getProductData()
         for (let v in this.searchColumns) {
           // if (this.searchColumns[v] !== type)
+          console.log(this.searchColumns[v])
           this.getData(this.searchColumns[v])
         }
       },

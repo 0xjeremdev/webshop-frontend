@@ -80,7 +80,8 @@ export const actions = {
 
   async getCustomerByToken ({ state, rootState }) {
     try {
-      return await axios.get(rootState.apiUrl + '/customer', { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+      if (state.token !== undefined && state.token !== null && state.token.jwt !== undefined && state.token.jwt !== null && state.token.jwt !== '') return await axios.get(rootState.apiUrl + '/customer', { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+      return false
     } catch (e) {
       console.log(e)
       return false

@@ -109,7 +109,7 @@ export const actions = {
       if (search === '' && filterIsFalse) {
         let mydata = await this.$axios.$get(rootState.apiUrl + '/filter/' + field, { headers: { Pragma: 'no-cache', 'Cache-Control': 'no-cache' } })
         val[field] = mydata.result['_result']
-      } else if (field === 'Product category LabNed') {
+      /* } else if (field === 'Product category LabNed') {
         let mydata = await this.$axios.$get(rootState.apiUrl + '/filter/' + field, { headers: { Pragma: 'no-cache', 'Cache-Control': 'no-cache' } })
         let postData = { searchVal: search, searchFilters: searchFilters, field: field }
         console.log(postData)
@@ -122,7 +122,7 @@ export const actions = {
           }
           if (!keep) correctData.splice(r, 1)
         }
-        val[field] = correctData
+        val[field] = correctData */
       } else {
         let postData = { searchVal: search, searchFilters: searchFilters, field: field }
         console.log(postData)

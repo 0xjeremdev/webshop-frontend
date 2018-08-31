@@ -11,7 +11,7 @@
         v-model.lazy="productName"
         icon="microscope"
         :data="autocomplete"
-        placeholder="Search for target/clone or labned art. No."
+        placeholder="Search for target/clone or labned art. no."
         :loading="isFetching"
         @select="option => selectProduct(option)"
         v-on:keyup.13.native="doSubmit()"
@@ -49,6 +49,7 @@
     watch: {
       productName: _.debounce(function (e) {
         // Do something with search term after it debounced
+        this.$store.commit('product/SET_SEARCH_FILTERS', { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} })
         this.getProducts()
       }, 500)
     },
@@ -74,6 +75,7 @@
         } */
       } else {
         this.$store.commit('product/SET_SEARCHVAL', '')
+        this.$store.commit('product/SET_SEARCH_FILTERS', { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} })
         // this.productName = ''
       }
     },

@@ -72,12 +72,13 @@
       </b-table>
       <div v-if="getCartContents.length > 0" class="columns">
         <div class="column">
+          <button class="button is-success" @click="$router.push('/search')">Continue Shopping</button>
         </div>
         <div class="column is-one-fifth">
-          <button class="button is-orange" @click="requestQuote()">Ask for Quote</button>
+          <button class="button is-info" @click="requestQuote()">Ask for Quote</button>
         </div>
         <div class="column is-one-fifth">
-          <nuxt-link to="/order"><button class="button is-success">Order</button></nuxt-link>
+          <nuxt-link to="/order"><button class="button is-primary">Order</button></nuxt-link>
         </div>
       </div>
       <br />
@@ -164,13 +165,13 @@
       },
       addToCart (amount, row) {
         let contents = {'amount': amount, 'id': row.id}
-        console.log(contents)
+        // console.log(contents)
         this.$store.commit('cart/ADD_TO_CART', contents)
       },
       doReset (value, row) {
         this.addToCart(1, row)
       },
-      setAmount: function (value, row) {
+      async setAmount (value, row) {
         if (value <= 0) {
           this.$dialog.confirm({
             title: 'Remove product ' + row.row.id + ' from cart',
@@ -183,6 +184,9 @@
           })
         } else {
           this.addToCart(value, row.row)
+          this.subtotal = this.calcSubTotal()
+          await this.calcDiscount()
+          await this.calcTotal()
         }
       }
     }

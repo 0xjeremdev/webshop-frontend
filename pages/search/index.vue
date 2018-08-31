@@ -108,10 +108,10 @@
               <div class="column is-one-third">
                 <p class="title">{{ (Number(val.price).toFixed(2) !== 'NaN') ? '€ ' + Number(val.price).toFixed(2) : 'Inquire' }}</p>
                 <p class="control">
-                  <button class="button is-orange my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price, false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+                  <button class="button is-primary my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price, false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
                 </p>
                 <p class="control" style="padding-top: 5px;">
-                  <button class="button is-success my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price, true)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
+                  <button class="button is-info my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price, true)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
                 </p>
               </div>
             </div>
@@ -289,6 +289,7 @@
   .my-section {
     padding: 0.5rem;
     margin-left: 1.5rem;
+    margin-right: 0.75rem;
     margin-top: 0.5rem;
     background-color: #025689;
     color: white;

@@ -1,11 +1,11 @@
 <template>
   <section class="section-alt">
     <div class="columns">
-      <div class="column">
-      <Banner type="banner"></Banner>
+      <div class="column my-column">
+        <Banner type="banner"></Banner>
       </div>
-      <div class="column">
-        <div class="columns">
+      <div class="column my-column">
+        <div class="columns section-alt">
           <div class="column notification is-orange">
             <search :expanded="true" :size="'is-medium'"></search>
           </div>
@@ -47,5 +47,9 @@
 <style scoped>
   .section-alt {
     padding: 0.75em;
+  }
+
+  .my-column {
+    padding: 0em;
   }
 </style>
