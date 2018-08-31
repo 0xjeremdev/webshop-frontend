@@ -23,6 +23,9 @@
             <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Immunoassays'">
               <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>
+            <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'DNA & RNA Purification Kits'">
+              <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
+            </div>
             <div v-for="( svVal, svKey ) in getFilters[val]" :key="svKey" v-if="svVal === 'Peptides & (rec.) Proteins'">
               <input type="checkbox" :name="svVal" :checked="getSearchFilters(val, svKey, svVal)" @click="setSearch(val, svKey, svVal)"> {{ svVal }}
             </div>

@@ -75,7 +75,7 @@
           <button class="button is-success" @click="$router.push('/search')">Continue Shopping</button>
         </div>
         <div class="column is-one-fifth">
-          <button class="button is-info" @click="requestQuote()">Ask for Quote</button>
+          <button class="button is-info" @click="requestQuote()">Generate Quote</button>
         </div>
         <div class="column is-one-fifth">
           <nuxt-link to="/order"><button class="button is-primary">Order</button></nuxt-link>

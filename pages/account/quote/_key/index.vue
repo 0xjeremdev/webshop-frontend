@@ -3,7 +3,7 @@
     <div class="container">
       <div class="columns">
         <div class="column is-one-quarter">
-          <accountMenu link="delivery"></accountMenu>
+          <accountMenu link="quotes"></accountMenu>
         </div>
         <div class="column">
           <h1 class="title">Quote No: {{ quote.order_no }}</h1>
@@ -72,7 +72,7 @@
               </table>
             </div>
           </div>
-          <button class="button is-primary">Order Quote</button>
+          <button class="button is-primary" @click="doOrderQuote()">Order Quote</button>
         </div>
       </div>
     </div>
@@ -93,45 +93,49 @@
       }
     },
     async asyncData ({ store, params, app: { $axios, $cookies } }) {
-      if (params.key !== undefined) {
-        let quote = await $axios.$get(store.state.apiUrl + '/quote/' + params.key)
-        let quoteResult = quote.result._result[0]
-        var subtotal = 0
-        for (let v = 0; v < quoteResult.items.length; v++) {
-          console.log(quoteResult.items)
-          subtotal += (parseFloat(quoteResult.items[v].price) * Number(quoteResult.items[v].amount))
+      try {
+        if (params.key !== undefined) {
+          let quote = await $axios.$get(store.state.apiUrl + '/quote/' + params.key, { headers: { Authorization: `Bearer ${store.state.account.token.jwt}` } })
+          let quoteResult = quote.result._result[0]
+          var subtotal = 0
+          for (let v = 0; v < quoteResult.items.length; v++) {
+            console.log(quoteResult.items)
+            subtotal += (parseFloat(quoteResult.items[v].price) * Number(quoteResult.items[v].amount))
+          }
+          let quoteDate = new Date(quoteResult.quote_date)
+          var monthNums = [
+            '01', '02', '03',
+            '04', '05', '06', '07',
+            '08', '09', '10',
+            '11', '12'
+          ]
+          let endDate = new Date(quoteDate)
+          endDate.setDate(endDate.getDate() + 30)
+          var msDay = 60 * 60 * 24 * 1000
+          var differenceDays = Math.floor((endDate - quoteDate) / msDay)
+
+          var day = quoteDate.getDate()
+          var monthIndex = monthNums[quoteDate.getMonth()]
+          var year = quoteDate.getFullYear()
+          quoteDate = year + '-' + monthIndex + '-' + day
+
+          day = endDate.getDate()
+          monthIndex = monthNums[endDate.getMonth()]
+          year = endDate.getFullYear()
+          endDate = year + '-' + monthIndex + '-' + day
+
+          return { quote: quote.result._result[0], subtotal: subtotal, dates: { quote_date: quoteDate, end_date: endDate, differenceDays: differenceDays } }
         }
-        let quoteDate = new Date(quoteResult.quote_date)
-        var monthNums = [
-          '01', '02', '03',
-          '04', '05', '06', '07',
-          '08', '09', '10',
-          '11', '12'
-        ]
-        let endDate = new Date(quoteDate)
-        endDate.setDate(endDate.getDate() + 30)
-        var msDay = 60 * 60 * 24 * 1000
-        var differenceDays = Math.floor((endDate - quoteDate) / msDay)
 
-        var day = quoteDate.getDate()
-        var monthIndex = monthNums[quoteDate.getMonth()]
-        var year = quoteDate.getFullYear()
-        quoteDate = year + '-' + monthIndex + '-' + day
-
-        day = endDate.getDate()
-        monthIndex = monthNums[endDate.getMonth()]
-        year = endDate.getFullYear()
-        endDate = year + '-' + monthIndex + '-' + day
-
-        return { quote: quote.result._result[0], subtotal: subtotal, dates: { quote_date: quoteDate, end_date: endDate, differenceDays: differenceDays } }
+        return { quote: {}, subtotal: 0 }
+      } catch (e) {
+        console.log(e)
       }
-
-      return { quote: {}, subtotal: 0 }
     },
     methods: {
       doOrderQuote () {
-        this.$store.commit('cart/SET_CART', this.order.items)
-        this.$store.commit('order/SET_ORDERNO', this.order.orderno)
+        this.$store.commit('cart/SET_CART', this.quote.items)
+        this.$store.commit('order/SET_ORDERNO', this.quote.orderno)
         this.$store.commit('order/SET_FROMQUOTE', true)
         this.$router.push('/cart')
       }

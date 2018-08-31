@@ -149,30 +149,35 @@
       }
     },
     async asyncData ({ store, params, app: { $axios, $cookies } }) {
-      if (params.key !== undefined) {
-        let order = await $axios.$get(store.state.apiUrl + '/order/' + params.key)
-        let orderResult = order.result._result[0]
-        var subtotal = 0
-        for (let v = 0; v < orderResult.items.length; v++) {
-          subtotal += (parseFloat(orderResult.items[v].price) * Number(orderResult.items[v].amount))
+      try {
+        if (params.key !== undefined) {
+          let order = await $axios.$get(store.state.apiUrl + '/order/' + params.key, { headers: { Authorization: `Bearer ${store.state.account.token.jwt}` } })
+          console.log(order)
+          let orderResult = order.result._result[0]
+          var subtotal = 0
+          for (let v = 0; v < orderResult.items.length; v++) {
+            subtotal += (parseFloat(orderResult.items[v].price) * Number(orderResult.items[v].amount))
+          }
+          let orderDate = new Date(orderResult.order_date)
+          var monthNums = [
+            '01', '02', '03',
+            '04', '05', '06', '07',
+            '08', '09', '10',
+            '11', '12'
+          ]
+
+          var day = orderDate.getDate()
+          var monthIndex = monthNums[orderDate.getMonth()]
+          var year = orderDate.getFullYear()
+          orderDate = year + '-' + monthIndex + '-' + day
+
+          return { order: order.result._result[0], subtotal: subtotal, order_date: orderDate }
         }
-        let orderDate = new Date(orderResult.order_date)
-        var monthNums = [
-          '01', '02', '03',
-          '04', '05', '06', '07',
-          '08', '09', '10',
-          '11', '12'
-        ]
 
-        var day = orderDate.getDate()
-        var monthIndex = monthNums[orderDate.getMonth()]
-        var year = orderDate.getFullYear()
-        orderDate = year + '-' + monthIndex + '-' + day
-
-        return { order: order.result._result[0], subtotal: subtotal, order_date: orderDate }
+        return { order: {}, subtotal: 0 }
+      } catch (e) {
+        console.log(e)
       }
-
-      return { order: {}, subtotal: 0 }
     },
     methods: {
       doReOrder () {

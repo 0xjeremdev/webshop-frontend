@@ -75,7 +75,6 @@
                 <b-icon icon="account-circle"></b-icon>
                 <span>Account</span>
               </button>
-              <b-dropdown-item>Account info</b-dropdown-item>
               <b-dropdown-item v-on:click="logout()">Logout</b-dropdown-item>
             </b-dropdown>
           </div>
