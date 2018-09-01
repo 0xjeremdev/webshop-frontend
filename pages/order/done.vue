@@ -65,11 +65,15 @@
           shippingtotal: shippingtotal,
           shippingcosts: shippingcosts,
           subtotal: subtotal,
-          vat: store.state.settings.VAT
+          vat: store.state.settings.VAT,
+          order_no: store.state.order.order_no,
+          fromQuote: store.state.order.fromQuote
         }
         console.log(orderData)
         store.dispatch('order/placeOrder', { orderData: orderData }, { root: true })
         store.commit('cart/SET_CART', [])
+        store.commit('order/SET_ORDERNO', '')
+        store.commit('order/SET_FROMQUOTE', false)
         return { message: 'ORDER PLACED SUCCESFULLY' }
       } catch (e) {
         console.log(e)

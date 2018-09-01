@@ -5,7 +5,8 @@ export const state = () => ({
   address: {},
   billing: {},
   fromQuote: false,
-  countryList: {}
+  countryList: {},
+  order_no: ''
 })
 
 export const mutations = {
@@ -23,6 +24,9 @@ export const mutations = {
   },
   SET_FROMQUOTE: function (state, value) {
     state.fromQuote = value
+  },
+  SET_ORDERNO: function (state, value) {
+    state.order_no = value
   }
 }
 
@@ -58,7 +62,8 @@ export const actions = {
         vatamount: orderData.vatamount,
         shippingtotal: orderData.shippingtotal,
         shippingcosts: orderData.shippingcosts,
-        vat: orderData.vat
+        vat: orderData.vat,
+        order_no: (orderData.order_no !== undefined && orderData.order_no && orderData.order_no !== '') ? orderData.order_no : ''
       }
       console.log(postData)
       await this.$axios.$post(rootState.apiUrl + '/order', postData, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })

@@ -14,7 +14,7 @@ export default ({store, isHMR, app}) => {
         authUser: state.authUser,
         cookieAccepted: state.cookieAccepted,
         account: { token: state.account.token },
-        order: { address: state.order.address, billing: state.order.billing, customer: state.order.customer, fromQuote: state.order.fromQuote },
+        order: { address: state.order.address, billing: state.order.billing, customer: state.order.customer, fromQuote: state.order.fromQuote, order_no: state.order.order_no },
         product: { searchVal: state.product.searchVal, searchFilters: state.product.searchFilters, page: state.product.page, total: state.product.total }
         // settings: state.settings
       }),

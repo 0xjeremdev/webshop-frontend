@@ -48,16 +48,24 @@ export const actions = {
       }
       // console.log(cart)
       if (cart === undefined || cart.length <= 0) return cart
-      let mydata = await this.$axios.$post(rootState.apiUrl + '/product/cart/', { cart: cart })
-      let data = mydata['result']['_result']
-      for (let c in cart) {
-        for (let d in data) {
-          if (data[d].id === cart[c].id) {
-            data[d].amount = cart[c].amount
+      commit('order/SET_FROMQUOTE', this.$cookies.get('key2publish').order.fromQuote, { root: true })
+      commit('order/SET_ORDERNO', this.$cookies.get('key2publish').order.order_no, { root: true })
+      let mydata = {}
+      let data = {}
+      if (rootState.order.fromQuote) {
+        mydata = await this.$axios.$get(rootState.apiUrl + '/quote/orderno/' + rootState.order.order_no, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
+        data = mydata['result']['_result'][0].items
+      } else {
+        mydata = await this.$axios.$post(rootState.apiUrl + '/product/cart/', { cart: cart })
+        data = mydata['result']['_result']
+        for (let c in cart) {
+          for (let d in data) {
+            if (data[d].id === cart[c].id) {
+              data[d].amount = cart[c].amount
+            }
           }
         }
       }
-      console.log(data)
       // console.log('Got Triggered here')
 
       commit('SET_CART', data)

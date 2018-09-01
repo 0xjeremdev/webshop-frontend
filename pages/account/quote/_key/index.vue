@@ -135,7 +135,7 @@
     methods: {
       doOrderQuote () {
         this.$store.commit('cart/SET_CART', this.quote.items)
-        this.$store.commit('order/SET_ORDERNO', this.quote.orderno)
+        this.$store.commit('order/SET_ORDERNO', this.quote.order_no)
         this.$store.commit('order/SET_FROMQUOTE', true)
         this.$router.push('/cart')
       }

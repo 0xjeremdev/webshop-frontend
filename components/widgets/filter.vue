@@ -59,7 +59,7 @@
   export default {
     data () {
       return {
-        searchProductType: [ 'Primary Antibodies', 'Secondary Antibodies', 'Immunoassays', 'Peptides & (rec.) Proteins', 'Controls, Slides & Lysates', 'Consumables & Misc.' ],
+        searchProductType: [ 'Primary Antibodies', 'Secondary Antibodies', 'Immunoassays', 'DNA & RNA Purification Kits', 'Peptides & (rec.) Proteins', 'Controls, Slides & Lysates', 'Consumables & Misc.' ],
         searchColumns: [ 'Product category LabNed', 'Reactivity', 'Host', 'Clone', 'Applications', 'Conjugate' ],
         searchLabels: [ 'Product Type', 'Reactivity', 'Host', 'Clone', 'Application', 'Conjugate' ],
         /* sort: {

@@ -32,7 +32,7 @@
           </b-table-column>
 
           <b-table-column label="Actions" width="100">
-              <button class="button is-info" @click="doDeleteCart(key)"><b-icon icon="delete-forever"></b-icon></button>
+              <button class="button is-info" @click="doDeleteCart($event)"><b-icon icon="delete-forever"></b-icon></button>
           </b-table-column>
         </template>
 
