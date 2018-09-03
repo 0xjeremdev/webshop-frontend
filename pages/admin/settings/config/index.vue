@@ -235,11 +235,6 @@
               'label': 'Contact E-mail Text',
               'ref': 'contact_email_text'
             },
-            'register_email_text': {
-              'inputType': 'texteditor',
-              'label': 'Registration E-mail Text',
-              'ref': 'register_email_text'
-            },
             'verify_email_text': {
               'inputType': 'texteditor',
               'label': 'Verify E-mail Text',
@@ -418,7 +413,7 @@
             contact_BIC: (this.productData.contact_BIC !== undefined) ? this.productData.contact_BIC : '',
             order_email_text: (this.productData.order_email_text !== undefined) ? this.productData.order_email_text : '',
             contact_email_text: (this.productData.contact_email_text !== undefined) ? this.productData.contact_email_text : '',
-            register_email_text: (this.productData.register_email_text !== undefined) ? this.productData.register_email_text : '',
+            register_email_text: '',
             verify_email_text: (this.productData.verify_email_text !== undefined) ? this.productData.verify_email_text : '',
             delete_customer_email_text: (this.productData.delete_customer_email_text !== undefined) ? this.productData.delete_customer_email_text : '',
             payment_link: (this.productData.payment_link !== undefined) ? this.productData.payment_link : '',
