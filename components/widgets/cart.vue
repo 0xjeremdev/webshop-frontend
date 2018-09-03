@@ -1,6 +1,6 @@
 <template>
-  <b-dropdown style="z-index: 10;" hoverable position="is-bottom-left">
-      <button :data-badge="getCartContents.length" class="button badge is-orange" @click="$router.push('/cart')" style="border: 1px solid white;" slot="trigger">
+  <b-dropdown style="z-index: 10;" hoverable position="is-bottom-left" class="badge" :data-badge="getCartContents.length">
+      <button class="button is-orange" @click="$router.push('/cart')" style="border: 1px solid white;" slot="trigger">
         <b-icon icon="cart-outline"></b-icon>
         <span>Cart</span>
       </button>

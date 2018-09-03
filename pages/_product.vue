@@ -39,11 +39,11 @@
         </div>
         <div class="column">
           <h2 class="subtitle">{{ product.basic.name }} - {{ product.basic.vat }}</h2>
-
+          <div class="has-text-right"><button class="button is-primary" style="width: 150px; margin-top: -0.5rem; margin-bottom: 0.75rem;" @click="showPDF(product.basic.vat)"><b-icon icon="file-pdf"></b-icon><span>PDF Datasheet</span></button></div>
           <b-collapse class="card" v-for="(value, tabKey) in fields" :key="tabKey" v-if="hasContent(tabKey)" :open="(tabKey === 'Product Information')">
             <div slot="trigger" slot-scope="props" class="card-header">
                 <p class="card-header-title">
-                    {{ tabKey }} <p v-if="tabKey === 'Product Information'" class="control"><button class="button is-primary" style="width: 150px; margin: 0.75rem;" @click="showPDF(product.basic.vat)"><b-icon icon="file-pdf"></b-icon><span>PDF Datasheet</span></button></p>
+                    {{ tabKey }} <p v-if="tabKey === 'Product Information'" class="control"></p>
                 </p>
                 <a class="card-header-icon">
                     <b-icon
