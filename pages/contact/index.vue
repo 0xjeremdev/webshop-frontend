@@ -28,7 +28,7 @@
               <b-input type="textarea" :value="formMessage" autocomplete="message" @blur="validate($event.srcElement.value, 'formMessage', 'field')" placeholder="Type your question/message"></b-input>
             </b-field>
             <b-field>
-              <b-checkbox v-model="formNewsletter">Signup for the monthly newsletter</b-checkbox>
+              <b-checkbox v-model="formNewsletter">Sign-up for the monthly newsletter</b-checkbox>
             </b-field>
             <vue-recaptcha ref="recaptcha"
               @verify="onVerify"

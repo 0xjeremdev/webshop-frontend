@@ -8,7 +8,7 @@
           <b-message type="is-danger" has-icon title="An error has occured" :active.sync="showError">
             {{ formError }}
           </b-message>
-          <h1 class="title">Signup for LabNed.com</h1>
+          <h1 class="title">Sign-up for LabNed.com</h1>
           <form v-on:submit.prevent="doRegister()">
             <b-field grouped>
               <b-field label="Title" :type="(typeof message.formTitle !== 'undefined' && message.formTitle !== '') ? 'is-danger' : ''" :message="message.formTitle">
@@ -43,7 +43,7 @@
                 </b-input>
             </b-field>
             <b-field>
-              <b-checkbox v-model="formNewsletter">Signup for the monthly newsletter</b-checkbox>
+              <b-checkbox v-model="formNewsletter">Sign-up for the monthly newsletter</b-checkbox>
             </b-field>
             <button type="submit" class="button is-primary">Submit</button>
           </form>

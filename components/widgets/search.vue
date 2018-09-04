@@ -43,7 +43,8 @@
         isFetching: false,
         selected: '',
         delay: 500,
-        message: 'Waiting for user to stop typing ...'
+        message: 'Waiting for user to stop typing ...',
+        canSubmit: false
       }
     },
     watch: {
@@ -51,6 +52,7 @@
         // Do something with search term after it debounced
         this.$store.commit('product/SET_SEARCH_FILTERS', { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} })
         this.getProducts()
+        this.canSubmit = true
       }, 500)
     },
     created () {
@@ -67,7 +69,6 @@
         }
 
         let searchVal = this.$store.state.product.searchVal
-        // console.log(searchVal)
         if (searchVal === null) searchVal = ''
         this.productName = searchVal
         /* if (searchVal.name !== searchVal.description && searchVal.name !== '' && searchVal.description !== '') {
@@ -95,13 +96,14 @@
       }
     },
     methods: {
-      doSubmit () {
+      async doSubmit () {
         let route = this.$route.path
-        if (route !== '/search') { this.$router.replace({ path: '/search' }) }
+        if (this.canSubmit && route !== '/search') { this.$router.replace({ path: '/search' }) }
+        this.canSubmit = false
       },
       async getProducts () {
         try {
-          console.log('iktrigger2')
+          // console.log('iktrigger2')
           this.isFetching = true
           this.$store.commit('SET_ISLOADING', true)
           if (!(this.$store.state.authUser instanceof Object)) {
@@ -185,7 +187,7 @@
       },
       selectProduct (option) {
         this.$store.commit('product/SET_SEARCHVAL', option)
-        console.log('iktrigger')
+        // console.log('iktrigger')
         // let route = this.$route.path
         this.$router.push('/search')
       }

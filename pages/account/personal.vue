@@ -97,7 +97,7 @@
               </b-field>
             </b-field>
             <b-field>
-              <b-checkbox v-model="customer.newsletter">Signup for the monthly newsletter</b-checkbox>
+              <b-checkbox v-model="customer.newsletter">Sign-up for the monthly newsletter</b-checkbox>
             </b-field>
             <p class="control">
               <button type="submit" class="button is-primary">Change</button>

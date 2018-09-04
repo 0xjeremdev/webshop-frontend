@@ -93,19 +93,6 @@
                 </article>
               </div>
             </div>
-            <div class="tile is-ancestor">
-              <div class="tile">
-                <div class="tile is-parent is-vertical">
-
-
-                </div>
-              </div>
-              <div class="tile">
-                <div class="tile is-parent is-vertical">
-
-                </div>
-              </div>
-            </div>
           </div>
           <div class="column">
 
