@@ -3,7 +3,7 @@
     <div class="container">
       <h1 class="title">Order - Select Delivery</h1>
       <orderMenu :step="step"></orderMenu>
-      <div class="container">
+      <div>
         <div class="columns">
           <div class="column">
 
@@ -12,86 +12,97 @@
             <b-message type="is-danger" has-icon title="An error has occured" :active.sync="hasErrors.length > 0">
               <div v-for="val in hasErrors">{{ val.message }}</div>
             </b-message>
+            <div class="columns">
+              <div class="column notification">
+                <article v-if="address" class="tile is-child notification">
+                  <b-field label="Select Delivery Address">
+                    <b-select v-model="selectedAddress" expanded placeholder="Select a delivery address">
+                        <option
+                            v-for="option in address"
+                            :value="option"
+                            :key="option._key"
+                            >
+                            {{ option.name }} - {{ option.street }} {{ option.houseno }}, {{ option.postcode }} {{ option.city }}, {{ option.country }}
+                        </option>
+                    </b-select>
+                  </b-field>
+                  <p class="control" style="margin-top: 0.75rem; margin-bottom: 0.75rem;">
+                    <button @click="addAddress()" class="button is-info">Add Address</button>
+                  </p>
+
+                  <b-field>
+                    <b-checkbox v-model="differentAsDelivery">Billing address is different then Delivery Address</b-checkbox>
+                  </b-field>
+                  <b-field v-if="differentAsDelivery" label="Select Billing Address">
+                    <b-select v-model="selectedBilling" expanded placeholder="Select a billing address">
+                        <option
+                            v-for="option in address"
+                            :value="option"
+                            :key="option._key"
+                            >
+                            {{ option.name }} - {{ option.street }} {{ option.houseno }}, {{ option.postcode }} {{ option.city }}, {{ option.country }}
+                        </option>
+                    </b-select>
+                  </b-field>
+                </article>
+                <article v-if="selectedAddress" class="tile is-child notification">
+                  <h2 class="subtitle">Your selected delivery address details:</h2>
+                  <table class="table">
+                    <tbody>
+                      <tr><td>Name:</td><td>{{ selectedAddress.name }}</td></tr>
+                      <tr><td>Street: </td><td>{{ selectedAddress.street }}</td></tr>
+                      <tr><td>House No.: </td><td>{{ selectedAddress.houseno }}</td></tr>
+                      <tr><td>Postcode: </td><td>{{ selectedAddress.postcode }}</td></tr>
+                      <tr><td>City: </td><td>{{ selectedAddress.city }}</td></tr>
+                      <tr><td>Country: </td><td>{{ selectedAddress.country }}</td></tr>
+                    </tbody>
+                  </table>
+                </article>
+              </div>
+              <div class="column is-2">
+              </div>
+              <div class="column notification">
+                <article class="tile is-child notification">
+                  <h2 class="subtitle">Personal Details</h2>
+                  <table class="table">
+                    <tbody>
+                      <tr><td>Name: </td><td>{{ customer.title }} {{ customer.firstname }} {{ customer.lastname }}</td></tr>
+                      <tr><td>Company: </td><td>{{ customer.company }}</td></tr>
+                      <tr><td>VAT No.: </td><td>{{ customer.VAT_No }}</td></tr>
+                      <tr><td>Phone: </td><td>{{ customer.phone }}</td></tr>
+                      <tr><td>Mobile: </td><td>{{ customer.mobile }}</td></tr>
+                      <tr><td>Fax: </td><td>{{ customer.fax }}</td></tr>
+                    </tbody>
+                  </table>
+                  <p class="control" style="margin-top: 0.75rem; margin-bottom: 0.75rem;">
+                    <button @click="doChange()" class="button is-info">Change</button>
+                  </p>
+                </article>
+                <article v-if="differentAsDelivery && selectedBilling" class="tile is-child notification">
+                  <h2 class="subtitle">Your selected billing address details:</h2>
+                  <table class="table">
+                    <tbody>
+                      <tr><td>Name:</td><td>{{ selectedBilling.name }}</td></tr>
+                      <tr><td>Street: </td><td>{{ selectedBilling.street }}</td></tr>
+                      <tr><td>House No.: </td><td>{{ selectedBilling.houseno }}</td></tr>
+                      <tr><td>Postcode: </td><td>{{ selectedBilling.postcode }}</td></tr>
+                      <tr><td>City: </td><td>{{ selectedBilling.city }}</td></tr>
+                      <tr><td>Country: </td><td>{{ selectedBilling.country }}</td></tr>
+                    </tbody>
+                  </table>
+                </article>
+              </div>
+            </div>
             <div class="tile is-ancestor">
               <div class="tile">
                 <div class="tile is-parent is-vertical">
-                  <article v-if="address" class="tile is-child notification">
-                    <b-field label="Select Delivery Address">
-                      <b-select v-model="selectedAddress" expanded placeholder="Select a delivery address">
-                          <option
-                              v-for="option in address"
-                              :value="option"
-                              :key="option._key"
-                              >
-                              {{ option.name }} - {{ option.street }} {{ option.houseno }}, {{ option.postcode }} {{ option.city }}, {{ option.country }}
-                          </option>
-                      </b-select>
-                    </b-field>
-                    <p class="control" style="margin-top: 0.75rem; margin-bottom: 0.75rem;">
-                      <button @click="addAddress()" class="button is-info">Add Address</button>
-                    </p>
 
-                    <b-field>
-                      <b-checkbox v-model="differentAsDelivery">Billing address is different then Delivery Address</b-checkbox>
-                    </b-field>
-                    <b-field v-if="differentAsDelivery" label="Select Billing Address">
-                      <b-select v-model="selectedBilling" expanded placeholder="Select a billing address">
-                          <option
-                              v-for="option in address"
-                              :value="option"
-                              :key="option._key"
-                              >
-                              {{ option.name }} - {{ option.street }} {{ option.houseno }}, {{ option.postcode }} {{ option.city }}, {{ option.country }}
-                          </option>
-                      </b-select>
-                    </b-field>
-                  </article>
-                  <article v-if="selectedAddress" class="tile is-child notification">
-                    <h2 class="subtitle">Your selected delivery address details:</h2>
-                    <table class="table">
-                      <tbody>
-                        <tr><td>Name:</td><td>{{ selectedAddress.name }}</td></tr>
-                        <tr><td>Street: </td><td>{{ selectedAddress.street }}</td></tr>
-                        <tr><td>House No.: </td><td>{{ selectedAddress.houseno }}</td></tr>
-                        <tr><td>Postcode: </td><td>{{ selectedAddress.postcode }}</td></tr>
-                        <tr><td>City: </td><td>{{ selectedAddress.city }}</td></tr>
-                        <tr><td>Country: </td><td>{{ selectedAddress.country }}</td></tr>
-                      </tbody>
-                    </table>
-                  </article>
+
                 </div>
               </div>
               <div class="tile">
                 <div class="tile is-parent is-vertical">
-                  <article class="tile is-child notification">
-                    <h2 class="subtitle">Personal Details</h2>
-                    <table class="table">
-                      <tbody>
-                        <tr><td>Name: </td><td>{{ customer.title }} {{ customer.firstname }} {{ customer.lastname }}</td></tr>
-                        <tr><td>Company: </td><td>{{ customer.company }}</td></tr>
-                        <tr><td>VAT No.: </td><td>{{ customer.VAT_No }}</td></tr>
-                        <tr><td>Phone: </td><td>{{ customer.phone }}</td></tr>
-                        <tr><td>Mobile: </td><td>{{ customer.mobile }}</td></tr>
-                        <tr><td>Fax: </td><td>{{ customer.fax }}</td></tr>
-                      </tbody>
-                    </table>
-                    <p class="control" style="margin-top: 0.75rem; margin-bottom: 0.75rem;">
-                      <button @click="doChange()" class="button is-info">Change</button>
-                    </p>
-                  </article>
-                  <article v-if="differentAsDelivery && selectedBilling" class="tile is-child notification">
-                    <h2 class="subtitle">Your selected billing address details:</h2>
-                    <table class="table">
-                      <tbody>
-                        <tr><td>Name:</td><td>{{ selectedBilling.name }}</td></tr>
-                        <tr><td>Street: </td><td>{{ selectedBilling.street }}</td></tr>
-                        <tr><td>House No.: </td><td>{{ selectedBilling.houseno }}</td></tr>
-                        <tr><td>Postcode: </td><td>{{ selectedBilling.postcode }}</td></tr>
-                        <tr><td>City: </td><td>{{ selectedBilling.city }}</td></tr>
-                        <tr><td>Country: </td><td>{{ selectedBilling.country }}</td></tr>
-                      </tbody>
-                    </table>
-                  </article>
+
                 </div>
               </div>
             </div>

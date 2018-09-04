@@ -325,11 +325,11 @@
     min-width: 6em;
     clear: both;
     font-weight: bold;
-    flex: 1;
+    flex: 1 0 0%;
   }
 
   .art-value {
     box-sizing: border-box;
-    flex: 1;
+    padding-left: 0.75rem;
   }
 </style>

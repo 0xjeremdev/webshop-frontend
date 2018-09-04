@@ -131,7 +131,7 @@
         this[fld] = value
       },
       async backToSearch () {
-        this.$router.back()
+        this.$router.push('/search')
       },
       async checkQuotes () {
         this.$router.replace({ path: '/account/quote', replace: true })

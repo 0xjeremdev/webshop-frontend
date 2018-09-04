@@ -39,11 +39,12 @@
       async doSend () {
         try {
           if (this.$store.dispatch('validation/validateMail', { email: this.email })) {
-            await this.$axios.$post(this.$store.state.apiUrl + '/product/requestpdf', { email: this.email, product: this.productid }, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+            await this.$axios.$post(this.$store.state.apiUrl + '/product/requestpdf', { email: this.email, product: this.productid }, { headers: { Authorization: `Bearer ${this.$store.state.account.token.jwt}` } })
           }
           this.$parent.close()
           this.$toast.open('Request send')
         } catch (e) {
+          console.log(e)
           this.$toast.open('Failed to deliver email')
         }
       }
