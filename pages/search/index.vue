@@ -108,13 +108,17 @@
               <div class="column is-one-third">
                 <p class="title">{{ (Number(val.price).toFixed(2) !== 'NaN') ? '€ ' + Number(val.price).toFixed(2) : 'Inquire' }}</p>
                 <p class="control">
-                  <button class="button is-primary my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price, false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+                  <button v-if="(Number(val.price).toFixed(2) === 'NaN')" class="button is-primary my-button" @click="doInquire(val.artno)"><b-icon icon="comment-question-outline"></b-icon><span>Inquire</span></button>
+                  <button v-else class="button is-primary my-button" @click="addToCart(val.artno, val.name, val.price, false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
                 </p>
                 <p class="control" style="padding-top: 5px;">
                   <button class="button is-info my-button" :disabled="(Number(val.price).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(val.artno, val.name, val.price, true)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
                 </p>
               </div>
             </div>
+            <b-modal :active.sync="modalInquireActive" has-modal-card>
+              <inquire :productid="val.artno"></inquire>
+            </b-modal>
           </section>
           <section v-if="getProductData.length <= 0" class="section">
             <div class="columns my-margin-bottom">
@@ -159,10 +163,11 @@
 <script>
   import FilterSearch from '~/components/widgets/filter.vue'
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
+  import inquire from '~/components/ui/inquire.vue'
 
   export default {
     scrollToTop: true,
-    components: { FilterSearch, breadCrumb },
+    components: { FilterSearch, breadCrumb, inquire },
     head () {
       return {
         title: 'Search Products | LabNed.com - Exploring Possibilities'
@@ -173,7 +178,9 @@
         isFetching: true,
         current: 1,
         perPage: 10,
-        productName: ''
+        productName: '',
+        modalInquireActive: false,
+        myproductid: ''
       }
     },
     created () {
@@ -240,6 +247,13 @@
         this.$router.replace(newRoute)
         // this.$route.query.page = number
         this.getProducts()
+      },
+      async doInquire (id) {
+        try {
+          this.modalInquireActive = true
+        } catch (e) {
+          console.log(e)
+        }
       },
       async addToCart (id, name, price, modifier) {
         try {

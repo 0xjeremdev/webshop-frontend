@@ -3,10 +3,10 @@
     <form action="" v-on:submit.prevent="sendContact()">
       <div class="modal-card" style="width: auto">
         <header class="modal-card-head">
-          <p class="modal-card-title">Request PDF</p>
+          <p class="modal-card-title">Inquire</p>
         </header>
         <section class="modal-card-body">
-          <p>Please leave your email, so we can send the pdf to you</p><br/>
+          <p>Please leave your email, so we can send the price of product no. {{ productid }} to you</p><br/>
           <b-field label="Email">
             <b-input
               type="email"
@@ -39,7 +39,7 @@
       async doSend () {
         try {
           if (this.$store.dispatch('validation/validateMail', { email: this.email })) {
-            await this.$axios.$post(this.$store.state.apiUrl + '/product/requestpdf', { email: this.email, product: this.productid })
+            await this.$axios.$post(this.$store.state.apiUrl + '/product/inquire', { email: this.email, product: this.productid })
           }
           this.$parent.close()
           this.$toast.open('Request send')
