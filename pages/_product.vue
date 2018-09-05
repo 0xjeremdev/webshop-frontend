@@ -16,7 +16,8 @@
           <p class="title my-img">{{ (Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? '€ ' + Number(product.basic['Price LabNed']).toFixed(2) : 'Inquire' }}</p>
           <div class="columns is-mobile">
             <div class="column">
-              <button class="button is-primary my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'], false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
+              <button v-if="(Number(product.basic['Price LabNed']).toFixed(2) === 'NaN')" class="button is-primary my-img" @click="doInquire(product.basic.vat)"><b-icon icon="comment-question-outline"></b-icon><span>Inquire</span></button>
+              <button v-else class="button is-primary my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'], false)"><b-icon icon="cart-outline"></b-icon><span>Add to Cart</span></button>
             </div>
             <div class="column">
               <button class="button is-info my-img" :disabled="(Number(product.basic['Price LabNed']).toFixed(2) !== 'NaN') ? false : true" @click="addToCart(product.basic.vat, product.basic['name'], product.basic['Price LabNed'], true)"><b-icon icon="file-document-box"></b-icon><span>Add to Quote</span></button>
@@ -75,6 +76,9 @@
     <b-modal :active.sync="modalActive" has-modal-card>
       <request-pdf :productid="product.basic.vat"></request-pdf>
     </b-modal>
+    <b-modal :active.sync="modalInquireActive" has-modal-card>
+      <inquire :productid="product.basic.vat"></inquire>
+    </b-modal>
   </section>
 </template>
 
@@ -83,9 +87,10 @@
   import breadCrumb from '~/components/widgets/breadcrumb.vue'
   import Banner from '~/components/widgets/banner.vue'
   import requestPdf from '~/components/ui/requestPDF.vue'
+  import inquire from '~/components/ui/inquire.vue'
 
   export default {
-    components: { breadCrumb, Banner, requestPdf },
+    components: { breadCrumb, Banner, requestPdf, inquire },
     head () {
       return {
         title: 'LabNed.com - Exploring Possibilities',
@@ -95,6 +100,7 @@
     data () {
       return {
         modalActive: false,
+        modalInquireActive: false,
         apiUrl: this.$store.state.apiUrl,
         product: {},
         fields: {
@@ -394,6 +400,13 @@
           } else {
             this.modalActive = true
           }
+        } catch (e) {
+          console.log(e)
+        }
+      },
+      async doInquire (id) {
+        try {
+          this.modalInquireActive = true
         } catch (e) {
           console.log(e)
         }
