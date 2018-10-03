@@ -58,7 +58,7 @@ module.exports = {
     '@nuxtjs/axios',
     'cookie-universal-nuxt',
     '@nuxtjs/sentry',
-    ['@nuxtjs/google-analytics', { id: 'UA-12301-2' }],
+    ['@nuxtjs/google-analytics', { id: 'UA-34214652-1' }],
     ['@nuxtjs/google-tag-manager', { id: 'GTM-N3C6RXC' }],
   ],
 
