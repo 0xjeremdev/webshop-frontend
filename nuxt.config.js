@@ -19,13 +19,13 @@ const sassResourcesLoader = {
 
 module.exports = {
   env: {
-    apiUrl: 'http://itk-api.blt.ovh'
+    apiUrl: 'https://api.labned.com'
   },
   /*
   ** Headers of the page
   */
   head: {
-    title: 'itk-webshop-frontend',
+    title: 'LabNed.com',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -58,6 +58,8 @@ module.exports = {
     '@nuxtjs/axios',
     'cookie-universal-nuxt',
     '@nuxtjs/sentry',
+    ['@nuxtjs/google-analytics', { id: 'UA-12301-2' }],
+    ['@nuxtjs/google-tag-manager', { id: 'GTM-N3C6RXC' }],
   ],
 
   sentry: {
