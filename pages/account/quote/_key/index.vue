@@ -123,8 +123,12 @@
           monthIndex = monthNums[endDate.getMonth()]
           year = endDate.getFullYear()
           endDate = year + '-' + monthIndex + '-' + day
+          let items = quote.result._result[0].items
+          console.log(items)
 
-          return { quote: quote.result._result[0], subtotal: subtotal, dates: { quote_date: quoteDate, end_date: endDate, differenceDays: differenceDays } }
+          let activeProducts = await store.dispatch('product/getProductsActive', { items: items })
+
+          return { quote: quote.result._result[0], activeProducts: activeProducts, subtotal: subtotal, dates: { quote_date: quoteDate, end_date: endDate, differenceDays: differenceDays } }
         }
 
         return { quote: {}, subtotal: 0 }
@@ -134,10 +138,14 @@
     },
     methods: {
       doOrderQuote () {
-        this.$store.commit('cart/SET_CART', this.quote.items)
-        this.$store.commit('order/SET_ORDERNO', this.quote.order_no)
-        this.$store.commit('order/SET_FROMQUOTE', true)
-        this.$router.push('/order')
+        if (this.activeProducts) {
+          this.$store.commit('cart/SET_CART', this.quote.items)
+          this.$store.commit('order/SET_ORDERNO', this.quote.order_no)
+          this.$store.commit('order/SET_FROMQUOTE', true)
+          this.$router.push('/order')
+        } else {
+          this.$toast.open('One or more items are not available anymore. Please contact our customer support to help you further')
+        }
       }
     }
   }

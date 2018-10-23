@@ -171,7 +171,12 @@
           var year = orderDate.getFullYear()
           orderDate = year + '-' + monthIndex + '-' + day
 
-          return { order: order.result._result[0], subtotal: subtotal, order_date: orderDate }
+          let items = order.result._result[0].items
+          console.log(items)
+
+          let activeProducts = await store.dispatch('product/getProductsActive', { items: items })
+
+          return { order: order.result._result[0], activeProducts: activeProducts, subtotal: subtotal, order_date: orderDate }
         }
 
         return { order: {}, subtotal: 0 }
@@ -181,8 +186,12 @@
     },
     methods: {
       doReOrder () {
-        this.$store.commit('cart/SET_CART', this.order.items)
-        this.$router.push('/cart')
+        if (this.activeProducts) {
+          this.$store.commit('cart/SET_CART', this.order.items)
+          this.$router.push('/cart')
+        } else {
+          this.$toast.open('One or more items are not available anymore. Please contact our customer support to help you further')
+        }
       }
     }
   }

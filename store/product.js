@@ -76,6 +76,25 @@ export const actions = {
     }
   },
 
+  async getProductsActive ({ state, rootState, commit }, { items }) {
+    try {
+      let productids = []
+      for (let item in items) {
+        productids[item] = items[0].id
+      }
+      // console.log(productids)
+      let postData = { productids: productids }
+      // console.log(postData)
+      let data = await this.$axios.$post(rootState.apiUrl + '/product/isactive', postData)
+      console.log(data)
+      return data.result
+      // commit('SET_ACTIVE_PRODUCTS', (data.result) ? data.result : true)
+    } catch (e) {
+      console.log(e.message)
+      return true
+    }
+  },
+
   async getFilters ({ state, rootState, commit }, { field, params }) {
     try {
       // console.log(field)
