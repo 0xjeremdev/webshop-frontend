@@ -55,7 +55,7 @@ module.exports = {
     'quill/dist/quill.snow.css',
   ],
   modules: [
-    '@nuxtjs/sitemap',
+    // '@nuxtjs/sitemap',
     '@nuxtjs/axios',
     'cookie-universal-nuxt',
     '@nuxtjs/sentry',
@@ -74,7 +74,7 @@ module.exports = {
   axios: {
     // proxyHeaders: false
   },
-  sitemap: {
+  /*sitemap: {
       path: '/sitemap.xml',
       hostname: 'https://labned.com',
       cacheTime: 1000 * 60 * 15,
@@ -86,7 +86,7 @@ module.exports = {
         '/account/**',
         '/admin/**'
       ],
-    }
+  },*/
   router: {
     scrollBehavior: function (to, from, savedPosition) {
       return { x: 0, y: 0 }
