@@ -79,8 +79,11 @@ module.exports = {
       hostname: 'https://labned.com',
       cacheTime: 1000 * 60 * 15,
       gzip: true,
-      generate: false, // Enable me when using nuxt generate
+      generate: true, // Enable me when using nuxt generate
       exclude: [
+        '/order/**',
+        '/cart',
+        '/account/**',
         '/admin/**'
       ],
     }
