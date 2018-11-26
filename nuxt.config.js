@@ -74,19 +74,21 @@ module.exports = {
   axios: {
     // proxyHeaders: false
   },
-  /*sitemap: {
+  /* sitemap: {
       path: '/sitemap.xml',
       hostname: 'https://labned.com',
       cacheTime: 1000 * 60 * 15,
       gzip: true,
       generate: true, // Enable me when using nuxt generate
       exclude: [
+        '/order',
         '/order/**',
         '/cart',
+        '/account',
         '/account/**',
         '/admin/**'
-      ],
-  },*/
+      ]
+  }, */
   router: {
     scrollBehavior: function (to, from, savedPosition) {
       return { x: 0, y: 0 }
