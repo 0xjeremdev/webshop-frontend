@@ -120,7 +120,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
-    analyze: true,
+    // analyze: true,
     /*
     ** Run ESLint on save
     */
