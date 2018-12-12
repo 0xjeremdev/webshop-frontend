@@ -94,7 +94,7 @@
     head () {
       return {
         title: 'LabNed.com - Exploring Possibilities',
-        titleTemplate: `${this.product.basic.name.replace(/-+/g, ' ')} | %s`
+        titleTemplate: `${this.product.basic.name.replace(/-+/g, ' ')}`
       }
     },
     data () {

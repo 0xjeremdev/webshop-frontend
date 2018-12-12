@@ -21,6 +21,9 @@ module.exports = {
   env: {
     apiUrl: 'https://api.labned.com'
   },
+  render: {
+    compressor: { threshold: -1 }
+  },
   /*
   ** Headers of the page
   */
@@ -29,7 +32,9 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'ITK Webshop Frontend Project' }
+      { hid: 'description', name: 'description', content: 'LabNed.com - Exploring Possibilities' },
+      { hid: 'language', name: 'language', content: 'EN' },
+      { hid: 'content-language', name: 'content-language', content: 'en' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -42,7 +47,7 @@ module.exports = {
   // include buefy js on startup
   plugins: [
     { src: '~plugins/buefy', ssr: true },
-    { src: '~plugins/quillEditor', ssr: false },
+    // { src: '~plugins/quillEditor', ssr: false },
     { src: '~plugins/persistedstate.js', ssr: false }
     //'~plugins/bootstrap.js'
     //{ src: '~/plugins/vue-notifications.js', ssr: false }
@@ -52,7 +57,7 @@ module.exports = {
   css: [
     '~/assets/custom.sass',
     '~/assets/main.css',
-    'quill/dist/quill.snow.css',
+    // 'quill/dist/quill.snow.css',
   ],
   modules: [
     // '@nuxtjs/sitemap',
@@ -60,7 +65,7 @@ module.exports = {
     'cookie-universal-nuxt',
     '@nuxtjs/sentry',
     ['@nuxtjs/google-analytics', { id: 'UA-34214652-1' }],
-    ['@nuxtjs/google-tag-manager', { id: 'GTM-N3C6RXC' }],
+    // ['@nuxtjs/google-tag-manager', { id: 'GTM-N3C6RXC' }],
   ],
 
   sentry: {
@@ -115,6 +120,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    analyze: true,
     /*
     ** Run ESLint on save
     */
@@ -145,13 +151,13 @@ module.exports = {
         }
       }
     },
-    vendor: ['jquery', 'axios'],
+    vendor: ['axios'],
     plugins: [
       new webpack.ProvidePlugin({
         // set shortcuts as global for plugins
-        '$': 'jquery',
-        'jQuery': 'jquery',
-        'windows.jQuery': 'jquery',
+        // '$': 'jquery',
+        // 'jQuery': 'jquery',
+        // 'windows.jQuery': 'jquery',
         'axios': 'axios'
       })
     ]
