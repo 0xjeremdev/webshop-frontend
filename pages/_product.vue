@@ -95,13 +95,13 @@
       return {
         title: 'LabNed.com - Exploring Possibilities',
         titleTemplate: `${this.product.basic.name.replace(/-+/g, ' ')}`,
-        meta: {
-          description: `${this.product.seo.meta_description}`,
-          web_author: `${this.product.seo.meta_author}`,
-          keywords: `${this.product.seo.meta_tags}`,
-          robots: 'index, follow',
-          'revisit-after': '1 day'
-        }
+        meta: [
+          { hid: 'description', name: 'description', content: `${this.product.seo.meta_description}` },
+          { hid: 'web_author', name: 'web_author', content: `${this.product.seo.meta_author}` },
+          { hid: 'keywords', name: 'keywords', content: `${this.product.seo.meta_tags}` },
+          { hid: 'robots', name: 'robots', content: 'index, follow' },
+          { hid: 'revisit-after', name: 'revisit-after', content: '1 day' }
+        ]
       }
     },
     data () {

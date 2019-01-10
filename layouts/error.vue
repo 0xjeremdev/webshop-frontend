@@ -19,7 +19,8 @@
       return {
         title: 'Error page',
         meta: [
-          { hid: 'error-description', name: 'error description', content: 'My custom error description', robots: 'noindex' }
+          { hid: 'error-description', name: 'error description', content: 'My custom error description' },
+          { hid: 'robots', name: 'robots', content: 'noindex' }
         ]
       }
     },
