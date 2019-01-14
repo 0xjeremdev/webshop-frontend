@@ -14,6 +14,7 @@
         <Banner type="paymentlogos"></Banner>
       </div>
     </div>
+    <div class="mycolumn" v-html="info.homepage_text"></div>
   </section>
 </template>
 
@@ -25,7 +26,14 @@
   export default {
     head () {
       return {
-        title: 'LabNed.com - Exploring Possibilities'
+        title: (`${this.info.seo_title}`) ? `${this.info.seo_title}` : 'LabNed.com - Exploring Possibilities',
+        meta: [
+          { hid: 'description', name: 'description', content: `${this.info.seo_description}` },
+          { hid: 'web_author', name: 'web_author', content: `${this.info.seo_author}` },
+          { hid: 'keywords', name: 'keywords', content: `${this.info.seo_keywords}` },
+          { hid: 'robots', name: 'robots', content: 'index, follow' },
+          { hid: 'revisit-after', name: 'revisit-after', content: '1 day' }
+        ]
       }
     },
     components: { Banner, Search, Contactinfo },

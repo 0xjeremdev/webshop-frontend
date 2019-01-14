@@ -53,6 +53,13 @@
   export default {
     head () {
       return {
+        title: 'Contact | LabNed.com - Exploring Possibilities',
+        meta: [
+          { hid: 'web_author', name: 'web_author', content: `${this.info.seo_author}` },
+          { hid: 'keywords', name: 'keywords', content: `${this.info.seo_keywords}` },
+          { hid: 'robots', name: 'robots', content: 'index, follow' },
+          { hid: 'revisit-after', name: 'revisit-after', content: '1 day' }
+        ],
         script: [
           { src: 'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit', async: true, defer: true }
         ]
@@ -76,10 +83,11 @@
         titles: ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.']
       }
     },
-    async asyncData ({ store }) {
+    async asyncData ({ store, error }) {
       let info = ''
       await store.dispatch('getSettings')
       info = store.state.settings
+      if (info.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
       return { info: info }
     },
     computed: {

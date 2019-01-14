@@ -25,11 +25,6 @@
             :key="fieldKey"
             :label="getLabel(val, fieldKey)">
             <b-input v-if="val.inputType === 'input'" :value="getValue(val, fieldKey, tabKey)" :placeholder="getLabel(val, fieldKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
-            <b-taginput v-else-if="val.inputType === 'tagInput'"
-              :placeholder="getLabel(val, fieldKey)"
-              maxtags="5"
-              :value="[]">
-            </b-taginput>
             <!-- <div v-else-if="val.inputType === 'texteditor'">
             <div class="quill-editor"  :instanceName="val.ref" :id="val.ref" :ref="val.ref"
               :value="getValue(val, fieldKey, tabKey)"
@@ -44,6 +39,13 @@
             <b-input v-else-if="val.inputType === 'email'" type="email" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'text'" type="textarea" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)"></b-input>
             <b-input v-else-if="val.inputType === 'password'" type="password" @input="setModel($event, fieldKey, tabKey)" password-reveal></b-input>
+            <b-taginput v-else-if="val.inputType === 'tagInput'"
+              :placeholder="getLabel(val, fieldKey)"
+              maxtags="5"
+              :value="getValue(val, fieldKey, tabKey, val.inputType)"
+              @input="setModel($event, fieldKey, tabKey)"
+              >
+            </b-taginput>
             <b-checkbox-button  v-else-if="val.inputType === 'checkbox'" :value="getValue(val, fieldKey, tabKey, 'checkbox')" @input="setCheckbox($event, fieldKey, tabKey)" type="is-success"><b-icon icon="check"></b-icon></b-checkbox-button>
             <!-- <froala v-else-if="val.inputType === 'text'" :tag="'textarea'" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)" :config="config">Init text</froala> -->
             <b-select v-else-if="val.inputType === 'dropdown'" :placeholder="getLabel(val, fieldKey)" :value="getValue(val, fieldKey, tabKey)" @input="setModel($event, fieldKey, tabKey)">
@@ -140,6 +142,11 @@
               'inputType': 'switch',
               'label': 'Maintenance Mode'
             },
+            'homepage_text': {
+              'inputType': 'texteditor',
+              'label': 'Homepage Text',
+              'ref': 'homepage_text'
+            },
             'cookie_wall': {
               'inputType': 'switch',
               'label': 'Cookie Wall'
@@ -148,6 +155,23 @@
               'inputType': 'texteditor',
               'label': 'Cookie Wall Text',
               'ref': 'cookie_wall_text'
+            },
+            'seo_title': {
+              'inputType': 'input',
+              'label': 'SEO Title'
+            },
+            'seo_description': {
+              'inputType': 'texteditor',
+              'label': 'SEO Description',
+              'ref': 'seo_description_text'
+            },
+            'seo_keywords': {
+              'inputType': 'tagInput',
+              'label': 'SEO Keywords'
+            },
+            'seo_author': {
+              'inputType': 'input',
+              'label': 'SEO Author'
             },
             icon: 'file-document'
           },
@@ -358,6 +382,7 @@
     },
     methods: {
       setModel (val, fieldKey, tabKey) {
+        console.log(val + ' : ' + fieldKey + ' - ' + tabKey)
         this.productData[fieldKey] = val
       },
       getLabel (val, fieldKey) {
@@ -368,6 +393,12 @@
       },
       getValue (val, fieldKey, tabKey, inputType) {
         if (this.productData instanceof Object) {
+          if (inputType === 'tagInput') {
+            if (Array.isArray(this.productData[fieldKey])) {
+              return this.productData[fieldKey]
+            }
+            return []
+          }
           if (inputType === 'checkbox') {
             // console.log(fieldKey + ': ' + this.productData[fieldKey])
             if (this.productData[fieldKey] === 'true') { console.log('true') }
@@ -392,6 +423,11 @@
           let postData = {
             key: this.productData['_key'],
             maintenance: (this.productData.maintenance !== undefined) ? this.productData.maintenance : '',
+            homepage_text: (this.productData.homepage_text !== undefined) ? this.productData.homepage_text : '',
+            seo_title: (this.productData.seo_title !== undefined) ? this.productData.seo_title : '',
+            seo_description: (this.productData.seo_description) ? this.productData.seo_description : '',
+            seo_keywords: (this.productData.seo_keywords) ? this.productData.seo_keywords : '',
+            seo_author: (this.productData.seo_author) ? this.productData.seo_author : '',
             contact_email: (this.productData.contact_email !== undefined) ? this.productData.contact_email : '',
             order_email: (this.productData.order_email !== undefined) ? this.productData.order_email : new Date(),
             cookiewall: (this.productData.cookie_wall !== undefined) ? this.productData.cookie_wall : false,
@@ -433,8 +469,9 @@
             payment_ReturnURLReject: (this.productData.payment_ReturnURLReject !== undefined) ? this.productData.payment_ReturnURLReject : '',
             payment_ReturnURLCancel: (this.productData.payment_ReturnURLCancel !== undefined) ? this.productData.payment_ReturnURLCancel : ''
           }
-          let data = await this.$axios.$put(this.$store.state.apiUrl + '/admin/config', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
-          console.log(data)
+          // console.log(postData)
+          await this.$axios.$put(this.$store.state.apiUrl + '/admin/config', postData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+          // console.log(data)
           this.isLoading = false
           this.$toast.open('Saved')
           this.$router.push('/admin/dashboard')

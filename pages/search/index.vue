@@ -170,7 +170,13 @@
     components: { FilterSearch, breadCrumb, inquire },
     head () {
       return {
-        title: 'Search Products | LabNed.com - Exploring Possibilities'
+        title: 'Search Products | LabNed.com - Exploring Possibilities',
+        meta: [
+          { hid: 'web_author', name: 'web_author', content: `${this.info.seo_author}` },
+          { hid: 'keywords', name: 'keywords', content: `${this.info.seo_keywords}` },
+          { hid: 'robots', name: 'robots', content: 'index, follow' },
+          { hid: 'revisit-after', name: 'revisit-after', content: '1 day' }
+        ]
       }
     },
     data () {
@@ -182,6 +188,13 @@
         modalInquireActive: false,
         myproductid: ''
       }
+    },
+    async asyncData ({ store, error }) {
+      let info = ''
+      await store.dispatch('getSettings')
+      info = store.state.settings
+      if (info.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
+      return { info: info }
     },
     created () {
       let page = Number(this.$route.query.page)

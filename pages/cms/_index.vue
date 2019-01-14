@@ -15,19 +15,32 @@
         content: {
           title: '',
           article: ''
-        }
+        },
+        info: {}
       }
     },
     head () {
       return {
-        title: `${this.content.title} | LabNed.com - Exploring Possibilities`
+        title: `${this.content.title} | LabNed.com - Exploring Possibilities`,
+        meta: [
+          { hid: 'description', name: 'description', content: `${this.content.seo.meta_description}` },
+          { hid: 'web_author', name: 'web_author', content: `${this.content.seo.meta_author}` },
+          { hid: 'keywords', name: 'keywords', content: `${this.content.seo.meta_keywords}` },
+          { hid: 'robots', name: 'robots', content: 'index, follow' },
+          { hid: 'revisit-after', name: 'revisit-after', content: '1 day' }
+        ]
       }
     },
     async asyncData ({ store, params, error, app: { $axios } }) {
       try {
+        let info = ''
+        await store.dispatch('getSettings')
+        info = store.state.settings
+        if (info.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
+
         let data = await $axios.$get(store.state.apiUrl + '/page/' + params.index)
-        console.log(data)
-        if (data['result']['_result'].length > 0) return { content: data['result']['_result'][0] }
+        // console.log(data)
+        if (data['result']['_result'].length > 0) return { content: data['result']['_result'][0], info: info }
         if (data['result']['_result'].length <= 0) error({'statusCode': 404, 'message': 'Page Not Found'})
       } catch (e) {
         console.log(e)
