@@ -50,6 +50,18 @@
           <nuxt-link class="navbar-item" to="/search">
             Products
           </nuxt-link>
+
+          <div v-if="category" class="navbar-item has-dropdown is-hoverable">
+            <p class="navbar-link">Catalog</p>
+            <div class="navbar-dropdown is-boxed">
+              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name">
+                {{ c.basic.name }}
+              </nuxt-link>
+              <!-- <nuxt-link class="navbar-item" to="/admin/catalog/category">
+                Categories
+              </nuxt-link> -->
+            </div>
+          </div>
           <nuxt-link class="navbar-item" v-for="value in navbarLinks" :key="value.seo.url_slug" :to="'/cms/' + value.seo.url_slug">
             {{ value.title }}
           </nuxt-link>
@@ -103,20 +115,15 @@
       return {
         showNav: false,
         footerLinks: this.$store.state.footerLinks,
-        navbarLinks: this.$store.state.navbarLinks
+        navbarLinks: this.$store.state.navbarLinks,
+        category: this.$store.state.categories
       }
     },
     async asyncData ({ store, error, app: { $axios } }) {
       try {
         await store.dispatch('getSettings')
         if (store.state.settings.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
-        // let navbar = await $axios.$get(store.state.apiUrl + '/navbar/navbar')
-        // let footer = await $axios.$get(store.state.apiUrl + '/navbar/footer')
-        // console.log(footer)
-        // console.log('komhier')
-        // let navbarLinks = navbar.result._result
-        // let footerLinks = footer.result._result
-        return { settings: store.state.settings, footerLinks: store.state.footerLinks, navbarLinks: store.state.navbarLinks }
+        return { settings: store.state.settings, footerLinks: store.state.footerLinks, navbarLinks: store.state.navbarLinks, category: store.state.categories }
       } catch (e) {
         console.log(e)
         error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })

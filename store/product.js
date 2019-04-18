@@ -58,11 +58,40 @@ export const actions = {
       // let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toLowerCase() : ''
       let search = searchVal
       let searchFilters = state.searchFilters
+      console.log(searchFilters)
       let query = {
         search: search,
         page: page,
         searchFilters: searchFilters
       }
+      let mydata = await this.$axios.$post(rootState.apiUrl + '/product/search', query)
+      // console.log(mydata)
+      commit('SET_TOTAL', mydata.result.extra.stats.fullCount)
+      commit('SET_DATA', mydata.result._result)
+      return mydata
+    } catch (e) {
+      console.log(e)
+      commit('SET_TOTAL', 0)
+      commit('SET_DATA', [])
+      return e
+    }
+  },
+
+  async getProductsForGoogle ({ context, commit, state, rootState }, { params, page, category }) {
+    try {
+      console.log(params)
+      // let search = (searchVal.name !== '' && searchVal.name !== undefined) ? searchVal.name.toLowerCase() : ''
+      let search = ''
+      let searchFilters = { 'Product category LabNed': {}, 'Reactivity': {}, 'Host': {}, 'Clone': {}, 'Applications': {}, Conjugate: {} }
+      searchFilters['Product category LabNed'][category] = true
+      console.log(searchFilters)
+      console.log(category)
+      let query = {
+        search: search,
+        page: page,
+        searchFilters: searchFilters
+      }
+      console.log(searchFilters)
       let mydata = await this.$axios.$post(rootState.apiUrl + '/product/search', query)
       // console.log(mydata)
       commit('SET_TOTAL', mydata.result.extra.stats.fullCount)

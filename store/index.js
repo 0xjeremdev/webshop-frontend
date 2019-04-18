@@ -10,13 +10,14 @@ require('whatwg-fetch')
 
 export const state = () => ({
   authUser: null,
-  apiUrl: 'https://api.labned.com', // process.env.apiUrl,
+  apiUrl: 'http://localhost:25678', // process.env.apiUrl,
   cookieAccepted: false,
   isLoading: false,
   settings: {},
   rememberLink: '',
   navbarLinks: '',
-  footerLinks: ''
+  footerLinks: '',
+  categories: ''
 })
 
 export const mutations = {
@@ -40,6 +41,9 @@ export const mutations = {
   },
   SET_FOOTERLINKS: function (state, value) {
     state.footerLinks = value
+  },
+  SET_CATEGORIES: function (state, value) {
+    state.categories = value
   }
 }
 export const actions = {
@@ -50,6 +54,8 @@ export const actions = {
       if (navbar.data.result._result !== undefined) commit('SET_NAVBARLINKS', navbar.data.result._result)
       let footer = await axios.get(state.apiUrl + '/navbar/footer')
       if (footer.data.result._result !== undefined) commit('SET_FOOTERLINKS', footer.data.result._result)
+      let category = await axios.get(state.apiUrl + '/category')
+      if (category.data.result._result !== undefined) commit('SET_CATEGORIES', category.data.result._result)
       if (req.session && req.session.authUser) {
         // console.log(req.session)
         // commit('SET_USER', req.session.authUser)
