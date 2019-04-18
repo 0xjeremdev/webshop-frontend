@@ -171,7 +171,7 @@
     components: { breadCrumb, inquire },
     head () {
       return {
-        title: `${this.$route.params.category}` + ' | LabNed.com - Exploring Possibilities',
+        title: ((this.$route.params.category !== undefined) ? `${this.$route.params.category}` : 'Product Overview') + ' | LabNed.com - Exploring Possibilities',
         meta: [
           { hid: 'web_author', name: 'web_author', content: `${this.info.seo_author}` },
           { hid: 'keywords', name: 'keywords', content: `${this.info.seo_keywords}` },
