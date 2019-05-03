@@ -47,12 +47,12 @@
               <i class="mdi mdi-home-outline"></i>
             </span>
           </nuxt-link>
-          <nuxt-link class="navbar-item" to="/search">
+          <!-- <nuxt-link class="navbar-item" to="/search">
             Products
-          </nuxt-link>
+          </nuxt-link> -->
 
           <div v-if="category" class="navbar-item has-dropdown is-hoverable">
-            <p class="navbar-link">Catalog</p>
+            <nuxt-link class="navbar-link" to="/search">Products</nuxt-link>
             <div class="navbar-dropdown is-boxed">
               <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name">
                 {{ c.basic.name }}
