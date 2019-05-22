@@ -54,7 +54,28 @@
           <div v-if="category" class="navbar-item has-dropdown is-hoverable">
             <nuxt-link class="navbar-link" to="/search">Products</nuxt-link>
             <div class="navbar-dropdown is-boxed">
-              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name">
+              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Primary Antibodies'">
+                {{ c.basic.name }}
+              </nuxt-link>
+              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Secondary Antibodies'">
+                {{ c.basic.name }}
+              </nuxt-link>
+              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Immunoassays'">
+                {{ c.basic.name }}
+              </nuxt-link>
+              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'DNA & RNA Purification Kitss'">
+                {{ c.basic.name }}
+              </nuxt-link>
+              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Peptides & (rec.) Proteins'">
+                {{ c.basic.name }}
+              </nuxt-link>
+              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Controls, Slides & Lysates'">
+                {{ c.basic.name }}
+              </nuxt-link>
+              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Consumables & Misc.'">
+                {{ c.basic.name }}
+              </nuxt-link>
+              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="checkIncludes(c.basic.name)">
                 {{ c.basic.name }}
               </nuxt-link>
               <!-- <nuxt-link class="navbar-item" to="/admin/catalog/category">
@@ -109,6 +130,7 @@
   import cookiewall from '~/components/widgets/cookiewall.vue'
   import search from '~/components/widgets/search.vue'
   import social from '~/components/widgets/social.vue'
+  import _ from 'lodash'
 
   export default {
     data () {
@@ -116,13 +138,16 @@
         showNav: false,
         footerLinks: this.$store.state.footerLinks,
         navbarLinks: this.$store.state.navbarLinks,
-        category: this.$store.state.categories
+        category: this.$store.state.categories,
+        categoryOrder: [ 'Primary Antibodies', 'Secondary Antibodies', 'Immunoassays', 'DNA & RNA Purification Kits', 'Peptides & (rec.) Proteins', 'Controls, Slides & Lysates', 'Consumables & Misc.' ]
+
       }
     },
     async asyncData ({ store, error, app: { $axios } }) {
       try {
         await store.dispatch('getSettings')
         if (store.state.settings.maintenance === true) error({ statusCode: 503, message: 'Maintenance is under way. Please check our site at a later date.' })
+
         return { settings: store.state.settings, footerLinks: store.state.footerLinks, navbarLinks: store.state.navbarLinks, category: store.state.categories }
       } catch (e) {
         console.log(e)
@@ -138,6 +163,9 @@
       }
     },
     methods: {
+      checkIncludes (value) {
+        return !_.includes(this.categoryOrder, value)
+      },
       collapse () {
         this.showNav = !this.showNav
       },

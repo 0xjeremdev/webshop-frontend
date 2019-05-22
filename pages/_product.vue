@@ -98,7 +98,7 @@
         meta: [
           { hid: 'description', name: 'description', content: `${this.product.seo.meta_description}` },
           { hid: 'web_author', name: 'web_author', content: `${this.product.seo.meta_author}` },
-          { hid: 'keywords', name: 'keywords', content: `${this.product.seo.meta_tags}` },
+          { hid: 'keywords', name: 'keywords', content: `${this.product.seo.meta_keywords}` },
           { hid: 'robots', name: 'robots', content: 'index, follow' },
           { hid: 'revisit-after', name: 'revisit-after', content: '1 day' }
         ]
