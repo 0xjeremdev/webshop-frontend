@@ -51,38 +51,6 @@
             Products
           </nuxt-link> -->
 
-          <div v-if="category" class="navbar-item has-dropdown is-hoverable">
-            <nuxt-link class="navbar-link" to="/search">Products</nuxt-link>
-            <div class="navbar-dropdown is-boxed">
-              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Primary Antibodies'">
-                {{ c.basic.name }}
-              </nuxt-link>
-              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Secondary Antibodies'">
-                {{ c.basic.name }}
-              </nuxt-link>
-              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Immunoassays'">
-                {{ c.basic.name }}
-              </nuxt-link>
-              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'DNA & RNA Purification Kitss'">
-                {{ c.basic.name }}
-              </nuxt-link>
-              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Peptides & (rec.) Proteins'">
-                {{ c.basic.name }}
-              </nuxt-link>
-              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Controls, Slides & Lysates'">
-                {{ c.basic.name }}
-              </nuxt-link>
-              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Consumables & Misc.'">
-                {{ c.basic.name }}
-              </nuxt-link>
-              <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="checkIncludes(c.basic.name)">
-                {{ c.basic.name }}
-              </nuxt-link>
-              <!-- <nuxt-link class="navbar-item" to="/admin/catalog/category">
-                Categories
-              </nuxt-link> -->
-            </div>
-          </div>
           <nuxt-link class="navbar-item" v-for="value in navbarLinks" :key="value.seo.url_slug" :to="'/cms/' + value.seo.url_slug">
             {{ value.title }}
           </nuxt-link>
@@ -114,9 +82,48 @@
     <footer class="footer my-paddings">
       <div class="columns">
         <div class="column">© LabNed.com {{ new Date().getFullYear() }}</div>
+
         <div v-if="footerLinks.length > 0" class="column is-two-thirds has-text-centered">
-          | <span v-for="value in footerLinks" :key="value.seo.url_slug">
-            <nuxt-link :to="'/cms/' + value.seo.url_slug">{{ value.title }}</nuxt-link> |
+          <span>
+            <div class="navbar-item has-dropdown is-hoverable footer-item">
+              <div class="navbar-dropdown is-boxed" :class="{ 'displayed': showAssortimant }">
+                <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Primary Antibodies'">
+                  {{ c.basic.name }}
+                </nuxt-link>
+                <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Secondary Antibodies'">
+                  {{ c.basic.name }}
+                </nuxt-link>
+                <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Immunoassays'">
+                  {{ c.basic.name }}
+                </nuxt-link>
+                <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'DNA & RNA Purification Kitss'">
+                  {{ c.basic.name }}
+                </nuxt-link>
+                <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Peptides & (rec.) Proteins'">
+                  {{ c.basic.name }}
+                </nuxt-link>
+                <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Controls, Slides & Lysates'">
+                  {{ c.basic.name }}
+                </nuxt-link>
+                <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="c.basic.name == 'Consumables & Misc.'">
+                  {{ c.basic.name }}
+                </nuxt-link>
+                <nuxt-link v-for="c in category" :key="c.basic.name" class="navbar-item" :to="'/category/' + c.basic.name" v-if="checkIncludes(c.basic.name)">
+                  {{ c.basic.name }}
+                </nuxt-link>
+              </div>
+              <nuxt-link to="/search" v-if="category" class="has-dropdown is-hoverable">Assortiment
+              </nuxt-link>
+              <button class="button navbar-burger footer-burger" v-on:click="footerBurgerClicked()">
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
+            </div>
+          </span>
+
+          <span v-for="value in footerLinks" :key="value.seo.url_slug">
+            | <nuxt-link :to="'/cms/' + value.seo.url_slug">{{ value.title }}</nuxt-link>
           </span>
         </div>
         <div class="column has-text-right">Powered by <a href="https://www.key2publish.com/" target="_new">Key2Publish</a></div>
@@ -139,8 +146,8 @@
         footerLinks: this.$store.state.footerLinks,
         navbarLinks: this.$store.state.navbarLinks,
         category: this.$store.state.categories,
-        categoryOrder: [ 'Primary Antibodies', 'Secondary Antibodies', 'Immunoassays', 'DNA & RNA Purification Kits', 'Peptides & (rec.) Proteins', 'Controls, Slides & Lysates', 'Consumables & Misc.' ]
-
+        categoryOrder: [ 'Primary Antibodies', 'Secondary Antibodies', 'Immunoassays', 'DNA & RNA Purification Kits', 'Peptides & (rec.) Proteins', 'Controls, Slides & Lysates', 'Consumables & Misc.' ],
+        showAssortimant: false
       }
     },
     async asyncData ({ store, error, app: { $axios } }) {
@@ -185,11 +192,19 @@
       },
       login () {
         this.$router.push('/account/login')
+      },
+      footerBurgerClicked () {
+        this.showAssortimant = !this.showAssortimant
       }
     },
     computed: {
       getAuth: function () {
         return this.$store.state.account.token
+      }
+    },
+    watch: {
+      '$route.path': function () {
+        this.showAssortimant = false
       }
     }
   }
@@ -232,5 +247,42 @@
 
   .control ul {
     list-style: disc;
+  }
+
+  .footer-item {
+    display: inline;
+  }
+
+  @media screen and (max-width: 1025px) {
+    .navbar-dropdown.is-boxed {
+      display: none;
+    }
+
+    .footer-burger, .footer-burger:hover, button.footer-burger:active {
+      width: 10px;
+      height: 10px;
+      display: inline;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      top: 3px;
+      border: 0;
+      background-color: transparent;
+    }
+
+    .navbar-dropdown.is-boxed.displayed {
+      display: block;
+      transition: visibility 0s, opacity 0.5s linear;
+    }
+
+  }
+
+  @media screen and (min-width: 1025px) {
+    .navbar-dropdown.is-boxed {
+      top: calc(100% + (-230px));
+    }
+
+    .footer-burger {
+      display: none;
+    }
   }
 </style>
