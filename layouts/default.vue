@@ -47,9 +47,9 @@
               <i class="mdi mdi-home-outline"></i>
             </span>
           </nuxt-link>
-          <!-- <nuxt-link class="navbar-item" to="/search">
+          <nuxt-link class="navbar-item" to="/search">
             Products
-          </nuxt-link> -->
+          </nuxt-link>
 
           <nuxt-link class="navbar-item" v-for="value in navbarLinks" :key="value.seo.url_slug" :to="'/cms/' + value.seo.url_slug">
             {{ value.title }}
@@ -112,7 +112,7 @@
                   {{ c.basic.name }}
                 </nuxt-link>
               </div>
-              <nuxt-link to="/search" v-if="category" class="has-dropdown is-hoverable">Assortiment
+              <nuxt-link to="/search" v-if="category" class="has-dropdown is-hoverable">Assortment
               </nuxt-link>
               <button class="button navbar-burger footer-burger" v-on:click="footerBurgerClicked()">
                 <span></span>
