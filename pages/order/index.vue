@@ -122,6 +122,15 @@
   export default {
     middleware: 'authCustomer',
     components: { orderMenu },
+    watch: {
+      selectedAddress: function (newVal, oldVal) {
+        if (newVal) {
+          console.log('newVal', newVal)
+        } else {
+          console.log('nulled sir!')
+        }
+      }
+    },
     data () {
       return {
         isFetching: false,
@@ -184,6 +193,26 @@
           this.$store.commit('order/SET_CUSTOMER', this.customer)
           this.$store.commit('order/SET_ADDRESS', this.selectedAddress)
           if (this.differentAsDelivery) { this.$store.commit('order/SET_BILLING', this.selectedBilling) } else { this.$store.commit('order/SET_BILLING', this.selectedAddress) }
+          // calculate VAT according to selected country
+          let country = this.selectedAddress.country
+          let VAT = 0
+          if (country === 'NL') {
+            VAT = 21
+          } else {
+            let EUCodes = ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']
+
+            if (EUCodes.indexOf(country) > -1) {
+              // this is a EU nation
+              if (this.customer.VAT_No) {
+                VAT = 0
+              } else {
+                VAT = 21
+              }
+            } else {
+              VAT = 0
+            }
+          }
+          this.$store.commit('SET_VAT', VAT)
           this.$router.replace({ path: '/order/overview', replace: true })
         } else {
           this.hasErrors = hasErrors

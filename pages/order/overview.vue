@@ -132,7 +132,7 @@
         subtotal: 0,
         vatamount: 0,
         total: 0,
-        vat: this.$store.state.settings.VAT,
+        vat: this.$store.state.VAT,
         customer: {},
         payment_options: [],
         paymentMethods: [
@@ -190,7 +190,7 @@
         let subtotalwithdiscount = subtotal - discount
         let shippingcosts = parseFloat(zonecosts)
         let shippingtotal = subtotalwithdiscount + shippingcosts
-        let vatamount = (store.state.settings.VAT / 100) * shippingtotal
+        let vatamount = (store.state.VAT / 100) * shippingtotal
         let total = shippingtotal + vatamount
         let idealData = await store.dispatch('payment/getIdealData')
 

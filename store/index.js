@@ -17,7 +17,8 @@ export const state = () => ({
   rememberLink: '',
   navbarLinks: '',
   footerLinks: '',
-  categories: ''
+  categories: '',
+  VAT: 0
 })
 
 export const mutations = {
@@ -44,6 +45,9 @@ export const mutations = {
   },
   SET_CATEGORIES: function (state, value) {
     state.categories = value
+  },
+  SET_VAT: function (state, value) {
+    state.VAT = value
   }
 }
 export const actions = {
