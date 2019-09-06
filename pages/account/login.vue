@@ -53,7 +53,7 @@
           <h1 class="title">Register</h1>
           <b-field>
             <nuxt-link to="/account/signup">
-              <button type="button" class="button is-info">Create an accountwa</button>
+              <button type="button" class="button is-info">Create an account</button>
             </nuxt-link>
           </b-field>
         </div>

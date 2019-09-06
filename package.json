@@ -57,7 +57,7 @@
     "vue-quill-editor": "^3.0.6",
     "vue-recaptcha": "^1.1.1",
     "vuex-persistedstate": "^2.5.4",
-    "vue-style-loader":"^3.0.0",
+    "vue-style-loader": "^3.0.0",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
