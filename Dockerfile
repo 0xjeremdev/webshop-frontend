@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 RUN apt-get -y update && apt-get -y upgrade && apt-get -y install git
 
 COPY . /usr/src/app/
+RUN rm -rf node_modules
 RUN npm install --production
 # RUN npm rebuild node-sass --force
 # Build app
