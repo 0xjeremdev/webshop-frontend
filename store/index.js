@@ -10,8 +10,7 @@ require('whatwg-fetch')
 
 export const state = () => ({
   authUser: null,
-  // apiUrl: 'https://api.schulting.com', // process.env.apiUrl,
-  apiUrl: process.env.API_URL, // process.env.apiUrl,
+  apiUrl: 'https://api.labned.com', // process.env.apiUrl,
   cookieAccepted: false,
   isLoading: false,
   settings: {},
