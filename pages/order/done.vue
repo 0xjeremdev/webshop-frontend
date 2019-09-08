@@ -54,7 +54,7 @@
         let subtotalwithdiscount = subtotal - discount
         let shippingcosts = parseFloat(zonecosts)
         let shippingtotal = subtotalwithdiscount + shippingcosts
-        let vatamount = (store.state.settings.VAT / 100) * shippingtotal
+        let vatamount = (store.state.VAT / 100) * shippingtotal
         let total = shippingtotal + vatamount
         let orderData = {
           status: 'Payment Received',
@@ -65,7 +65,7 @@
           shippingtotal: shippingtotal,
           shippingcosts: shippingcosts,
           subtotal: subtotal,
-          vat: store.state.settings.VAT,
+          vat: store.state.VAT,
           order_no: store.state.order.order_no,
           fromQuote: store.state.order.fromQuote
         }
