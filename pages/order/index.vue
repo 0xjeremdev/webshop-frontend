@@ -186,7 +186,7 @@
         if (this.customer.gender === undefined || this.customer.gender === null || this.customer.gender === '') { hasErrors.push({'error': 'noValidGender', 'message': 'Please edit your Personal Details to add your gender'}) }
         if (this.customer.areaofinterest === undefined || this.customer.areaofinterest === null || this.customer.areaofinterest === '') { hasErrors.push({'error': 'noValidAreaOfInterest', 'message': 'Please edit your Personal Details to add your area of interest'}) }
         if (this.customer.company === undefined || this.customer.company === null || this.customer.company === '') { hasErrors.push({'error': 'noValidCompany', 'message': 'Please edit your Personal Details to add your Company Name'}) }
-        if (this.customer.VAT_No === undefined || this.customer.VAT_No === null || this.customer.VAT_No === '') { hasErrors.push({'error': 'noValidVatNo', 'message': 'Please edit your Personal Details to add your VAT No'}) }
+        // if (this.customer.VAT_No === undefined || this.customer.VAT_No === null || this.customer.VAT_No === '') { hasErrors.push({'error': 'noValidVatNo', 'message': 'Please edit your Personal Details to add your VAT No'}) }
         if ((this.customer.phone === undefined || this.customer.phone === null || this.customer.phone === '') && (this.customer.mobile === undefined || this.customer.mobile === null || this.customer.mobile === '')) { hasErrors.push({'error': 'noValidPhone', 'message': 'Please edit your Personal Details to add your phone or mobile number'}) }
         console.log(hasErrors)
         if (hasErrors.length === 0) {
