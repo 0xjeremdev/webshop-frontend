@@ -9,7 +9,7 @@
           <accountMenu link="personal"></accountMenu>
         </div>
         <div class="column">
-          <h1 class="title">Personal Info</h1>
+          <h1 class="title">Company details</h1>
           <form v-on:submit.prevent="saveCustomer">
             <b-field grouped>
               <b-field label="Title"
@@ -107,17 +107,17 @@
               :message="message['street']">
                 <b-input v-model="address.street" autocomplete='street' placeholder="Street"></b-input>
               </b-field>
-              <b-field label="House No."
+              <b-field label="No."
               :type="(typeof message['houseno'] !== 'undefined' && message['houseno'] !== '') ? 'is-danger' : ''"
               :message="message['houseno']">
-                <b-input v-model="address.houseno" autocomplete='houseno' placeholder="House No."></b-input>
+                <b-input v-model="address.houseno" autocomplete='houseno' placeholder="No."></b-input>
               </b-field>
             </b-field>
             <b-field grouped>
-              <b-field label="Postcode"
+              <b-field label="Postal Code"
               :type="(typeof message['postcode'] !== 'undefined' && message['postcode'] !== '') ? 'is-danger' : ''"
               :message="message['postcode']">
-                <b-input v-model="address.postcode" autocomplete='postcode' placeholder="Postcode"></b-input>
+                <b-input v-model="address.postcode" autocomplete='postcode' placeholder="Postal Code"></b-input>
               </b-field>
               <b-field expanded label="City"
               :type="(typeof message['city'] !== 'undefined' && message['city'] !== '') ? 'is-danger' : ''"
@@ -257,7 +257,7 @@
           await this.validate(this.customer.title, 'title', 'select')
           await this.validate(this.customer.company, 'company')
           await this.validate(this.customer.phone, 'phone')
-          // await this.validate(this.customer.areaofinterest, 'areaofinterest', 'select')
+          await this.validate(this.address.country, 'country', 'select')
           // console.log(this.checkErrors)
           // console.log(this.message)
           if (this.checkErrors) {
