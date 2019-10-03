@@ -74,7 +74,7 @@
             </b-radio>
             <b-radio v-else-if="key !== 'Bank Transfer'" v-model="paymentMethod"
               :native-value="key" @input="setPaymentMethod($event)">
-              {{ key }}
+              {{ (key==="PayPal"? "Credit card / Paypal":key) }}
             </b-radio>
             <b-field label="Select your Bank" v-if="paymentMethod === 'iDeal' && key === 'iDeal'" v-for="(val, index) in idealData" :key="index">
               <b-select v-model="selectedBank" expanded placeholder="Select your bank" @input="setIdeal($event)">
@@ -90,7 +90,7 @@
           </div>
           <br/>
           <b-field>
-            <b-checkbox v-model="agreement">I agree to the LabNed <a href="/termsandconditions" target="_new">Terms and Conditions</a> including it's <a href="/privacypolicy" target="_new">Privacy Policy</a></b-checkbox>
+            <b-checkbox v-model="agreement">I agree to the LabNed <a href="/termsandconditions" target="_new">Terms and Conditions</a> and <a href="/privacypolicy" target="_new">Privacy Policy</a></b-checkbox>
           </b-field>
           <button class="button is-primary" @click="placeOrder()">Place Order</button>
         </div>

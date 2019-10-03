@@ -20,10 +20,10 @@
                     <th class="th-wrap">Name:</th>
                     <td>{{ quote.quote_by.title }} {{ quote.quote_by.firstname }} {{ quote.quote_by.lastname}}</td>
                   </tr>
-                  <tr>
+                  <!-- <tr>
                     <th class="th-wrap">Gender:</th>
                     <td>{{ quote.quote_by.gender }}</td>
-                  </tr>
+                  </tr> -->
                   <tr>
                     <th class="th-wrap">Company:</th>
                     <td>{{ quote.quote_by.company }}</td>

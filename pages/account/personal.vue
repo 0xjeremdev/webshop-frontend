@@ -37,9 +37,9 @@
                     <b-input autocomplete="lastname" v-model="customer.lastname" placeholder="Lastname"></b-input>
                 </b-field>
             </b-field>
-            <b-field label="Gender">
-            </b-field>
-            <b-field :type="(typeof message['gender'] !== 'undefined' && message['gender'] !== '') ? 'is-danger' : ''"
+            <!-- <b-field label="Gender">
+            </b-field> -->
+            <!-- <b-field :type="(typeof message['gender'] !== 'undefined' && message['gender'] !== '') ? 'is-danger' : ''"
             :message="message['gender']">
               <b-radio v-model="customer.gender"
                   native-value="M">
@@ -49,7 +49,7 @@
                   native-value="F">
                   Female
               </b-radio>
-            </b-field>
+            </b-field> -->
             <b-field label="Area of Interest"
               :type="(typeof message['areaofinterest'] !== 'undefined' && message['areaofinterest'] !== '') ? 'is-danger' : ''"
               :message="message['areaofinterest']">
@@ -96,6 +96,48 @@
                 <b-input autocomplete="fax" v-model="customer.fax" placeholder="Fax"></b-input>
               </b-field>
             </b-field>
+            <b-field v-show="false" expanded label="Name"
+            :type="(typeof message['name'] !== 'undefined' && message['name'] !== '') ? 'is-danger' : ''"
+            :message="message['name']">
+              <b-input v-model="address.name" autocomplete='name' placeholder="Name"></b-input>
+            </b-field>
+            <b-field grouped>
+              <b-field expanded label="Street"
+              :type="(typeof message['street'] !== 'undefined' && message['street'] !== '') ? 'is-danger' : ''"
+              :message="message['street']">
+                <b-input v-model="address.street" autocomplete='street' placeholder="Street"></b-input>
+              </b-field>
+              <b-field label="House No."
+              :type="(typeof message['houseno'] !== 'undefined' && message['houseno'] !== '') ? 'is-danger' : ''"
+              :message="message['houseno']">
+                <b-input v-model="address.houseno" autocomplete='houseno' placeholder="House No."></b-input>
+              </b-field>
+            </b-field>
+            <b-field grouped>
+              <b-field label="Postcode"
+              :type="(typeof message['postcode'] !== 'undefined' && message['postcode'] !== '') ? 'is-danger' : ''"
+              :message="message['postcode']">
+                <b-input v-model="address.postcode" autocomplete='postcode' placeholder="Postcode"></b-input>
+              </b-field>
+              <b-field expanded label="City"
+              :type="(typeof message['city'] !== 'undefined' && message['city'] !== '') ? 'is-danger' : ''"
+              :message="message['city']">
+                <b-input v-model="address.city" autocomplete='city' placeholder="City"></b-input>
+              </b-field>
+            </b-field>
+            <b-field label="Country"
+              :type="(typeof message['country'] !== 'undefined' && message['country'] !== '') ? 'is-danger' : ''"
+              :message="message['country']">
+                <b-select v-model="address.country" expanded placeholder="Select a Country">
+                    <option
+                        v-for="option in countryList"
+                        :value="option.code"
+                        :key="option.code">
+                        {{ option.name }}
+                    </option>
+                </b-select>
+            </b-field>
+
             <b-field>
               <b-checkbox v-model="customer.newsletter">Sign-up for the monthly newsletter</b-checkbox>
             </b-field>
@@ -121,22 +163,52 @@
           areaofinterest: ['Research Immunology', 'Cell Biology', 'Molecular Biology', 'Pathology'],
           title: ['Prof.', 'Drs.', 'Mr.', 'Ir.', 'Dr.', 'MD.', 'Ing.', 'Bsc.', 'Msc.', 'Mrs.']
         },
+        countryList: {},
         customer: {},
         message: {
           lastname: ''
         }, // filled in one key so it also works when any of the values are untouched
         showError: false,
         formError: 'There are errors, please correct them to save',
-        isLoading: false
+        isLoading: false,
+        address: {
+          name: 'Primary',
+          street: '',
+          houseno: '',
+          postcode: '',
+          city: '',
+          country: null,
+          isBilling: true
+        }
       }
     },
     async asyncData ({ store }) {
       let data = await store.dispatch('account/getAuth')
+      let customerData = ''
+      let addressData = {
+        name: 'Primary',
+        street: '',
+        houseno: '',
+        postcode: '',
+        city: '',
+        country: null,
+        isBilling: true
+      }
       if (data.data.result.id !== undefined) {
         const customer = await store.dispatch('account/getCustomer', { id: data.data.result.id })
-        return { customer: customer.data.result._result[0] }
+        customerData = customer.data.result._result[0]
+        // get the address
+        let addressResp = await store.dispatch('account/getAddress', { id: customerData.addressKey })
+        if (addressResp.data.result._result[0]) {
+          addressData = addressResp.data.result._result[0]
+        }
       }
-      return { customer: '' }
+      // console.log('addressDta', addressData)
+      console.log('customerData', customerData)
+      return { customer: customerData, address: addressData }
+    },
+    created () {
+      this.getCountryList()
     },
     computed: {
       checkErrors: {
@@ -183,7 +255,9 @@
           await this.validate(this.customer.lastname, 'lastname')
           await this.validate(this.customer.firstname, 'firstname')
           await this.validate(this.customer.title, 'title', 'select')
-          await this.validate(this.customer.areaofinterest, 'areaofinterest', 'select')
+          await this.validate(this.customer.company, 'company')
+          await this.validate(this.customer.phone, 'phone')
+          // await this.validate(this.customer.areaofinterest, 'areaofinterest', 'select')
           // console.log(this.checkErrors)
           // console.log(this.message)
           if (this.checkErrors) {
@@ -192,7 +266,13 @@
           }
           if (!this.checkErrors) {
             // console.log(this.customer)
+            let data = await this.$store.dispatch('account/saveAddress', { address: this.address })
+            if (data.data.result._result[0]) {
+              this.customer.addressKey = data.data.result._result[0]
+            }
+            console.log('this.customer', this.customer)
             await this.$store.dispatch('account/saveCustomer', { customer: this.customer })
+
             this.isLoading = false
             this.showError = false
             this.$toast.open({ message: 'Saved', type: 'is-success' })
@@ -206,6 +286,10 @@
           this.isLoading = false
           this.$toast.open({ message: 'Could not save data, please try again', type: 'is-danger' })
         }
+      },
+      async getCountryList () {
+        let countryList = await this.$store.dispatch('order/getCountryList', {}, { root: true })
+        this.countryList = countryList
       }
     }
   }

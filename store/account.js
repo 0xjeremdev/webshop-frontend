@@ -133,6 +133,14 @@ export const actions = {
       return false
     }
   },
+  async searchAddresses ({ state, rootState }, { query }) {
+    try {
+      return await axios.get(rootState.apiUrl + '/address?perPage=100&currentPage=1&mysort=name&sortOrder=asc&' + query, { headers: { Authorization: `Bearer ${state.token.jwt}` } })
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  },
 
   async saveAddress ({ state, rootState }, { address }) {
     try {

@@ -23,7 +23,7 @@
     data () {
       return {
         gridColumns: ['name', 'street', 'houseno', 'postcode', 'city', 'country'],
-        gridLabels: ['Name', 'Street', 'House No.', 'Postcode', 'City', 'Country'],
+        gridLabels: ['Name', 'Street', 'No.', 'Postal Code', 'City', 'Country'],
         gridTypes: { 'name': 'string', 'street': 'string', 'houseno': 'string', 'postcode': 'string', 'city': 'string', 'country': 'string', 'mysort': 'string' },
         gridData: [],
         apiUrl: this.$store.state.apiUrl,

@@ -18,10 +18,10 @@
                     <th class="th-wrap">Name:</th>
                     <td>{{ order.customer.title }} {{ order.customer.firstname }} {{ order.customer.lastname}}</td>
                   </tr>
-                  <tr>
+                  <!-- <tr>
                     <th class="th-wrap">Gender:</th>
                     <td>{{ order.customer.gender }}</td>
-                  </tr>
+                  </tr> -->
                   <tr>
                     <th class="th-wrap">Company:</th>
                     <td>{{ order.customer.company }}</td>

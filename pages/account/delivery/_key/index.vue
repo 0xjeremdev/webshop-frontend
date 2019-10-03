@@ -19,14 +19,14 @@
               :message="message['street']">
                 <b-input v-model="address.street" autocomplete='street' placeholder="Street"></b-input>
               </b-field>
-              <b-field label="House No."
+              <b-field label="No."
               :type="(typeof message['houseno'] !== 'undefined' && message['houseno'] !== '') ? 'is-danger' : ''"
               :message="message['houseno']">
                 <b-input v-model="address.houseno" autocomplete='houseno' placeholder="House No."></b-input>
               </b-field>
             </b-field>
             <b-field grouped>
-              <b-field label="Postcode"
+              <b-field label="Postal code"
               :type="(typeof message['postcode'] !== 'undefined' && message['postcode'] !== '') ? 'is-danger' : ''"
               :message="message['postcode']">
                 <b-input v-model="address.postcode" autocomplete='postcode' placeholder="Postcode"></b-input>
@@ -184,6 +184,7 @@
             this.isLoading = false
           }
           if (!this.checkErrors) {
+            console.log('thyis.address', this.address)
             await this.$store.dispatch('account/saveAddress', { address: this.address })
             this.isLoading = false
             this.showError = false

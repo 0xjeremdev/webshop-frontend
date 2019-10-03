@@ -112,7 +112,7 @@
                   {{ c.basic.name }}
                 </nuxt-link>
               </div>
-              <nuxt-link to="/search" v-if="category" class="has-dropdown is-hoverable">Assortment
+              <nuxt-link to="/search" v-if="category" class="has-dropdown is-hoverable">Product range
               </nuxt-link>
               <button class="button navbar-burger footer-burger" v-on:click="footerBurgerClicked()">
                 <span></span>
