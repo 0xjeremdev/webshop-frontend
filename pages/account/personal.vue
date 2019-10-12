@@ -101,6 +101,11 @@
             :message="message['name']">
               <b-input v-model="address.name" autocomplete='name' placeholder="Name"></b-input>
             </b-field>
+            <b-field label="Department"
+              :type="(typeof message['department'] !== 'undefined' && message['department'] !== '') ? 'is-danger' : ''"
+              :message="message['department']">
+                <b-input autocomplete="department" v-model="address.department" placeholder="Department"></b-input>
+            </b-field>
             <b-field grouped>
               <b-field expanded label="Street"
               :type="(typeof message['street'] !== 'undefined' && message['street'] !== '') ? 'is-danger' : ''"
@@ -177,6 +182,7 @@
           houseno: '',
           postcode: '',
           city: '',
+          department: '',
           country: null,
           isBilling: true
         }
@@ -191,8 +197,10 @@
         houseno: '',
         postcode: '',
         city: '',
+        department: '',
         country: null,
-        isBilling: true
+        isBilling: true,
+        isPrimary: true
       }
       if (data.data.result.id !== undefined) {
         const customer = await store.dispatch('account/getCustomer', { id: data.data.result.id })
@@ -266,6 +274,8 @@
           }
           if (!this.checkErrors) {
             // console.log(this.customer)
+            this.address.company = this.customer.company
+            this.address.isPrimary = true
             let data = await this.$store.dispatch('account/saveAddress', { address: this.address })
             if (data.data.result._result[0]) {
               this.customer.addressKey = data.data.result._result[0]

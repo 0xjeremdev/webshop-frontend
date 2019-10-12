@@ -31,7 +31,7 @@
                   </p>
 
                   <b-field>
-                    <b-checkbox v-model="differentAsDelivery">Billing address is different then Delivery Address</b-checkbox>
+                    <b-checkbox v-model="differentAsDelivery">Billing address is different from Delivery Address</b-checkbox>
                   </b-field>
                   <b-field v-if="differentAsDelivery" label="Select Billing Address">
                     <b-select v-model="selectedBilling" expanded placeholder="Select a billing address">
@@ -52,7 +52,7 @@
                       <tr><td>Name:</td><td>{{ selectedAddress.name }}</td></tr>
                       <tr><td>Street: </td><td>{{ selectedAddress.street }}</td></tr>
                       <tr><td>House No.: </td><td>{{ selectedAddress.houseno }}</td></tr>
-                      <tr><td>Postcode: </td><td>{{ selectedAddress.postcode }}</td></tr>
+                      <tr><td>Postal code: </td><td>{{ selectedAddress.postcode }}</td></tr>
                       <tr><td>City: </td><td>{{ selectedAddress.city }}</td></tr>
                       <tr><td>Country: </td><td>{{ selectedAddress.country }}</td></tr>
                     </tbody>
@@ -85,7 +85,7 @@
                       <tr><td>Name:</td><td>{{ selectedBilling.name }}</td></tr>
                       <tr><td>Street: </td><td>{{ selectedBilling.street }}</td></tr>
                       <tr><td>House No.: </td><td>{{ selectedBilling.houseno }}</td></tr>
-                      <tr><td>Postcode: </td><td>{{ selectedBilling.postcode }}</td></tr>
+                      <tr><td>Postal code: </td><td>{{ selectedBilling.postcode }}</td></tr>
                       <tr><td>City: </td><td>{{ selectedBilling.city }}</td></tr>
                       <tr><td>Country: </td><td>{{ selectedBilling.country }}</td></tr>
                     </tbody>
@@ -160,6 +160,11 @@
         let selectedBilling = null
         for (var i = 0; i < address.data.result._result.length; i++) {
           if (address.data.result._result[i].isBilling) {
+            selectedAddress = address.data.result._result[i]
+            selectedBilling = address.data.result._result[i]
+            break
+          }
+          if (address.data.result._result[i].isPrimary) {
             selectedAddress = address.data.result._result[i]
             selectedBilling = address.data.result._result[i]
             break

@@ -88,6 +88,10 @@
               </b-select>
             </b-field>
           </div>
+
+          <b-field label="Order Number" >
+            <input class="input column is-one-quarter" v-model="custom_order_no" autocomplete='Order Number' placeholder="Order Number"/>
+          </b-field>
           <br/>
           <b-field>
             <b-checkbox v-model="agreement">I agree to the LabNed <a href="/termsandconditions" target="_new">Terms and Conditions</a> and <a href="/privacypolicy" target="_new">Privacy Policy</a></b-checkbox>
@@ -132,6 +136,7 @@
         subtotal: 0,
         vatamount: 0,
         total: 0,
+        custom_order_no: '',
         vat: this.$store.state.VAT,
         customer: {},
         payment_options: [],
@@ -153,6 +158,11 @@
             price: '0'
           }
         ]
+      }
+    },
+    watch: {
+      custom_order_no: function (value) {
+        this.$store.commit('order/SET_CUSTOM_ORDERNO', value)
       }
     },
     async asyncData ({ store, error, app: { $cookies } }) {
@@ -208,22 +218,25 @@
           return false
         }
 
-        if (!this.serviceLink) {
-          this.formError = 'Failed to communicate with this payment option, please select another option'
-          this.showError = true
-          return false
-        }
-
         this.showError = false
-        // place order in database should be changed
-        // console.log(this.$router)
-        window.location.href = this.serviceLink
-        // this.$store.dispatch('order/placeOrder', { status: 'Payment Received' }, { root: true })
+        if (this.$store.state.apiUrl === 'https://api.schulting.com') {
+          // should bypass payments and create an order in staging
+          this.$router.replace({path: '/order/done', replace: true})
+        } else {
+          // should direct to actual payment page in production
+          if (!this.serviceLink) {
+            this.formError = 'Failed to communicate with this payment option, please select another option'
+            this.showError = true
+            return false
+          }
+          window.location.href = this.serviceLink
+        }
+        // this.$store.dispatch('order/placeOrder', { orderData: { status: 'Payment Received', total: this.total, discount: this.discount, subtotalwithdiscount: this.subtotalwithdiscount, subtotal: this.subtotal, vatamount: this.vatamount, shippingtotal: this.shippingtotal, shippingcosts: this.shippingcosts, vat: this.vat, custom_order_no: this.custom_order_no, order_no: this.order_no } }, { root: true })
         // this.$store.commit('cart/SET_CART', [])
-        // this.$router.replace({path: '/order/done', replace: true})
       },
       async setPaymentMethod (value) {
         try {
+          console.log('value', value, this.$store.state)
           this.showError = false
           this.paymentMethod = value
           if (value === 'PayPal') {
@@ -248,7 +261,8 @@
               }
             }
             let service = await this.$store.dispatch('payment/doPay', { payment: payment })
-            if (service.result.RequiredAction !== undefined && service.result.RequiredAction.RedirectURL !== undefined) {
+            console.log('service', service)
+            if ((!!service.result.RequiredAction) && (!!service.result.RequiredAction.RedirectURL)) {
               this.serviceLink = service.result.RequiredAction.RedirectURL
             }
           }
@@ -256,7 +270,6 @@
             this.serviceLink = '/order/done'
           }
         } catch (e) {
-          console.log(e)
           this.formError = 'Failed to communicate with this payment option, please select another option'
           this.showError = true
         }

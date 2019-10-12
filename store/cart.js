@@ -13,6 +13,8 @@ export const mutations = {
   ADD_TO_CART: function (state, cart) {
     // simpler function to add to the cart
     let mycart = state.cartContents
+    console.log('cartt', cart)
+    console.log('mycart', mycart)
     let found = false
     for (let key in mycart) {
       if (mycart[key]['id'] === cart['id']) {
@@ -46,7 +48,7 @@ export const actions = {
       if (!(rootState.authUser instanceof Object)) {
         commit('SET_USER', this.$cookies.get('key2publish').authUser, { root: true })
       }
-      // console.log(cart)
+
       if (cart === undefined || cart.length <= 0) return cart
       commit('order/SET_FROMQUOTE', this.$cookies.get('key2publish').order.fromQuote, { root: true })
       commit('order/SET_ORDERNO', this.$cookies.get('key2publish').order.order_no, { root: true })

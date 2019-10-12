@@ -39,16 +39,22 @@
         :default-sort="[sortField, sortOrder]"
         @sort="onSort"
         :checked-rows.sync="checkedRows"
+        :is-row-checkable="(row) => !row.isPrimary"
         checkable
         hoverable>
         <template slot-scope="data">
           <b-table-column label="Action" align="center" valign="middle" class="action">
-            <b-tooltip :label="'Edit ' + type" type="is-dark" animated>
-              <a class="button is-primary" @click="editProduct(data.row)"><b-icon icon="pencil" /></a>
-            </b-tooltip>
-            <b-tooltip :label="'Delete ' + type" type="is-dark" animated>
-              <a class="button is-info" @click="deleteProduct(data.row)"><b-icon icon="delete" /></a>
-            </b-tooltip>
+            <div v-if="!data.row.isPrimary">
+              <b-tooltip :label="'Edit ' + type" type="is-dark" animated>
+                <a class="button is-primary" @click="editProduct(data.row)"><b-icon icon="pencil" /></a>
+              </b-tooltip>
+              <b-tooltip :label="'Delete ' + type" type="is-dark" animated>
+                <a class="button is-info" @click="deleteProduct(data.row)"><b-icon icon="delete" /></a>
+              </b-tooltip>
+            </div>
+            <div v-if="data.row.isPrimary">
+                <nuxt-link class="button is-disabled" to="/account/personal"><b-icon icon="pencil" /></nuxt-link>
+            </div>
           </b-table-column>
           <b-table-column v-for="(key, index) in columns"  v-bind:data="key"
              v-bind:key="key.text" :field="key" :label="labels[index]|capitalize" sortable class="datafield">

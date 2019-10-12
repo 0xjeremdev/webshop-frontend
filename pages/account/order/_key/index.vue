@@ -108,7 +108,7 @@
                   <tr><td>Name:</td><td>{{ order.billing_address.name }}</td></tr>
                   <tr><td>Street: </td><td>{{ order.billing_address.street }}</td></tr>
                   <tr><td>House No.: </td><td>{{ order.billing_address.houseno }}</td></tr>
-                  <tr><td>Postcode: </td><td>{{ order.billing_address.postcode }}</td></tr>
+                  <tr><td>Postal code: </td><td>{{ order.billing_address.postcode }}</td></tr>
                   <tr><td>City: </td><td>{{ order.billing_address.city }}</td></tr>
                   <tr><td>Country: </td><td>{{ order.billing_address.country }}</td></tr>
                 </tbody>

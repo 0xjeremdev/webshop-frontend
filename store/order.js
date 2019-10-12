@@ -6,7 +6,8 @@ export const state = () => ({
   billing: {},
   fromQuote: false,
   countryList: {},
-  order_no: ''
+  order_no: '',
+  custom_order_no: ''
 })
 
 export const mutations = {
@@ -27,6 +28,9 @@ export const mutations = {
   },
   SET_ORDERNO: function (state, value) {
     state.order_no = value
+  },
+  SET_CUSTOM_ORDERNO: function (state, value) {
+    state.custom_order_no = value
   }
 }
 
@@ -47,6 +51,7 @@ export const actions = {
     }
   },
   async placeOrder ({ commit, state, rootState }, { orderData }) {
+    console.log('placeordewr')
     try {
       let postData = {
         delivery: state.address,
@@ -63,9 +68,9 @@ export const actions = {
         shippingtotal: orderData.shippingtotal,
         shippingcosts: orderData.shippingcosts,
         vat: orderData.vat,
+        custom_order_no: orderData.custom_order_no ? orderData.custom_order_no : '',
         order_no: (orderData.order_no !== undefined && orderData.order_no && orderData.order_no !== '') ? orderData.order_no : ''
       }
-      console.log(postData)
       await this.$axios.$post(rootState.apiUrl + '/order', postData, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
       return true
     } catch (e) {

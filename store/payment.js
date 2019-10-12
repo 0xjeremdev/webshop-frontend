@@ -42,7 +42,7 @@ export const actions = {
   async doPay ({ rootState }, { payment }) {
     try {
       let mydata = await this.$axios.$post(rootState.apiUrl + '/payment/transaction', payment, { headers: { Authorization: `Bearer ${rootState.account.token.jwt}` } })
-      // console.log(mydata)
+      console.log(mydata)
       return mydata
     } catch (e) {
       console.log(e)

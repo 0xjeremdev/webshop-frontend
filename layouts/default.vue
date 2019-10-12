@@ -228,6 +228,10 @@
     background-color: #ee7600;
   }
 
+  .button.is-disabled {
+    background-color: #d8c6b5;
+  }
+
   a {
     color: #ee7600;
   }

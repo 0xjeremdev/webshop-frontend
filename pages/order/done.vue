@@ -67,9 +67,10 @@
           subtotal: subtotal,
           vat: store.state.VAT,
           order_no: store.state.order.order_no,
+          custom_order_no: store.state.order.custom_order_no,
           fromQuote: store.state.order.fromQuote
         }
-        console.log(orderData)
+        console.log('orderData: ', orderData)
         store.dispatch('order/placeOrder', { orderData: orderData }, { root: true })
         store.commit('cart/SET_CART', [])
         store.commit('order/SET_ORDERNO', '')

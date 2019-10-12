@@ -13,6 +13,16 @@
             :message="message['name']">
               <b-input v-model="address.name" autocomplete='name' placeholder="Name"></b-input>
             </b-field>
+            <b-field expanded label="Company"
+            :type="(typeof message['company'] !== 'undefined' && message['company'] !== '') ? 'is-danger' : ''"
+            :message="message['company']">
+              <b-input v-model="address.company" autocomplete='company' placeholder="company"></b-input>
+            </b-field>
+            <b-field expanded label="Department"
+            :type="(typeof message['department'] !== 'undefined' && message['department'] !== '') ? 'is-danger' : ''"
+            :message="message['department']">
+              <b-input v-model="address.department" autocomplete='department' placeholder="Department"></b-input>
+            </b-field>
             <b-field grouped>
               <b-field expanded label="Street"
               :type="(typeof message['street'] !== 'undefined' && message['street'] !== '') ? 'is-danger' : ''"
@@ -29,7 +39,7 @@
               <b-field label="Postal code"
               :type="(typeof message['postcode'] !== 'undefined' && message['postcode'] !== '') ? 'is-danger' : ''"
               :message="message['postcode']">
-                <b-input v-model="address.postcode" autocomplete='postcode' placeholder="Postcode"></b-input>
+                <b-input v-model="address.postcode" autocomplete='postcode' placeholder="Postal code"></b-input>
               </b-field>
               <b-field expanded label="City"
               :type="(typeof message['city'] !== 'undefined' && message['city'] !== '') ? 'is-danger' : ''"
@@ -76,8 +86,11 @@
           houseno: '',
           postcode: '',
           city: '',
+          company: '',
+          department: '',
           country: null,
-          isBilling: false
+          isBilling: false,
+          isPrimary: false
         },
         message: {
           name: ''
@@ -108,8 +121,11 @@
             houseno: '',
             postcode: '',
             city: '',
+            company: '',
+            department: '',
             country: '',
-            isBilling: ''
+            isBilling: '',
+            isPrimary: false
           }
         }
       }
@@ -120,8 +136,11 @@
           houseno: '',
           postcode: '',
           city: '',
+          company: '',
+          department: '',
           country: '',
-          isBilling: ''
+          isBilling: '',
+          isPrimary: false
         }
       }
     },
@@ -178,6 +197,7 @@
           await this.validate(this.address.postcode, 'postcode')
           await this.validate(this.address.city, 'city')
           await this.validate(this.address.country, 'country', 'select')
+          await this.validate(this.address.company, 'company')
 
           if (this.checkErrors) {
             this.showError = true

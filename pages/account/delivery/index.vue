@@ -6,7 +6,7 @@
           <accountMenu link="delivery"></accountMenu>
         </div>
         <div class="column">
-          <h1 class="title">Delivery</h1>
+          <h1 class="title">Delivery Address</h1>
           <DataGrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :apiUrl="apiUrl" :type="type" :customSortField="customSortField"></DataGrid>
         </div>
       </div>
@@ -22,9 +22,9 @@
     components: { accountMenu, DataGrid },
     data () {
       return {
-        gridColumns: ['name', 'street', 'houseno', 'postcode', 'city', 'country'],
-        gridLabels: ['Name', 'Street', 'No.', 'Postal Code', 'City', 'Country'],
-        gridTypes: { 'name': 'string', 'street': 'string', 'houseno': 'string', 'postcode': 'string', 'city': 'string', 'country': 'string', 'mysort': 'string' },
+        gridColumns: ['name', 'street', 'houseno', 'postcode', 'city', 'country', 'company', 'department'],
+        gridLabels: ['Name', 'Street', 'No.', 'Postal Code', 'City', 'Country', 'Company', 'Department'],
+        gridTypes: { 'name': 'string', 'street': 'string', 'houseno': 'string', 'postcode': 'string', 'city': 'string', 'country': 'string', 'mysort': 'string', 'company': 'string', 'department': 'string' },
         gridData: [],
         apiUrl: this.$store.state.apiUrl,
         type: 'address',
