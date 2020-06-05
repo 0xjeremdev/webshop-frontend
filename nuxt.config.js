@@ -39,7 +39,8 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'stylesheet', type: 'text/css', href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css' },
-      { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto+Slab' }
+      { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto+Slab' },
+      { rel: 'stylesheet', href: '//cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css' }
     ]
   },
   mode: 'universal',
