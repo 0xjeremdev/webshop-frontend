@@ -1,10 +1,37 @@
+
 <template>
   <div>
+     <b-alert v-if="showDismissibleAlert"  class="button is-danger" dismissible>Attribute Fields are not selected!</b-alert>
+        <template>
+          <section>
+            <b-field grouped group-multiline>             
+              <b-select v-model="attrSelected">
+                <option v-for="option in optionsData" v-bind:value="option.value" v-bind:key="option.text">
+                {{ option.text }}
+              </option>
+              </b-select>
+              <!-- <span>Selected: {{ attrSelected }}</span>          -->
+              <b-select v-model="opSelected">
+                <option v-for="option in funcOptions" v-bind:value="option.value" v-bind:key="option.text">
+                {{ option.text }}
+              </option>
+              </b-select>
+              <!-- <span>Selected: {{ opSelected }}</span>            -->
+              <b-input v-model="message" placeholder="Attribute value"/>
+              <!-- <p>Message is: {{ message }}</p> -->
+              <button class="button is-primary" v-on:click="search">Get Data</button>&nbsp;&nbsp;             
+              <button class="button is-primary" v-on:click="csvExport">Export CSV</button>&nbsp;&nbsp;
+              <button class="button is-primary" v-on:click="jsonExport">Export JSON</button>
+              
+          </b-field>
+        </section>
+      </template>
     <div id="SearchTable">
       <b-table :data="testData"
         default-sort="name"
         :checked-rows.sync="searchCheckedRows"
         checkable>
+
         <template slot-scope="testData">
           <b-table-column class="action" label="test">
             <b-tooltip :label="'Add new ' + type" type="is-dark" animated>
@@ -53,6 +80,7 @@
           <b-table-column v-for="(key, index) in columns"  v-bind:data="key"
              v-bind:key="key.text" :field="key" :label="labels[index]|capitalize" sortable class="datafield">
               <span v-if="((data.row.hasOwnProperty(key)) && (types[key] === 'string'))">{{ data.row[key] }}</span>
+              <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'int'))">{{ data.row[key] }}</span>
               <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'combined'))">{{ data.row[key] }}</span>
               <span v-else-if="data.row.hasOwnProperty('basic')">{{ data.row.basic[key] }}</span>
               <span v-else-if="((data.row.hasOwnProperty(key)) && (types[key] === 'date'))" class="tag is-success">{{ new Date(data.row[key]).toLocaleDateString('nl-NL', options ) }}</span>
@@ -128,7 +156,13 @@
         sortOrder: 'asc',
         testData: [ { name: 'test' } ],
         loadMessage: 'Waiting for data to load',
+        attrSelected: '',
+        opSelected: '',
+        message: '',
+        optionsData: [{ text: 'Select Attribute Name', value: '', disabled: true }, { text: 'LabNed artikel nummer', value: 'LabNed artikel nummer' }, { text: 'Stam nummer', value: 'Stam nummer' }, { text: 'Applications', value: 'Applications' }],
+        funcOptions: [{ text: 'Select Operator', value: '', disabled: true }, { text: '==', value: '==' }, { text: '!=', value: '!=' }, { text: '<=', value: '<=' }, { text: '>=', value: '>=' }],
         startValue: 'basic',
+        showDismissibleAlert: false,
         'options': { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }
       }
     },
@@ -251,6 +285,9 @@
             if (this.currentPage !== undefined || this.currentPage.isInteger()) queryString += '&currentPage=' + this.currentPage
             if (this.sortField !== undefined || this.sortField !== '') queryString += '&mysort=' + this.sortField
             if (this.sortOrder !== undefined || this.sortOrder !== '') queryString += '&sortOrder=' + this.sortOrder
+            if (this.attrSelected !== undefined || this.attrSelected !== '') queryString += '&attr=' + this.attrSelected
+            if (this.opSelected !== undefined || this.opSelected !== '') queryString += '&op=' + this.opSelected
+            if (this.message !== undefined || this.message !== '') queryString += '&val=' + this.message
 
             let searchFilter = ''
             for (let search in this.searches) {
@@ -280,6 +317,10 @@
           this.loadMessage = 'Could not load any data, make sure there is any data'
           console.log(e)
         }
+      },
+
+      async search () {
+        if (this.attrSelected !== '' && this.opSelected !== '' && this.message !== '') { await this.loadAsyncData() } else { this.showDismissibleAlert = true }
       },
       /*
        * Handle page-change event
@@ -334,6 +375,98 @@
       async resetAction () {
         this.checkedRows = []
         this.actionChange = null
+      },
+      csvExport: function () {
+        try {
+          if (this.attrSelected !== '' && this.opSelected !== '' && this.message !== '') {
+            let queryString = ''
+            queryString = (this.type.includes('?')) ? '&' : '?'
+            if (this.perPage !== undefined || this.perPage.isInteger()) queryString += 'perPage=' + 0
+            if (this.currentPage !== undefined || this.currentPage.isInteger()) queryString += '&currentPage=' + this.currentPage
+            if (this.sortField !== undefined || this.sortField !== '') queryString += '&mysort=' + this.sortField
+            if (this.sortOrder !== undefined || this.sortOrder !== '') queryString += '&sortOrder=' + this.sortOrder
+            if (this.attrSelected !== undefined || this.attrSelected !== '') queryString += '&attr=' + this.attrSelected
+            if (this.opSelected !== undefined || this.opSelected !== '') queryString += '&op=' + this.opSelected
+            if (this.message !== undefined || this.message !== '') queryString += '&val=' + this.message
+
+            let searchFilter = ''
+            for (let search in this.searches) {
+              if (search !== 'undefined' && this.searches[search] !== '') searchFilter += '&' + search + '=' + this.searches[search]
+            }
+            if (this.customFilter !== undefined) {
+              searchFilter += this.customFilter
+            }
+            queryString += searchFilter
+
+            console.log(this.apiUrl + '/' + this.type + queryString)
+            let data = this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+            console.log(data)
+            if (data['result']['_result'][0] instanceof Object) {
+              this.data = data['result']['_result']
+              let csvContent = 'data:text/csv;charset=utf-8,'
+              csvContent += [
+                Object.keys(this.data[0]).join(','),
+                ...this.data.map(item => Object.values(item).join(','))
+              ]
+                .join('\n')
+                .replace(/(^\[)|(\]$)/gm, '')
+
+              const csvdata = encodeURI(csvContent)
+              const link = document.createElement('a')
+              link.setAttribute('href', csvdata)
+              link.setAttribute('download', 'export.csv')
+              link.click()
+            } else {
+              this.data = []
+            }
+          } else { this.showDismissibleAlert = true }
+        } catch (e) {
+          this.data = []
+          console.log(e)
+        }
+      },
+      jsonExport: function () {
+        try {
+          if (this.attrSelected !== '' && this.opSelected !== '' && this.message !== '') {
+            let queryString = ''
+            queryString = (this.type.includes('?')) ? '&' : '?'
+            if (this.perPage !== undefined || this.perPage.isInteger()) queryString += 'perPage=' + 0
+            if (this.currentPage !== undefined || this.currentPage.isInteger()) queryString += '&currentPage=' + this.currentPage
+            if (this.sortField !== undefined || this.sortField !== '') queryString += '&mysort=' + this.sortField
+            if (this.sortOrder !== undefined || this.sortOrder !== '') queryString += '&sortOrder=' + this.sortOrder
+            if (this.attrSelected !== undefined || this.attrSelected !== '') queryString += '&attr=' + this.attrSelected
+            if (this.opSelected !== undefined || this.opSelected !== '') queryString += '&op=' + this.opSelected
+            if (this.message !== undefined || this.message !== '') queryString += '&val=' + this.message
+
+            let searchFilter = ''
+            for (let search in this.searches) {
+              if (search !== 'undefined' && this.searches[search] !== '') searchFilter += '&' + search + '=' + this.searches[search]
+            }
+            if (this.customFilter !== undefined) {
+              searchFilter += this.customFilter
+            }
+            queryString += searchFilter
+
+            console.log(this.apiUrl + '/' + this.type + queryString)
+            let data = this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+            console.log(data)
+            if (data['result']['_result'][0] instanceof Object) {
+              this.data = data['result']['_result']
+              let jsonContent = 'data:json;charset=utf-8,'
+              jsonContent += JSON.stringify(this.data)
+              const jsondata = encodeURI(jsonContent)
+              const link = document.createElement('a')
+              link.setAttribute('href', jsondata)
+              link.setAttribute('download', 'export.json')
+              link.click()
+            } else {
+              this.data = []
+            }
+          } else { this.showDismissibleAlert = true }
+        } catch (e) {
+          this.data = []
+          console.log(e)
+        }
       }
     },
     filters: {

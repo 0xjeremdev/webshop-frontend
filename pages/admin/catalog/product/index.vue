@@ -25,7 +25,6 @@
         </div> 
       </div>
     </form>
-   
     </div>
     <datagrid :data="gridData" :columns="gridColumns" :labels="gridLabels" :types="gridTypes" :apiUrl="apiUrl" :type="type"></datagrid>
   </div>
@@ -51,9 +50,9 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['vat', 'name', 'Price LabNed'],
+        gridColumns: ['LabNed artikel nummer', 'Product Description', 'Price LabNed'],
         gridLabels: ['LabNed No', 'Name', 'Price LabNed'],
-        gridTypes: { 'vat': 'string', 'name': 'string' },
+        gridTypes: { 'LabNed artikel nummer': 'string', 'Product Description': 'string', 'Price LabNed': 'int' },
         gridData: [],
         apiUrl: this.$store.state.apiUrl,
         type: 'product',
@@ -72,7 +71,7 @@
         const formData = new FormData()
         formData.append('file', this.file)
         try {
-          await this.$axios.$post(this.$store.state.apiUrl +'/admin/product/upload', formData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+          await this.$axios.$post(this.$store.state.apiUrl + '/admin/product/upload', formData, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
           this.message = 'File has been uploaded'
           this.file = ''
           this.error = false
