@@ -5,12 +5,12 @@ import Cookies from 'js-cookie'
 
 Vue.use(Vuex)
 
-// Polyfill for `window.fetch()`
+// Polyfill for `window.fetch()` //'https://api.labned.com', // process.env.apiUrl,
 require('whatwg-fetch')
 
 export const state = () => ({
   authUser: null,
-  apiUrl: 'https://api.schulting.com', // process.env.apiUrl,
+  apiUrl: 'https://api.schulting.com',
   cookieAccepted: false,
   isLoading: false,
   settings: {},
