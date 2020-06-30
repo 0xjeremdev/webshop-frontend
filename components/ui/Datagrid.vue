@@ -159,8 +159,8 @@
         attrSelected: '',
         opSelected: '',
         message: '',
-        optionsData: [{ text: 'Select Attribute Name', value: '', disabled: true }, { text: 'LabNed artikel nummer', value: 'LabNed artikel nummer' }, { text: 'Stam nummer', value: 'Stam nummer' }, { text: 'Applications', value: 'Applications' }],
-        funcOptions: [{ text: 'Select Operator', value: '', disabled: true }, { text: '==', value: '==' }, { text: '!=', value: '!=' }, { text: '<=', value: '<=' }, { text: '>=', value: '>=' }],
+        optionsData: [{ text: 'Select Attribute Name', value: '', disabled: true }, { text: 'LabNed artikel nummer', value: 'LabNed artikel nummer' }, { text: 'Stam nummer', value: 'Stam nummer' }, { text: 'Product Description', value: 'Product Description' }, { text: 'ProductcategoryLabNed', value: 'Product category LabNed' }],
+        funcOptions: [{ text: 'Select Operator', value: '', disabled: true }, { text: '==', value: '==' }, { text: '!=', value: '!=' }, { text: '<=', value: '<=' }, { text: '>=', value: '>=' }, { text: '!=', value: '!=' }, { text: 'LIKE', value: 'LIKE' }, { text: 'IN', value: 'NOT IN' }],
         startValue: 'basic',
         showDismissibleAlert: false,
         'options': { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }
