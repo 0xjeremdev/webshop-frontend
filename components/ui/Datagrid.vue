@@ -453,7 +453,7 @@
             queryString += searchFilter
 
             console.log(this.apiUrl + '/' + this.type + queryString)
-            let data = this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+            let data = await this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             console.log(data)
             if (data['result']['_result'][0] instanceof Object) {
               this.data = data['result']['_result']
