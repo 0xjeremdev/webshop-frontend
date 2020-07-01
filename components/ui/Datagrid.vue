@@ -10,15 +10,12 @@
                 {{ option.text }}
               </option>
               </b-select>
-              <!-- <span>Selected: {{ attrSelected }}</span>          -->
               <b-select v-model="opSelected">
                 <option v-for="option in funcOptions" v-bind:value="option.value" v-bind:key="option.text">
                 {{ option.text }}
               </option>
               </b-select>
-              <!-- <span>Selected: {{ opSelected }}</span>            -->
               <b-input v-model="message" placeholder="Attribute value"/>
-              <!-- <p>Message is: {{ message }}</p> -->
               <button class="button is-primary" v-on:click="search">Get Data</button>&nbsp;&nbsp;             
               <button class="button is-primary" v-on:click="csvExport">Export CSV</button>&nbsp;&nbsp;
               <button class="button is-primary" v-on:click="jsonExport">Export JSON</button>
@@ -160,7 +157,7 @@
         opSelected: '',
         message: '',
         optionsData: [{ text: 'Select Attribute Name', value: '', disabled: true }, { text: 'LabNed artikel nummer', value: 'LabNed artikel nummer' }, { text: 'Stam nummer', value: 'Stam nummer' }, { text: 'Supplier', value: 'Supplier' }, { text: 'Size', value: 'Size' }, { text: 'Background', value: 'Background' }, { text: 'Product Description', value: 'Product Description' }, { text: 'ProductcategoryLabNed', value: 'Product category LabNed' }],
-        funcOptions: [{ text: 'Select Operator', value: '', disabled: true }, { text: '==', value: '==' }, { text: '!=', value: '!=' }, { text: '<=', value: '<=' }, { text: '>=', value: '>=' }, { text: '!=', value: '!=' }, { text: 'LIKE', value: 'LIKE' }, { text: 'IN', value: 'NOT IN' }],
+        funcOptions: [{ text: 'Select Operator', value: '', disabled: true }, { text: '==', value: '==' }, { text: '!=', value: '!=' }, { text: '<=', value: '<=' }, { text: '>=', value: '>=' }, { text: 'LIKE', value: 'LIKE' }, { text: 'IN', value: 'NOT IN' }],
         startValue: 'basic',
         showDismissibleAlert: false,
         'options': { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }
@@ -376,9 +373,10 @@
         this.checkedRows = []
         this.actionChange = null
       },
-      csvExport: function () {
+      async csvExport () {
         try {
           if (this.attrSelected !== '' && this.opSelected !== '' && this.message !== '') {
+            this.showDismissibleAlert = false
             let queryString = ''
             queryString = (this.type.includes('?')) ? '&' : '?'
             if (this.perPage !== undefined || this.perPage.isInteger()) queryString += 'perPage=' + 0
@@ -399,10 +397,12 @@
             queryString += searchFilter
 
             console.log(this.apiUrl + '/' + this.type + queryString)
-            let data = this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
+            let data = await this.$axios.$get(this.apiUrl + '/admin/' + this.type + queryString, { headers: { Authorization: `Bearer ${this.$store.state.authUser.jwt}` } })
             console.log(data)
             if (data['result']['_result'][0] instanceof Object) {
               this.data = data['result']['_result']
+              this.total = data['result']['extra']['stats']['fullCount']
+              this.loading = false
               let csvContent = 'data:text/csv;charset=utf-8,'
               csvContent += [
                 Object.keys(this.data[0]).join(','),
@@ -418,16 +418,21 @@
               link.click()
             } else {
               this.data = []
+              this.loading = false
+              this.loadMessage = 'Could not load any data, make sure there is any data'
             }
           } else { this.showDismissibleAlert = true }
         } catch (e) {
           this.data = []
+          this.loading = false
+          this.loadMessage = 'Could not load any data, make sure there is any data'
           console.log(e)
         }
       },
-      jsonExport: function () {
+      async jsonExport () {
         try {
           if (this.attrSelected !== '' && this.opSelected !== '' && this.message !== '') {
+            this.showDismissibleAlert = false
             let queryString = ''
             queryString = (this.type.includes('?')) ? '&' : '?'
             if (this.perPage !== undefined || this.perPage.isInteger()) queryString += 'perPage=' + 0
@@ -452,6 +457,8 @@
             console.log(data)
             if (data['result']['_result'][0] instanceof Object) {
               this.data = data['result']['_result']
+              this.total = data['result']['extra']['stats']['fullCount']
+              this.loading = false
               let jsonContent = 'data:json;charset=utf-8,'
               jsonContent += JSON.stringify(this.data)
               const jsondata = encodeURI(jsonContent)
@@ -461,10 +468,14 @@
               link.click()
             } else {
               this.data = []
+              this.loading = false
+              this.loadMessage = 'Could not load any data, make sure there is any data'
             }
           } else { this.showDismissibleAlert = true }
         } catch (e) {
           this.data = []
+          this.loading = false
+          this.loadMessage = 'Could not load any data, make sure there is any data'
           console.log(e)
         }
       }
