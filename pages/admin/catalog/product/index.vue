@@ -50,9 +50,9 @@
     components: { Datagrid },
     data () {
       return {
-        gridColumns: ['LabNed artikel nummer', 'Product Description', 'Price LabNed'],
+        gridColumns: ['vat', 'name', 'Price LabNed'],
         gridLabels: ['LabNed No', 'Name', 'Price LabNed'],
-        gridTypes: { 'LabNed artikel nummer': 'string', 'Product Description': 'string', 'Price LabNed': 'int' },
+        gridTypes: { 'vat': 'string', 'name': 'string' },
         gridData: [],
         apiUrl: this.$store.state.apiUrl,
         type: 'product',

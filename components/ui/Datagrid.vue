@@ -156,7 +156,7 @@
         attrSelected: '',
         opSelected: '',
         message: '',
-        optionsData: [{ text: 'Select Attribute Name', value: '', disabled: true }, { text: 'LabNed artikel nummer', value: 'LabNed artikel nummer' }, { text: 'Stam nummer', value: 'Stam nummer' }, { text: 'Supplier', value: 'Supplier' }, { text: 'Size', value: 'Size' }, { text: 'Background', value: 'Background' }, { text: 'Product Description', value: 'Product Description' }, { text: 'ProductcategoryLabNed', value: 'Product category LabNed' }],
+        optionsData: [{ text: 'Select Attribute Name', value: '', disabled: true }, { text: 'LabNed No', value: 'vat' }, { text: 'Stam nummer', value: 'Stamnummer' }, { text: 'Supplier', value: 'Supplier' }, { text: 'Size', value: 'Size' }, { text: 'Background', value: 'Background' }, { text: 'Name', value: 'name' }, { text: 'ProductcategoryLabNed', value: 'Product category LabNed' }],
         funcOptions: [{ text: 'Select Operator', value: '', disabled: true }, { text: '==', value: '==' }, { text: '!=', value: '!=' }, { text: '<=', value: '<=' }, { text: '>=', value: '>=' }, { text: 'LIKE', value: 'LIKE' }, { text: 'IN', value: 'NOT IN' }],
         startValue: 'basic',
         showDismissibleAlert: false,
