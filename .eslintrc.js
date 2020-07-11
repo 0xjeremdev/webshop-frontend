@@ -12,7 +12,11 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
-    'no-control-regex': 'off'
+    'no-control-regex': 'off',
+    'quotes': 'off',
+    'semi': 'off',
+    'space-before-function-paren': 'off',
+    'no-trailing-spaces': 'off'
   },
   globals: {}
 }

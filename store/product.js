@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
 export const state = () => ({
-  data: {},
+  data: [],
   searchVal: '',
   page: 1,
   total: 0,
@@ -65,7 +65,7 @@ export const actions = {
         searchFilters: searchFilters
       }
       let mydata = await this.$axios.$post(rootState.apiUrl + '/product/search', query)
-      // console.log(mydata)
+      console.log("mydata", mydata)
       commit('SET_TOTAL', mydata.result.extra.stats.fullCount)
       commit('SET_DATA', mydata.result._result)
       return mydata
