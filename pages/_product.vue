@@ -66,7 +66,8 @@
                 />
                 <span>{{ product.basic.image2_text }}</span>
                 <!-- <img class="my-img" src="https://wikiki.github.io/images/singer.jpg" /> -->
-                                <select v-model="selectedSizeIndex">
+                <span>Available Sizes</span>
+                <select v-model="selectedSizeIndex">
                   <option disabled value>Please select one</option>
                   <option
                     v-for="(value, index) in product.basic.sizes"

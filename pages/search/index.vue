@@ -101,7 +101,7 @@
               <div class="column is-one-third">
                 <p
                   class="title"
-                >{{ (val.prices.length > 0 ) ? '€ ' + Number(val.prices[selectedSizeIndices[key]]).toFixed(2) : 'Inquire' }}</p>
+                >{{ (val.prices.length > 0 && val.prices[0] !== 'inquire' ) ? '€ ' + Number(val.prices[selectedSizeIndices[key]]).toFixed(2) : '' }}</p>
                 <p class="control">
                   <button
                     v-if="((Number(val.prices[selectedSizeIndices[key]]).toFixed(2)) === 'NaN')"
@@ -114,7 +114,7 @@
                   <button
                     v-else
                     class="button is-primary my-button"
-                    @click="addToCart(val.artno, val.name, val.prices[selectedSizeIndices[key]], false)"
+                    @click="addToCart(val.artNos[0], val.name, val.prices[selectedSizeIndices[key]], false)"
                   >
                     <b-icon icon="cart-outline"></b-icon>
                     <span>Add to Cart</span>
@@ -124,7 +124,7 @@
                   <button
                     class="button is-info my-button"
                     :disabled="((Number(val.prices[selectedSizeIndices[key]]).toFixed(2)) !== 'NaN') ? false : true"
-                    @click="addToCart(val.artno, val.name, val.prices[selectedSizeIndices[key]], true)"
+                    @click="addToCart(val.artNos[0], val.name, val.prices[selectedSizeIndices[key]], true)"
                   >
                     <b-icon icon="file-document-box"></b-icon>
                     <span>Add to Quote</span>
