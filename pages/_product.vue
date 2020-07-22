@@ -67,12 +67,9 @@
                 <span>{{ product.basic.image2_text }}</span>
                 <!-- <img class="my-img" src="https://wikiki.github.io/images/singer.jpg" /> -->
                 <span>Available Sizes</span>
-                <select v-model="selectedSizeIndex">
+                <select>
                   <option disabled value>Please select one</option>
-                  <option
-                    v-for="(value, index) in product.basic.sizes"
-                    v-bind:value="index"
-                  >{{value}}</option>
+                  <option value="selectedSizeIndex">{{product.basic.sizes[0]}}</option>    
                 </select>
 
               </div>
@@ -82,12 +79,12 @@
         <div class="column">
           <h2
             class="subtitle"
-          >{{ product.basic.name }} - {{ product.basic.vats[selectedSizeIndex] }}</h2>
+          >{{ product.basic.name }} - {{ product.basic.vats[0] }}</h2>
           <div class="has-text-right">
             <button
               class="button is-primary"
               style="width: 150px; margin-top: -0.5rem; margin-bottom: 0.75rem;"
-              @click="showPDF(product.basic.vats[selectedSizeIndex])"
+              @click="showPDF(product.basic.vats[0])"
             >
               <b-icon icon="file-pdf"></b-icon>
               <span>PDF Datasheet</span>
