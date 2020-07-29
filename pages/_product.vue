@@ -69,7 +69,7 @@
                 <span>Available Sizes</span>
                 <select>
                   <option disabled value>Please select one</option>
-                  <option value="selectedSizeIndex">{{product.basic.sizes[0]}}</option>    
+                  <option value="selectedSizeIndex">{{product.basic.sizes[selectedSizeIndex]}}</option>    
                 </select>
 
               </div>
@@ -79,7 +79,7 @@
         <div class="column">
           <h2
             class="subtitle"
-          >{{ product.basic.name }} - {{ product.basic.vats[0] }}</h2>
+          >{{ product.basic.name }} - {{ product.basic.vats[selectedSizeIndex] }}</h2>
           <div class="has-text-right">
             <button
               class="button is-primary"
