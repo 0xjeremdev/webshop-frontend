@@ -67,9 +67,9 @@
                 <span>{{ product.basic.image2_text }}</span>
                 <!-- <img class="my-img" src="https://wikiki.github.io/images/singer.jpg" /> -->
                 <span>Available Sizes</span>
-                <select>
+                <select v-model="selectedSizeIndex">
                   <option disabled value>Please select one</option>
-                  <option value="selectedSizeIndex">{{product.basic.sizes[selectedSizeIndex]}}</option>    
+                  <option v-for="(value, index) in product.basic.sizes" v-bind:value="index">{{value}}</option>  
                 </select>
 
               </div>
@@ -435,6 +435,7 @@ export default {
       ) {
         error({ statusCode: 404, message: "Page Not Found" });
       }
+      console.log("data", content);
       return { product: content, selectedSizeIndex: content.basic.sizes.indexOf(content.basic.Size) };
     } catch (e) {
       console.log(e);
