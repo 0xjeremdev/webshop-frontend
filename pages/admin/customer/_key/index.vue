@@ -338,6 +338,9 @@
             break
           default:
             messages[fld] = await this.$store.dispatch('validation/validateField', { value: value })
+            if (fld === 'fax' || fld === 'mobile') {
+              messages[fld] = ''
+            }
             break
         }
 
@@ -355,8 +358,8 @@
           await this.validate(this.productData.company, 'company', 'field')
           await this.validate(this.productData.email, 'email', 'email')
           await this.validate(this.productData.phone, 'phone', 'field')
-          await this.validate(this.productData.fax, 'fax', 'field')
-          await this.validate(this.productData.mobile, 'mobile', 'field')
+          // await this.validate(this.productData.fax, 'fax', 'field')
+          // await this.validate(this.productData.mobile, 'mobile', 'field')
           await this.validate(this.productData.state, 'state', 'select')
 
           if (this.productData.password !== undefined && this.productData.password !== '') this.validate(this.productData.password, 'password', 'password')

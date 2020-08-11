@@ -309,8 +309,7 @@ export default {
         this.isFetching = false;
       }
     },
-    nextProduct(number) {
-      // console.log(number)
+    nextProduct(number) { 
       this.current = number;
       // console.log(this.$route.path)
       let params = this.$route.query;
