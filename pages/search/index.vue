@@ -50,7 +50,8 @@
                 <h2 class="subtitle">
                   <nuxt-link
                     :to="'/' + slugify(val.name + '-' +(val.artNos[selectedSizeIndices[key]]))"
-                  >{{ val.name }}</nuxt-link>
+                  >{{ val.name }}
+                  </nuxt-link>
                 </h2>
                 <div class="columns">
                   <div class="column">
@@ -91,7 +92,7 @@
                       <div class="art-value">
                         <select v-model="selectedSizeIndices[key]">
                           <option disabled value>Please select one</option>
-                          <option v-for="(value, index) in val.sizes" v-bind:value="index">{{value}}</option>
+                          <option v-for="(value, index) in val.sizes" v-bind:value="index">{{ value }}</option>
                         </select>
                       </div>
                     </div>
@@ -101,7 +102,9 @@
               <div class="column is-one-third">
                 <p
                   class="title"
-                >{{ (val.prices.length > 0 && val.prices[0] !== 'inquire' ) ? '€ ' + Number(val.prices[selectedSizeIndices[key]]).toFixed(2) : '' }}</p>
+                >{{
+                    (val.prices.length > 0 && val.prices[0] !== 'inquire') ? '€ ' + Number(val.prices[selectedSizeIndices[key]]).toFixed(2) : ''
+                  }}</p>
                 <p class="control">
                   <button
                     v-if="((Number(val.prices[selectedSizeIndices[key]]).toFixed(2)) === 'NaN')"
@@ -148,7 +151,7 @@
       <div class="columns">
         <div class="column is-one-quarter"></div>
         <div class="column" v-if="getProductData.length > 0">
-          <hr />
+          <hr/>
           <div class="columns">
             <div class="column my-section is-info">
               <h2 class="subtitle" style="color: white;">Total products found: {{ getTotalData }}</h2>
@@ -156,15 +159,14 @@
           </div>
           <div class="columns">
             <div class="column my-pagination">
-              <br />
+              <br/>
               <b-pagination
                 :total="getTotalData"
                 :current.sync="current"
                 :per-page="perPage"
-                @change="nextProduct"
                 class="is-info"
               ></b-pagination>
-              <br />
+              <br/>
             </div>
           </div>
         </div>
@@ -181,7 +183,7 @@ import inquire from "~/components/ui/inquire.vue";
 
 export default {
   scrollToTop: true,
-  components: { FilterSearch, breadCrumb, inquire },
+  components: {FilterSearch, breadCrumb, inquire},
   head() {
     return {
       title: "Search Products | LabNed.com - Exploring Possibilities",
@@ -196,15 +198,14 @@ export default {
           name: "keywords",
           content: `${this.info.seo_keywords}`
         },
-        { hid: "robots", name: "robots", content: "index, follow" },
-        { hid: "revisit-after", name: "revisit-after", content: "1 day" }
+        {hid: "robots", name: "robots", content: "index, follow"},
+        {hid: "revisit-after", name: "revisit-after", content: "1 day"}
       ]
     };
   },
   data() {
     return {
       isFetching: true,
-      current: 1,
       perPage: 10,
       productName: "",
       modalInquireActive: false,
@@ -214,7 +215,7 @@ export default {
       selectedProductArtNos: []
     };
   },
-  async asyncData({ store, error }) {
+  async asyncData({store, error}) {
     let info = "";
     await store.dispatch("getSettings");
     info = store.state.settings;
@@ -225,21 +226,31 @@ export default {
           "Maintenance is under way. Please check our site at a later date."
       });
     }
-    return { info: info };
+    return {info: info};
   },
   created() {
-    let page = Number(this.$route.query.page);
-    if (page > 0) {
-      this.nextProduct(page);
-    } else {
-      this.getProducts();
-    }
+    this.getProducts();
   },
-  validate({ params, query }) {
+  validate({params, query}) {
     // can be validated
     return query;
   },
+  watch: {
+    current(value) {
+      this.getProducts();
+    }
+  },
   computed: {
+    current: {
+      get() {
+        return this.$store.state.product.page;
+      },
+      set(val) {
+        console.log("setting", val);
+        this.$store.commit("product/SET_PAGE", val);
+        return val;
+      }
+    },
     getProductData() {
       let data = this.$store.state.product.data;
       console.log("datawwwaa", data);
@@ -309,21 +320,23 @@ export default {
         this.isFetching = false;
       }
     },
-    nextProduct(number) { 
-      this.current = number;
+    nextProduct(number) {
+      console.log("number", number);
+      this.current = number + 1;
       // console.log(this.$route.path)
-      let params = this.$route.query;
-      let search =
-        params.search !== "" && params.search !== undefined
-          ? params.search
-          : "";
-      let newRoute = this.$route.path + "?page=" + number;
-      if (search !== "") {
-        newRoute = this.$route.path + "?search=" + search + "&page=" + number;
-      }
-      this.$router.replace(newRoute);
+      // let params = this.$route.query;
+      // let search =
+      //   params.search !== "" && params.search !== undefined
+      //     ? params.search
+      //     : "";
+      // let newRoute = this.$route.path + "?page=" + number;
+      // if (search !== "") {
+      //   newRoute = this.$route.path + "?search=" + search + "&page=" + number;
+      // }
+      // this.$router.replace(newRoute).catch(() => {
+      // });
       // this.$route.query.page = number
-      this.getProducts();
+      // this.getProducts();
     },
     async doInquire(id) {
       try {
@@ -334,14 +347,14 @@ export default {
     },
     async addToCart(id, name, price, modifier) {
       try {
-        let contents = { amount: 1, id: id };
+        let contents = {amount: 1, id: id};
         console.log("addToCart Function Triggered");
         this.$store.commit("cart/ADD_TO_CART", contents);
         let cart = this.$store.state.cart.cartContents;
         await this.$store.dispatch(
           "cart/getProductForCart",
-          { cart: cart },
-          { root: true }
+          {cart: cart},
+          {root: true}
         );
         this.$toast.open({
           message: 'Product added to <nuxt-link to="/cart">Cart</nuxt-link>',

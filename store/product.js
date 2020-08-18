@@ -68,6 +68,7 @@ export const actions = {
       console.log("mydata", mydata)
       commit('SET_TOTAL', mydata.result.extra.stats.fullCount)
       commit('SET_DATA', mydata.result._result)
+      commit('SET_PAGE', page);
       return mydata
     } catch (e) {
       console.log(e)
